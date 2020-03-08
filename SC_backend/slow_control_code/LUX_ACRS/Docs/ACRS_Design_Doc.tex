@@ -1,0 +1,80 @@
+\documentclass[12pt]{article}
+\pagestyle{headings}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{latexsym}
+\usepackage{color}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{wasysym}
+\bibliographystyle{vitae}
+
+\title{LUX Automated Control and Recovery System (ACRS)}
+
+\author{James Nikkel\thanks{james.nikkel@yale.edu} \\
+  Yale University}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+This document describes the design,  installation, and use of the LUX Automated Control and Recovery System (ACRS).  This systems is designed to monitor and control a set of sensors and automatically recover xenon gas to the Storage and Recovery Vessel (SRV) if the detector pressure goes above some pre-determined threshold.  In addition, it is capable of automatically recovering all the xenon to the SRV in as fast a manner as possible given any of a number of different triggers.  
+
+Section~\ref{chap:arch} will describe the system architecture from a logic standpoint, section~\ref{chap:hw} will describe the hardware implementation details and section~\ref{chap:sw} will describe some of the software details.
+
+\section{Architecture}
+\label{chap:arch}
+
+The ACRS software contains two roughly independent logic loops.  The first is the pressure control loop shown schematically in figure~\ref{fig:p_red_loop}, and the second determines the current ``mode'' and is represented in figure~\ref{fig:state_loop}.  
+
+In the pressure control loop,  the detector pressure (P$_{det}$),  the SRV pressure (P$_{SRV}$), and the SRV temperature (T$_{SRV}$ are continuously monitored.  If the detector pressure goes above some threshold (P$_{MAX}$) and the base conditions are all true (P$_{det}$ $>$ P$_{SRV}$ and P$_{SRV}$ $<$ P$_{MAX}$ and T$_{SRV}$ $<$ T$_{MAX}$), then a set of valves and a flow controller are opened, and gas is allowed to flow from the detector to the SRV.  
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=10cm]{"figs/press_ctrl_loop_state_diagram"}
+\caption{Logic flow to control the pressure in the detector.}
+\label{fig:p_red_loop}
+\end{center}
+\end{figure}
+
+If the detector pressure drops below P$_{MAX}$ - $\Delta$P (and we are not fully recovering the xenon) then the valves SV49 and SV50 are closed and regular operations may continue.  One caveat is that CV1 and DV4 are left open in this case.  If it is desirable that they be closed, then they can be controlled manually from the slow control.  As with all the ACRS valves, their state will be overridden by the ACRS software when necessary even if set manually.
+
+Valve CV1 is a shut-off valve adjacent to the flow controller and DV4 is a valve on the detector breakout that opens up a path from the bottom of the detector to the liquid recovery heat exchanger, HX4.  DV4 is a normally open valve so that this path is open in the case of a failure of power or pneumatic supply gas to the detector breakout.    SV49 and SV50 are adjacent to the SRV and are in series to ensure a positive closure when they are suppose to be closed.  During an extended un-attended recovery, the SRV may warm up, and these closed valves come between the SRV and the low pressure (3 bar) rupture disks.
+
+If any of the base conditions become false, valves SV49 and SV50 are closed.  During each pass through, the program sleeps for a couple of seconds, and checks the recovery mode shown schematically in figure~\ref{fig:state_loop}. 
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=10cm]{"figs/rec_loop_state_diagram"}
+\caption{Logic flow to determine the``mode" of the ACRS system.}
+\label{fig:state_loop}
+\end{center}
+\end{figure}
+
+The ``mode'' loop monitors the master slow control database, the reserves on the UPS and liquid nitrogen and the state of the network.  If the state of any of those indicate that a recovery should be forced, the ``Full Recovery'' flag is set to true and a set of valves are opened and closed to optimize the recovery.  
+
+
+\subsection{CURRENT IMPLEMENTATION}
+
+The UPS and LN2 are not currently monitored.  The LN2 system is not instrumented in a way that would make sense to trigger on and the UPS used in the Warehouse does not have a sane programming API.  In addition, the thermosysphon system is {\em not} de-powered when a full recovery is triggered.  The network timeout is currently set at 99 hours.  This should be set to some lower value in the future based on likely outages and common failures.  
+
+\section{Hardware}
+\label{chap:hw}
+
+The ACRS system is based around a MOXA 7112 ARM9 Linux computer.  This low power computer 
+
+\section{Software}
+\label{chap:sw}
+
+The software implementation is all written in the C language and is cross compiled to run on the ARM9 architecture using OpenEmbedded\footnote{http://www.openembedded.org/wiki/Main\_Page}.  
+
+\end{document}
+
+
+
+

@@ -1,0 +1,20 @@
+// this is the configuration file
+// for the ORTEC 974 quad 100 MHz counter 
+// use c++ type comments.
+
+// The serial port name:
+device_name = /dev/ttyS2
+
+//  These are the sensor names.  Use NULL if you do not want
+//  to read any given sensor.
+
+
+sensor_names_0 = C5
+sensor_names_1 = C6
+ 
+
+
+
+
+// end of configuration file
+

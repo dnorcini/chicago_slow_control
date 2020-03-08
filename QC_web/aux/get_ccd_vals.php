@@ -1,0 +1,74 @@
+<?php
+// get_ccd_vals.php
+// D.Norcini, UChicago, 2020
+//
+
+if (empty($_SESSION['choosen_ccd']))
+  $_SESSION['choosen_ccd'] = 1;
+$id = (int)$_SESSION['choosen_ccd'];
+
+$query = "SELECT * FROM `CCD` WHERE `ID` = ".$id;
+$result = mysql_query($query);
+if (!$result)
+  die ("Could not query the database <br />" . mysql_error());
+
+$parm_values = array();
+
+while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
+  {
+   
+    foreach ($ccd_parameter_names as $parm_name)
+      {
+	if (isset($row[$parm_name]))
+	  $parm_values[] = (double)$row[$parm_name];
+	else
+	  $parm_values[] = 0.0;
+      }
+
+    if (isset($row['ID']))
+      $id = $row['ID'];
+    else
+      $id = "Unknown";
+
+    if (isset($row['CCD_Type']))
+      $ccd_type = $row['CCD_Type'];
+    else
+      $ccd_type = "Unknown";
+
+    if (isset($row['Size']))
+      $size = $row['Size'];
+    else
+      $size = "Unknown";
+
+   if (isset($row['Name']))
+      $name = $row['Name'];
+    else
+      $name = "Unknown";
+
+    if (isset($row['Status']))
+      $status = $row['Status'];
+    else
+      $status = "";
+
+    if (isset($row['Location']))
+      $location = $row['Location'];
+    else
+      $location = "";
+
+    if (isset($row['Note']))
+      $note = $row['Note'];
+    else
+      $note = "";
+
+    if (isset($row['Last_update']))
+      $last_update = (int)$row['Last_update'];
+    else
+      $last_update = 0;    
+  }
+
+$parm_values = array_combine($ccd_parameter_names, $parm_values);
+
+$dark_current = $parm_values["dark_current"];
+$e_resolution = $parm_values["e_resolution"];
+
+?>

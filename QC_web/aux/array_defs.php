@@ -1,0 +1,113 @@
+<?php
+// array_defs.php
+// D.Norcini, UChicago, 2020
+//
+$select_times = array(
+    "10s" => 10,
+    "30s" => 30,
+    "1m" => 1*60,
+    "3m" => 3*60,
+    "10m" => 10*60,
+    "30m" => 30*60,
+    "never" => -1 
+    );
+
+$num_msgs_array = array(
+    "Last 10" => 10,
+    "Last 50" => 50,
+    "Last 100" => 100,
+    "All" => -1,
+    "From plot times" => -2,
+    "First 10" => -10,
+    "First 50" => -50,
+    "First 100" => -100,
+    );
+
+$html_colours = array(
+    "aqua", "black", "blue", 
+    "gray", "green", "lime", "maroon", 
+    "navy", "orange", "purple", "red", 
+    "silver", "teal", "wheat", "white", "yellow"
+    );
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+$privilege_array = array();
+$allowed_host_array = array();
+$query = "SELECT `name`, `allowed_host` FROM `user_privileges` ORDER BY `name`";
+$result = mysql_query($query);
+if (!$result)	
+  die ("Could not query the database for message types <br>" . mysql_error());
+
+while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
+{
+    $privilege_array[] = $row['name'];
+    $allowed_host_array[] = $row['allowed_host'];
+}
+$allowed_host_array = array($privilege_array, $allowed_host_array);
+$privilege_array = make_unique($privilege_array);
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+$qc_status_array = array(
+			 "Unchecked", 
+			 "In QC",  
+			 "Complete",
+			 "Failed",
+			 );
+
+$ccd_qc_status_array = array(
+			     "Unchecked", 
+			     "Science-grade",
+			     "Operation-grade",
+			     "Failed",
+			     );
+
+
+$ccd_type_array = array(
+			"DES",
+			"Skipper",
+			"Unknown",
+			);
+
+$item_location_array = array(
+			     "Chicago",
+			     "UW",
+			     "LPNHE",
+			     "Modane",
+			     "Other",
+			     );
+
+$ccd_size_array = array(
+                        "4kx2k",
+			"1kx6k",
+			"6kx6k",
+									                        );
+////////////////////////////////////////////////////////////////////////////////////////
+$ccd_parameter_names = array(
+				 "dark_current", 
+				 "e_resolution" 
+                                  );
+$ccd_parameter_units = array(
+				 "e-/pixel/image",
+				 "e-"
+				 );
+$ccd_parameter_units = array_combine($ccd_parameter_names, $ccd_parameter_units);
+
+
+$ccd_parameter_targets = array("dark_current" => 1,
+				   "e_resolution" => 1,
+				   );
+
+$ccd_parameter_targets_plus = array("dark_current" => 0.01,
+					"e_resolution" => 0.01,
+					);
+
+$ccd_parameter_targets_minus = array("dark_current" => 0.01,
+					 "e_resolution" => 0.01,
+					);
+
+////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+?>

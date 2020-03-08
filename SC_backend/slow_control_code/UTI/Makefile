@@ -1,0 +1,21 @@
+SHELL = /bin/sh
+CC = gcc -O3
+
+CFLAGS = `mysql_config --cflags` -I../include
+
+LDFLAGS =  -L../lib -lslow_control
+
+PROGS = UTI
+
+all: $(PROGS)
+
+$(PROGS): $(PROGS).o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $@.o 
+	rm -f $@.o
+
+clean:
+	rm -f *.o $(PROGS)	
+
+
+
+
