@@ -34,6 +34,7 @@ SUBDIRS = lib \
 	LS330Keithley \
 	LS331 \
 	LS335_eth \
+	LS336_eth \
 	LUX_ACRS \
 	LUX_DAQ \
 	MetOne_PC \
