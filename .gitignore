@@ -2,7 +2,7 @@
 *.so
 *~
 *#
-/jpgraph_cache/*png
+*/jpgraph_cache/*png
 
 # C
 # Prerequisites
