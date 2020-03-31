@@ -50,63 +50,81 @@ $privilege_array = make_unique($privilege_array);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-$qc_status_array = array(
-			 "Unchecked", 
-			 "In QC",  
-			 "Complete",
-			 "Failed",
-			 );
-
 $ccd_qc_status_array = array(
+		             " ",
 			     "Unchecked", 
 			     "Science-grade",
 			     "Operation-grade",
+			     "Toy-grade",
 			     "Failed",
 			     );
 
 
 $ccd_type_array = array(
-			"DES",
-			"Skipper",
-			"Unknown",
+			" ",
+			"DES D42",
+			"LBNL Skipper",
+			"DAMIC Skipper",
+			"47/6 Skipper+DES"
 			);
 
+
+$item_packager_array = array(	
+		             " ",
+	                     "UW",
+			     "Modane",
+			     "LBNL",
+                             );
+			     
 $item_location_array = array(
-			     "Chicago",
+		             " ",
+			     "UChicago",
 			     "UW",
 			     "LPNHE",
 			     "Modane",
+			     "PNNL",
+			     "Zurich",
+			     "IFCA",
 			     "Other",
 			     );
 
 $ccd_size_array = array(
+			" ",
                         "4kx2k",
+			"1kx4k",
 			"1kx6k",
-			"6kx6k",
-									                        );
+			"6kx4k",
+			"6kx6k"
+	                );
 ////////////////////////////////////////////////////////////////////////////////////////
 $ccd_parameter_names = array(
-				 "dark_current", 
-				 "e_resolution" 
+				 "Dark_current",
+				 "Resolution",
                                   );
+
+$ccd_parameter_title = array(
+				 "Dark Current",
+                                 "Resolution",
+                                  );
+$ccd_parameter_title = array_combine($ccd_parameter_names, $ccd_parameter_title);
+
 $ccd_parameter_units = array(
 				 "e-/pixel/image",
-				 "e-"
+				 "e-",
 				 );
 $ccd_parameter_units = array_combine($ccd_parameter_names, $ccd_parameter_units);
 
+//$ccd_parameter_targets = array("A" => 1,
+//				   "B" => 1,
+//				   );
 
-$ccd_parameter_targets = array("dark_current" => 1,
-				   "e_resolution" => 1,
-				   );
+//$ccd_parameter_targets_plus = array("A" => 0.01,
+//					"B" => 0.01,
+//					);
 
-$ccd_parameter_targets_plus = array("dark_current" => 0.01,
-					"e_resolution" => 0.01,
-					);
-
-$ccd_parameter_targets_minus = array("dark_current" => 0.01,
-					 "e_resolution" => 0.01,
-					);
+//$ccd_parameter_targets_minus = array("A" => 0.01,
+//					 "B" => 0.01,
+//					);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////

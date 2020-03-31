@@ -10,12 +10,16 @@ include("page_setup.php");
 
 $table = "CCD";
 
+if (!empty($_SESSION['req_id']))
+  $_SESSION['choosen_ccd'] = $_SESSION['req_id'];
+  unset($_SESSION['req_id']); //need to get rid of this var or screws everything up!
+
 if (!empty($_POST['choosen']))
   $_SESSION['choosen_ccd'] = $_POST['choosen'];
-
+  
 if (empty($_SESSION['choosen_ccd']))
   $_SESSION['choosen_ccd'] = 1;
-
+ 
 //////////////////////////////////// New entry:
 
 if (isset($_POST['new']))
@@ -31,8 +35,6 @@ if (isset($_POST['new']))
 }
 
 ////////////////////////////   Goto specific entry:
-
-
 
 if (isset($_POST['first']))
   $_SESSION['choosen_ccd'] = 1;
@@ -81,24 +83,101 @@ if (isset($_POST['id']))
     $_POST['status'] = trim($_POST['status']);
     if (!get_magic_quotes_gpc())
       $_POST['status'] = addslashes($_POST['status']);
-  
-     $_POST['location'] = trim($_POST['location']);
+
+    $_POST['packager'] = trim($_POST['packager']);
+    if (!get_magic_quotes_gpc())
+      $_POST['packager'] = addslashes($_POST['packager']);
+      
+    $_POST['location'] = trim($_POST['location']);
     if (!get_magic_quotes_gpc())
       $_POST['location'] = addslashes($_POST['location']);
+
+    $_POST['delivery'] = trim($_POST['delivery']);
+    if (!get_magic_quotes_gpc())
+      $_POST['delivery'] = addslashes($_POST['delivery']);
+
+    $_POST['wafer_id'] = trim($_POST['wafer_id']);
+    if (!get_magic_quotes_gpc())
+      $_POST['wafer_id'] = addslashes($_POST['wafer_id']);
+
+    $_POST['production_date'] = trim($_POST['production_date']);
+    if (!get_magic_quotes_gpc())
+      $_POST['production_date'] = addslashes($_POST['production_date']);
     
     $_POST['note'] = trim($_POST['note']);
     if (!get_magic_quotes_gpc())
-      $_POST['note'] = addslashes($_POST['note']);  
+      $_POST['note'] = addslashes($_POST['note']);
 
-    $query = "UPDATE `CCD` SET `CCD_Type`=\"".$_POST['ccd_type']."\",`Name`=\"".$_POST['name']."\", `Size`=\"".$_POST['size']."\",`Status`=\"".$_POST['status']."\",  `Location`=\"".$_POST['location']."\", 
-            `Note`=\"".$_POST['note']."\", `Last_update`=".time()."  
-            WHERE `ID` = ".$ccd_id;
+    $_POST['glue_humid'] = trim($_POST['glue_humid']);
+    if (!get_magic_quotes_gpc())
+      $_POST['glue_humid'] = addslashes($_POST['glue_humid']);
+
+    $_POST['glue_temp'] = trim($_POST['glue_temp']);
+    if (!get_magic_quotes_gpc())
+      $_POST['glue_temp'] = addslashes($_POST['glue_temp']);
+
+    $_POST['wb_humid'] = trim($_POST['wb_humid']);
+    if (!get_magic_quotes_gpc())
+      $_POST['wb_humid'] = addslashes($_POST['wb_humid']);
+
+    $_POST['wb_temp'] = trim($_POST['wb_temp']);
+    if (!get_magic_quotes_gpc())
+      $_POST['wb_temp'] = addslashes($_POST['wb_temp']);
+
+    $_POST['wb_power'] = trim($_POST['wb_power']);
+    if (!get_magic_quotes_gpc())
+      $_POST['wb_power'] = addslashes($_POST['wb_power']);
+
+    $_POST['wb_time'] = trim($_POST['wb_time']);
+    if (!get_magic_quotes_gpc())
+      $_POST['wb_time'] = addslashes($_POST['wb_time']);
+
+    $_POST['cable_np'] = trim($_POST['cable_np']);
+    if (!get_magic_quotes_gpc())
+      $_POST['cable_np'] = addslashes($_POST['cable_np']);
+
+    $_POST['jfet_u1'] = trim($_POST['jfet_u1']);
+    if (!get_magic_quotes_gpc())
+      $_POST['jfet_u1'] = addslashes($_POST['jfet_u1']);
+
+    $_POST['jfet_l1'] = trim($_POST['jfet_l1']);
+    if (!get_magic_quotes_gpc())
+      $_POST['jfet_l1'] = addslashes($_POST['jfet_l1']);
+
+    $_POST['jfet_u2'] = trim($_POST['jfet_u2']);
+    if (!get_magic_quotes_gpc())
+      $_POST['jfet_u2'] = addslashes($_POST['jfet_u2']);
+
+    $_POST['jfet_l2'] = trim($_POST['jfet_l2']);
+    if (!get_magic_quotes_gpc())
+      $_POST['jfet_l2'] = addslashes($_POST['jfet_l2']);
+      
+    $_POST['amp_u1'] = trim($_POST['amp_u1']);
+    if (!get_magic_quotes_gpc())
+      $_POST['amp_u1'] = addslashes($_POST['amp_u1']);
+
+    $_POST['amp_l1'] = trim($_POST['amp_l1']);
+    if (!get_magic_quotes_gpc())
+      $_POST['amp_l1'] = addslashes($_POST['amp_l1']);
+
+    $_POST['amp_u2'] = trim($_POST['amp_u2']);
+    if (!get_magic_quotes_gpc())
+      $_POST['amp_u2'] = addslashes($_POST['amp_u2']);
+
+    $_POST['amp_l2'] = trim($_POST['amp_l2']);
+    if (!get_magic_quotes_gpc())
+      $_POST['amp_l2'] = addslashes($_POST['amp_l2']);
+
+    $_POST['defects'] = trim($_POST['defects']);
+    if (!get_magic_quotes_gpc())
+      $_POST['defects'] = addslashes($_POST['defects']);
+      
+    $query = "UPDATE `CCD` SET `CCD_Type`=\"".$_POST['ccd_type']."\",`Name`=\"".$_POST['name']."\", `Size`=\"".$_POST['size']."\",`Status`=\"".$_POST['status']."\",  `Packager`=\"".$_POST['packager']."\", `Location`=\"".$_POST['location']."\", `Delivery_date`=\"".$_POST['delivery']."\", `Wafer_ID`=\"".$_POST['wafer_id']."\",`Production_date`=\"".$_POST['production_date']."\", `Note`=\"".$_POST['note']."\", `Glue_humid`=\"".$_POST['glue_humid']."\", `Glue_temp`=\"".$_POST['glue_temp']."\", `Wb_humid`=\"".$_POST['wb_humid']."\", `Wb_temp`=\"".$_POST['wb_temp']."\",`Wb_power`=\"".$_POST['wb_power']."\",`Wb_time`=\"".$_POST['wb_time']."\", `Cable_np`=\"".$_POST['cable_np']."\", `JFET_U1`=\"".$_POST['jfet_u1']."\", `AMP_U1`=\"".$_POST['amp_u1']."\", `AMP_L1`=\"".$_POST['amp_l1']."\", `JFET_l1`=\"".$_POST['jfet_l1']."\", `JFET_U2`=\"".$_POST['jfet_u2']."\", `JFET_L2`=\"".$_POST['jfet_l2']."\", `AMP_U2`=\"".$_POST['amp_u2']."\", `AMP_L2`=\"".$_POST['amp_l2']."\", `Defects`=\"".$_POST['defects']."\",`Last_update`=".time()." WHERE `ID` = ".$ccd_id;
 
     $result = mysql_query($query);
     if (!$result)
       die ("Could not query the database <br />" . mysql_error());
 
-  
     foreach ($ccd_parameter_names as $parm_name)
       {
 	$update_val = (float)$_POST[$parm_name];
@@ -111,17 +190,13 @@ if (isset($_POST['id']))
       }
   }
 
-
-
-/////////////  Get selected housing values:
+/////////////  Get selected ccd values:
 
 include("aux/get_ccd_vals.php");
 
 mysql_close($connection);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 echo ('<TR>');
@@ -156,7 +231,6 @@ echo ('<BR>');
 echo ('<BR>');
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
- 
 echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
 
 echo ('<TR>');                
@@ -164,13 +238,18 @@ echo ('<TD align="left" colspan = 1>');
 echo ('CCD ID:  '.$id);
 echo ('</TD>');
 
-echo ('<TR>');
 echo ('<TD align="left" colspan = 1>');
 echo ('Name: <input type="text" name="name" value="'.$name.'" size = 10>');
-echo ('</TD>');
 
+echo ('<TD align="left" colspan=1>');
+echo ('Entry Last updated:');
+echo (date("G:i:s  M d, Y", $last_update));
+echo ('</TD>');
+echo ('</TR>');
+
+echo ('<TR>');
 echo ('<TD align="left" colspan = 1>');
-echo ('CCD Type: ');
+echo ('CCD Format: ');
 echo ('<SELECT name="ccd_type">');
 foreach ($ccd_type_array as $index)
 {
@@ -195,27 +274,7 @@ foreach ($ccd_size_array as $index)
 echo ('</SELECT>');
 echo ('</TD>');
 
-echo ('<TD align="left" colspan=1>');
-echo ('Entry Last updated:');
-echo ('<BR>');
-echo (date("G:i:s  M d, y", $last_update));
-echo ('</TD>');
-echo ('</TR>');
-/////////////////////////////////////////////////////////////
-
-foreach ($ccd_parameter_names as $parm_name)
-{
-  echo ('<TR>');               
-  echo ('<TD align="left" colspan = 4>');
-  echo ($parm_name.' = <input type="text" name="'.$parm_name.'" value="'.$parm_values[$parm_name].'" size = 8> ('.$ccd_parameter_units[$parm_name].')');
-  echo ('</TD>');
-  echo ('</TR>');   	
-}
-
-/////////////////////////////////////////////////////////////
- 	    	    
-echo ('<TR>');                
-echo ('<TD align="left"  colspan = 2>');
+echo ('<TD align="left"  colspan = 1>');
 echo ('Status: ');
 echo ('<SELECT name="status">');
 foreach ($ccd_qc_status_array as $index)
@@ -227,8 +286,120 @@ foreach ($ccd_qc_status_array as $index)
 }
 echo ('</SELECT>');
 echo ('</TD>');
+echo ('</TR>');
+echo ('</TABLE>');
+echo ('<BR>');
+echo ('<BR>');
 
+/////////////////////////////////////////////////////////////
+echo('<strong> Origin </strong>');
+echo ('<TABLE border="1" cellpadding="2" width=100%>');
+echo ('<TR>');
+echo ('<TD align="left"  colspan = 1>');
+echo ('Wafer ID: <input type="text" name="wafer_id" value="'.$wafer_id.'" size = 10>');
+echo ('</TD>');
+echo ('<TD align="left"  colspan = 1>');
+echo ('Production Date (MM/YYYY): <input type="text" name="production_date" value="'.$production_date.'" size = 10>');
+echo ('</TD>');
+echo ('</TR>');
+
+echo ('</TABLE>');
+echo ('<BR>');
+echo ('<BR>');
+
+/////////////////////////////////////////////////////////////
+echo('<strong> Packaging </strong>');
+echo ('<TABLE border="1" cellpadding="2" width=100%>');
+echo('</TR>');
+echo ('<TD align="left"  colspan = 1>');
+echo ('Cable connections: ');
+echo ('</TD>');
+echo ('<TD align="left"  colspan = 1>');
+echo ('<input type="hidden" name="cable_np" value="0">');
+echo ('<input type="checkbox" name="cable_np"'); 
+if ($cable_np)
+   echo ('value="1" checked="checked" />');
+else
+   echo ('value="1" />');
+echo (' n+ p+');
+echo ('</TD>');
+
+echo ('<TD align="left"  colspan = 1>');
+echo ('<input type="hidden" name="jfet_u1" value="0">');
+echo ('<input type="checkbox" name="jfet_u1"');
+if ($jfet_u1)
+   echo ('value="1" checked="checked" />');
+else
+   echo ('value="1" />');
+echo (' JFET U1');
+
+echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp');
+echo ('<input type="hidden" name="jfet_l1" value="0">');
+echo ('<input type="checkbox" name="jfet_l1"');
+if ($jfet_l1)
+   echo ('value="1" checked="checked" />');
+else
+   echo ('value="1" />');
+echo (' JFET L1');
+
+echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp');
+echo ('<input type="hidden" name="jfet_u2" value="0">');
+echo ('<input type="checkbox" name="jfet_u2"');
+if ($jfet_u2)
+   echo ('value="1" checked="checked" />');
+else
+   echo ('value="1" />');
+echo (' JFET U2');
+
+echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp');
+echo ('<input type="hidden" name="jfet_l2" value="0">');
+echo ('<input type="checkbox" name="jfet_l2"');
+if ($jfet_l2)
+   echo ('value="1" checked="checked" />');
+else
+   echo ('value="1" />');
+echo (' JFET L2');
+echo ('</TD>');
+echo ('</TR>');
+
+echo('<TR>');
+echo ('<TD align="left"  colspan = 1>');
+echo ('Gluing conditions: ');
+echo ('</TD>');
 echo ('<TD align="left"  colspan = 2>');
+echo ('Rel. Humidity = <input type="text" name="glue_humid" value="'.$glue_humid.'" size = 10> (%)');
+echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Temperature = <input type="text" name="glue_temp" value="'.$glue_temp.'" size = 10> (C)');
+echo ('</TD>');
+echo ('</TR>');
+
+echo ('<TR>');
+echo ('<TD align="left"  colspan = 1>');
+echo ('Wirebonding conditions: ');
+echo ('</TD>');
+echo ('<TD align="left"  colspan = 1>');
+echo ('Rel. Humidity = <input type="text" name="wb_humid" value="'.$wb_humid.'" size = 10> (%)');
+echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Temperature = <input type="text" name="wb_temp" value="'.$wb_temp.'" size = 10> (C)');
+echo ('</TD>');
+echo ('<TD align="left"  colspan = 1>');
+echo ('Bond Power = <input type="text" name="wb_power" value="'.$wb_power.'" size = 10>');
+echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Bond Time = <input type="text" name="wb_time" value="'.$wb_time.'" size = 10> (us)');
+echo ('</TD>');
+echo ('</TR>');
+
+echo ('<TR>');
+echo ('<TD align="left"  colspan = 1>');
+echo ('Packaged by: ');
+echo ('<SELECT name="packager">');
+foreach ($item_packager_array as $index)
+{
+  echo('<option ');
+  if (strcmp($index, $packager)==0)
+    echo ('selected');
+  echo(' value="'.$index.'">  '.$index.'  </option>');
+}
+echo ('</SELECT>');
+echo('</TD>');
+echo ('<TD align="left"  colspan = 1>');
 echo ('Current location: ');
 echo ('<SELECT name="location">');
 foreach ($item_location_array as $index)
@@ -240,29 +411,94 @@ foreach ($item_location_array as $index)
 }
 echo ('</SELECT>');
 echo ('</TD>');
-echo ('</TR>');    
+echo ('<TD align="left"  colspan = 1>');
+echo ('Delivery Date (MM/YYYY): <input type="text" name="delivery" value="'.$delivery.'" size = 10>');
+echo ('</TD>');
+echo ('</TR>');
 
-echo ('<TR>');                  
-echo ('<TD align="left" colspan=4>');
-echo ('Notes:');
+echo ('</TABLE>');
 echo ('<BR>');
-echo ('<TEXTAREA name="note" rows="4" cols="60">');
+echo ('<BR>');
+
+/////////////////////////////////////////////////////////////
+echo('<strong> Testing </strong>');
+echo ('<TABLE border="1" cellpadding="2" width=100%>');
+echo ('<TR>');
+echo ('<TD align="left"  colspan = 3>');
+echo ('Defects: <input type="text" name="defects" value="'.$defects.'" size = 10> (pixel #, pixel #, ...)');
+echo ('</TD>');
+echo ('</TR>'); 
+foreach ($ccd_parameter_names as $parm_name)
+{
+  echo ('<TR>');               
+  echo ('<TD align="left" colspan = 3>');
+  echo ($ccd_parameter_title[$parm_name].' = <input type="text" name="'.$parm_name.'" value="'.$parm_values[$parm_name].'" size = 8> ('.$ccd_parameter_units[$parm_name].')');
+  echo ('</TD>');
+  echo ('</TR>');   	
+}
+echo ('<TR>');
+echo ('<TD align="left" colspan=1>');
+echo ('Functioning amplifers:');
+echo ('<TD align="left"  colspan = 1>');
+echo ('<input type="hidden" name="amp_u1" value="0">');
+echo ('<input type="checkbox" name="amp_u1"');
+if ($amp_u1)
+   echo ('value="1" checked="checked" />');
+else
+   echo ('value="1" />');
+echo (' U1');
+
+echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp');
+echo ('<input type="hidden" name="amp_l1" value="0">');
+echo ('<input type="checkbox" name="amp_l1"');
+if ($amp_l1)
+   echo ('value="1" checked="checked" />');
+else
+   echo ('value="1" />');
+echo (' L1');
+
+echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp');
+echo ('<input type="hidden" name="amp_u2" value="0">');
+echo ('<input type="checkbox" name="amp_u2"');
+if ($amp_u2)
+   echo ('value="1" checked="checked" />');
+else
+   echo ('value="1" />');
+echo (' U2');
+
+echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp');
+echo ('<input type="hidden" name="amp_l2" value="0">');
+echo ('<input type="checkbox" name="amp_l2"');
+if ($amp_l2)
+   echo ('value="1" checked="checked" />');
+else
+   echo ('value="1" />');
+echo (' L2');
+echo ('</TD>');
+echo ('</TR>');
+echo('</TABLE>');
+echo ('<BR>');
+echo ('<BR>');
+/////////////////////////////////////////////////////////////
+echo ('<TABLE border="1" cellpadding="2" width=100%>'); 	    	    
+echo ('<TR>');                  
+echo ('<TD align="left" colspan=3>');
+echo ('<strong> Notes </strong> <i>(MM/DD/YY initials:)</i>:');
+echo ('<BR>');
+echo ('<TEXTAREA name="note" rows="8" cols="75">');
 echo ($note);
 echo ('</TEXTAREA>');
 echo ('<BR>');
 echo ('</TD>');
 echo ('</TR>');
-
-
 echo ('<TR>');                   
 echo ('<TD align="center" colspan=4>');
 echo ('<input type="hidden" name="id" value="'.$id.'">');
 echo ('<input type="submit" name="void" value="submit">');
 echo ('</TD>');
 echo ('</TR>');
+
 echo ('</FORM>');
-
-
 echo ('</TABLE>');
 
 echo ('</body>');
