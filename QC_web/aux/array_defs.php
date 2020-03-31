@@ -100,17 +100,20 @@ $ccd_size_array = array(
 $ccd_parameter_names = array(
 				 "Dark_current",
 				 "Resolution",
+				 "Eff_resistivity",
                                   );
 
 $ccd_parameter_title = array(
 				 "Dark Current",
                                  "Resolution",
+				 "Effective Resistivity",
                                   );
 $ccd_parameter_title = array_combine($ccd_parameter_names, $ccd_parameter_title);
 
 $ccd_parameter_units = array(
 				 "e-/pixel/image",
 				 "e-",
+				 "kOhm-cm",
 				 );
 $ccd_parameter_units = array_combine($ccd_parameter_names, $ccd_parameter_units);
 

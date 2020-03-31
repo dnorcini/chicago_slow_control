@@ -171,8 +171,12 @@ if (isset($_POST['id']))
     $_POST['defects'] = trim($_POST['defects']);
     if (!get_magic_quotes_gpc())
       $_POST['defects'] = addslashes($_POST['defects']);
+
+    $_POST['defects_detail'] = trim($_POST['defects_detail']);
+    if (!get_magic_quotes_gpc())
+      $_POST['defects_detail'] = addslashes($_POST['defects_detail']);
       
-    $query = "UPDATE `CCD` SET `CCD_Type`=\"".$_POST['ccd_type']."\",`Name`=\"".$_POST['name']."\", `Size`=\"".$_POST['size']."\",`Status`=\"".$_POST['status']."\",  `Packager`=\"".$_POST['packager']."\", `Location`=\"".$_POST['location']."\", `Delivery_date`=\"".$_POST['delivery']."\", `Wafer_ID`=\"".$_POST['wafer_id']."\",`Production_date`=\"".$_POST['production_date']."\", `Note`=\"".$_POST['note']."\", `Glue_humid`=\"".$_POST['glue_humid']."\", `Glue_temp`=\"".$_POST['glue_temp']."\", `Wb_humid`=\"".$_POST['wb_humid']."\", `Wb_temp`=\"".$_POST['wb_temp']."\",`Wb_power`=\"".$_POST['wb_power']."\",`Wb_time`=\"".$_POST['wb_time']."\", `Cable_np`=\"".$_POST['cable_np']."\", `JFET_U1`=\"".$_POST['jfet_u1']."\", `AMP_U1`=\"".$_POST['amp_u1']."\", `AMP_L1`=\"".$_POST['amp_l1']."\", `JFET_l1`=\"".$_POST['jfet_l1']."\", `JFET_U2`=\"".$_POST['jfet_u2']."\", `JFET_L2`=\"".$_POST['jfet_l2']."\", `AMP_U2`=\"".$_POST['amp_u2']."\", `AMP_L2`=\"".$_POST['amp_l2']."\", `Defects`=\"".$_POST['defects']."\",`Last_update`=".time()." WHERE `ID` = ".$ccd_id;
+    $query = "UPDATE `CCD` SET `CCD_Type`=\"".$_POST['ccd_type']."\",`Name`=\"".$_POST['name']."\", `Size`=\"".$_POST['size']."\",`Status`=\"".$_POST['status']."\",  `Packager`=\"".$_POST['packager']."\", `Location`=\"".$_POST['location']."\", `Delivery_date`=\"".$_POST['delivery']."\", `Wafer_ID`=\"".$_POST['wafer_id']."\",`Production_date`=\"".$_POST['production_date']."\", `Note`=\"".$_POST['note']."\", `Glue_humid`=\"".$_POST['glue_humid']."\", `Glue_temp`=\"".$_POST['glue_temp']."\", `Wb_humid`=\"".$_POST['wb_humid']."\", `Wb_temp`=\"".$_POST['wb_temp']."\",`Wb_power`=\"".$_POST['wb_power']."\",`Wb_time`=\"".$_POST['wb_time']."\", `Cable_np`=\"".$_POST['cable_np']."\", `JFET_U1`=\"".$_POST['jfet_u1']."\", `AMP_U1`=\"".$_POST['amp_u1']."\", `AMP_L1`=\"".$_POST['amp_l1']."\", `JFET_l1`=\"".$_POST['jfet_l1']."\", `JFET_U2`=\"".$_POST['jfet_u2']."\", `JFET_L2`=\"".$_POST['jfet_l2']."\", `AMP_U2`=\"".$_POST['amp_u2']."\", `AMP_L2`=\"".$_POST['amp_l2']."\", `Defects`=\"".$_POST['defects']."\", `Defects_detail`=\"".$_POST['defects_detail']."\", `Last_update`=".time()." WHERE `ID` = ".$ccd_id;
 
     $result = mysql_query($query);
     if (!$result)
@@ -424,8 +428,11 @@ echo ('<BR>');
 echo('<strong> Testing </strong>');
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 echo ('<TR>');
-echo ('<TD align="left"  colspan = 3>');
-echo ('Defects: <input type="text" name="defects" value="'.$defects.'" size = 10> (pixel #, pixel #, ...)');
+echo ('<TD align="left"  colspan = 1>');
+echo ('Defects: <input type="text" name="defects" value="'.$defects.'" size = 10> (row, col; row, col; ...)');
+echo ('</TD>');
+echo ('<TD align="left"  colspan = 2>');
+echo ('Details: <input type="text" name="defects_detail" value="'.$defects_detail.'" size=70>');
 echo ('</TD>');
 echo ('</TR>'); 
 foreach ($ccd_parameter_names as $parm_name)

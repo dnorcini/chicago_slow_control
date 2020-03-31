@@ -164,10 +164,16 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
       $defects = $row['Defects'];
     else
       $defects = 0;
+
+    if (isset($row['Defects_detail']))
+      $defects_detail = $row['Defects_detail'];
+    else
+      $defects_detail = "";
  }
 
 
 $parm_values = array_combine($ccd_parameter_names, $parm_values);
 $dark_current = $parm_values["Dark_current"];
 $resolution = $parm_values["Resolution"];
+$eff_resistivity = $parm_values["Eff_resistivity"];
 ?>
