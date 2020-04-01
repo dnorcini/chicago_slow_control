@@ -37,6 +37,9 @@ echo ('</TABLE>');
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 
+//ADD ALL PARAMETERS TO SAME ARRAY
+$ccd_parameter_names = array_merge($glue_parameter_names, $wb_parameter_names, $testing_parameter_names);
+
 if ($_SESSION['choose_type'] == "CCDs")
   {
     foreach ($ccd_parameter_names as $parm_name)
@@ -77,7 +80,7 @@ if ($_SESSION['choose_type'] == "CCDs")
 
 	$plot_name = "jpgraph_cache/ccdplot_".$parm_name."_hist.png";
 	make_data_hist($plot_name, $ccd_id, $value, $plot_title, "CCD ID",
-		       $parm_name." (".$pmt_parameter_units[$parm_name].")", 
+		       $parm_name." (".$ccd_parameter_units[$parm_name].")", 
 		       $ccd_parameter_targets[$parm_name],
 		       $ccd_parameter_targets_plus[$parm_name],
 		       $ccd_parameter_targets_minus[$parm_name]);
