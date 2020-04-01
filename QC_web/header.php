@@ -3,6 +3,10 @@
 // James Nikkel, Yale University, 2016
 // james.nikkel@yale.edu
 //
+// added scatter plot function
+// D.Norcini, UChicago, 2020
+//
+
 echo('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
 
 ////////////////   Check login info
@@ -40,6 +44,15 @@ if (strpos($_SERVER['PHP_SELF'], "plot_entries.php") === false)
     }
 }
 
+if (strpos($_SERVER['PHP_SELF'], "scatter_entries.php") === false)
+{
+    if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
+    {
+        echo('<TH>');
+     	echo('<A HREF="scatter_entries.php">Scatter</A>');
+	echo('</TH>');
+    }
+}
 
 if (strpos($_SERVER['PHP_SELF'], "list_entries.php") === false)
 {

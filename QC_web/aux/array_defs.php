@@ -96,26 +96,78 @@ $ccd_size_array = array(
 			"6kx4k",
 			"6kx6k"
 	                );
+
 ////////////////////////////////////////////////////////////////////////////////////////
-$ccd_parameter_names = array(
+$glue_parameter_names = array(
+				 "Glue_humid",
+				 "Glue_temp",
+				 "Glue_radon",
+                                  );
+
+$glue_parameter_title = array(
+				 "Rel. Humidity",
+                                 "Temperature",
+				 "Radon",
+                                  );
+$glue_parameter_title = array_combine($glue_parameter_names, $glue_parameter_title);
+
+$glue_parameter_units = array(
+				 "%",
+				 "C",
+				 "Bq/m^3",
+				 );
+$glue_parameter_units = array_combine($glue_parameter_names, $glue_parameter_units);
+
+////////////////////////////////////////////////////////////////////////////////////////
+$wb_parameter_names = array(
+				 "Wb_humid",
+				 "Wb_temp",
+				 "Wb_radon",
+				 "Wb_power",
+				 "Wb_time",
+                                  );
+
+$wb_parameter_title = array(
+				 "Rel. Humidity",
+                                 "Temperature",
+				 "Radon",
+				 "Bond Power",
+				 "Bond Time",
+                                  );
+$wb_parameter_title = array_combine($wb_parameter_names, $wb_parameter_title);
+
+$wb_parameter_units = array(
+				 "%",
+				 "C",
+				 "Bq/m^3",
+				 "%",
+				 "us"
+				 );
+$wb_parameter_units = array_combine($wb_parameter_names, $wb_parameter_units);
+
+////////////////////////////////////////////////////////////////////////////////////////
+$testing_parameter_names = array(
 				 "Dark_current",
 				 "Resolution",
 				 "Eff_resistivity",
                                   );
 
-$ccd_parameter_title = array(
+$testing_parameter_title = array(
 				 "Dark Current",
                                  "Resolution",
 				 "Effective Resistivity",
                                   );
-$ccd_parameter_title = array_combine($ccd_parameter_names, $ccd_parameter_title);
+$testing_parameter_title = array_combine($testing_parameter_names, $testing_parameter_title);
 
-$ccd_parameter_units = array(
+$testing_parameter_units = array(
 				 "e-/pixel/image",
 				 "e-",
 				 "kOhm-cm",
 				 );
-$ccd_parameter_units = array_combine($ccd_parameter_names, $ccd_parameter_units);
+$testing_parameter_units = array_combine($testing_parameter_names, $testing_parameter_units);
+
+
+////////////////////////////////////////////////////////////////////////////////////////
 
 //$ccd_parameter_targets = array("A" => 1,
 //				   "B" => 1,

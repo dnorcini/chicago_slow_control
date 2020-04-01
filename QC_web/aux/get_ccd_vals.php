@@ -12,17 +12,34 @@ $result = mysql_query($query);
 if (!$result)
   die ("Could not query the database <br />" . mysql_error());
 
-$parm_values = array();
+$glue_parm_values = array();
+$wb_parm_values = array();
+$testing_parm_values = array();
 
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
   {
-   
-    foreach ($ccd_parameter_names as $parm_name)
+    foreach ($glue_parameter_names as $glue_parm_name)
       {
-	if (isset($row[$parm_name]))
-	  $parm_values[] = (double)$row[$parm_name];
+    	if (isset($row[$glue_parm_name]))
+    	  $glue_parm_values[] = (double)$row[$glue_parm_name];
+    	else
+    	  $glue_parm_values[] = NULL;
+      }
+
+    foreach ($wb_parameter_names as $wb_parm_name)
+      {
+    	if (isset($row[$wb_parm_name]))
+    	  $wb_parm_values[] = (double)$row[$wb_parm_name];
+    	else
+    	  $wb_parm_values[] = NULL;
+      }
+   
+    foreach ($testing_parameter_names as $testing_parm_name)
+      {
+	if (isset($row[$testing_parm_name]))
+	  $testing_parm_values[] = (double)$row[$testing_parm_name];
 	else
-	  $parm_values[] = NULL;
+	  $testing_parm_values[] = NULL;
       }
 
     if (isset($row['ID']))
@@ -85,25 +102,25 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
     else
       $last_update = 0;    
 
-    if (isset($row['Glue_humid']))
-      $glue_humid = (double)$row['Glue_humid'];
-    else
-      $glue_humid = 0;
+    /* if (isset($row['Glue_humid'])) */
+    /*   $glue_humid = (double)$row['Glue_humid']; */
+    /* else */
+    /*   $glue_humid = 0; */
 
-    if (isset($row['Glue_temp']))
-      $glue_temp = (double)$row['Glue_temp'];
-    else
-      $glue_temp = 0;
+    /* if (isset($row['Glue_temp'])) */
+    /*   $glue_temp = (double)$row['Glue_temp']; */
+    /* else */
+    /*   $glue_temp = 0; */
 
-    if (isset($row['Wb_humid']))
-      $wb_humid = (double)$row['Wb_humid'];
-    else
-      $wb_humid = 0;
+    /* if (isset($row['Wb_humid'])) */
+    /*   $wb_humid = (double)$row['Wb_humid']; */
+    /* else */
+    /*   $wb_humid = 0; */
 
-    if (isset($row['Wb_temp']))
-      $wb_temp = (double)$row['Wb_temp'];
-    else
-      $wb_temp = 0;
+    /* if (isset($row['Wb_temp'])) */
+    /*   $wb_temp = (double)$row['Wb_temp']; */
+    /* else */
+    /*   $wb_temp = 0; */
 
     if (isset($row['Wb_power']))
       $wb_power = (double)$row['Wb_power'];
@@ -172,8 +189,20 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
  }
 
 
-$parm_values = array_combine($ccd_parameter_names, $parm_values);
-$dark_current = $parm_values["Dark_current"];
-$resolution = $parm_values["Resolution"];
-$eff_resistivity = $parm_values["Eff_resistivity"];
+$glue_parm_values = array_combine($glue_parameter_names, $glue_parm_values);
+$glue_humid = $glue_parm_values["Glue_humid"];
+$glue_temp = $glue_parm_values["Glue_temp"];
+$glue_radon = $glue_parm_values["Glue_radon"];
+
+$wb_parm_values = array_combine($wb_parameter_names, $wb_parm_values);
+$wb_humid = $wb_parm_values["Wb_humid"];
+$wb_temp = $wb_parm_values["Wb_temp"];
+$wb_radon = $wb_parm_values["Wb_radon"];
+$wb_power = $wb_parm_values["Wb_power"];
+$wb_time = $wb_parm_values["Wb_time"];
+
+$testing_parm_values = array_combine($testing_parameter_names, $testing_parm_values);
+$dark_current = $testing_parm_values["Dark_current"];
+$resolution = $testing_parm_values["Resolution"];
+$eff_resistivity = $testing_parm_values["Eff_resistivity"];
 ?>
