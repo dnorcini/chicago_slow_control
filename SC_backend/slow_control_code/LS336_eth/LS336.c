@@ -33,7 +33,8 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
       my_signal = SIGTERM;
       return(1);
     }
-
+  
+  
   sprintf(cmd_string, "++mode 1\n");
   write_tcp(inst_dev, cmd_string, strlen(cmd_string));
   msleep(200);
@@ -59,7 +60,6 @@ void clean_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
   close(inst_dev);
 }
 
-
 #define _def_read_sensor
 int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_out)
 {
@@ -72,7 +72,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
   double     P_percent;
 
 
-  if (strncmp(s_s->subtype, "Temp", 1) == 0)  // Read out value for temperature from A or B.
+  if (strncmp(s_s->subtype, "Temp", 4) == 0)  // Read out value for temperature from A or B.
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct sensor number
 	{
@@ -90,7 +90,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	  return(1);
 	}	
     }
-  else if (strncmp(s_s->subtype, "Heater", 1) == 0) // Read out heater power.
+  else if (strncmp(s_s->subtype, "Heater", 6) == 0) // Read out heater power.
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
 	{
@@ -108,7 +108,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	  return(1);
 	}	
     }
-  else if (strncmp(s_s->subtype, "Setpoint", 1) == 0) //Queries the setpoint 
+  else if (strncmp(s_s->subtype, "Setpoint", 8) == 0) //Queries the setpoint 
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
 	{
@@ -126,7 +126,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	  return(1);
 	}	
     }
-  else if (strncmp(s_s->subtype, "Ramprate", 1) == 0) //Queries the setpoint
+  else if (strncmp(s_s->subtype, "Ramprate", 8) == 0) //Queries the ramprate
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
         {
@@ -153,7 +153,6 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 
   return(0);
 }
-
 
 #define _def_set_sensor
 int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
@@ -246,6 +245,5 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
   return(0);
 }
-
 
 #include "main.h"
