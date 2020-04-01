@@ -108,30 +108,6 @@ if (isset($_POST['id']))
     if (!get_magic_quotes_gpc())
       $_POST['note'] = addslashes($_POST['note']);
 
-    $_POST['glue_humid'] = trim($_POST['glue_humid']);
-    if (!get_magic_quotes_gpc())
-      $_POST['glue_humid'] = addslashes($_POST['glue_humid']);
-
-    $_POST['glue_temp'] = trim($_POST['glue_temp']);
-    if (!get_magic_quotes_gpc())
-      $_POST['glue_temp'] = addslashes($_POST['glue_temp']);
-
-    $_POST['wb_humid'] = trim($_POST['wb_humid']);
-    if (!get_magic_quotes_gpc())
-      $_POST['wb_humid'] = addslashes($_POST['wb_humid']);
-
-    $_POST['wb_temp'] = trim($_POST['wb_temp']);
-    if (!get_magic_quotes_gpc())
-      $_POST['wb_temp'] = addslashes($_POST['wb_temp']);
-
-    $_POST['wb_power'] = trim($_POST['wb_power']);
-    if (!get_magic_quotes_gpc())
-      $_POST['wb_power'] = addslashes($_POST['wb_power']);
-
-    $_POST['wb_time'] = trim($_POST['wb_time']);
-    if (!get_magic_quotes_gpc())
-      $_POST['wb_time'] = addslashes($_POST['wb_time']);
-
     $_POST['cable_np'] = trim($_POST['cable_np']);
     if (!get_magic_quotes_gpc())
       $_POST['cable_np'] = addslashes($_POST['cable_np']);
@@ -176,17 +152,39 @@ if (isset($_POST['id']))
     if (!get_magic_quotes_gpc())
       $_POST['defects_detail'] = addslashes($_POST['defects_detail']);
       
-    $query = "UPDATE `CCD` SET `CCD_Type`=\"".$_POST['ccd_type']."\",`Name`=\"".$_POST['name']."\", `Size`=\"".$_POST['size']."\",`Status`=\"".$_POST['status']."\",  `Packager`=\"".$_POST['packager']."\", `Location`=\"".$_POST['location']."\", `Delivery_date`=\"".$_POST['delivery']."\", `Wafer_ID`=\"".$_POST['wafer_id']."\",`Production_date`=\"".$_POST['production_date']."\", `Note`=\"".$_POST['note']."\", `Glue_humid`=\"".$_POST['glue_humid']."\", `Glue_temp`=\"".$_POST['glue_temp']."\", `Wb_humid`=\"".$_POST['wb_humid']."\", `Wb_temp`=\"".$_POST['wb_temp']."\",`Wb_power`=\"".$_POST['wb_power']."\",`Wb_time`=\"".$_POST['wb_time']."\", `Cable_np`=\"".$_POST['cable_np']."\", `JFET_U1`=\"".$_POST['jfet_u1']."\", `AMP_U1`=\"".$_POST['amp_u1']."\", `AMP_L1`=\"".$_POST['amp_l1']."\", `JFET_l1`=\"".$_POST['jfet_l1']."\", `JFET_U2`=\"".$_POST['jfet_u2']."\", `JFET_L2`=\"".$_POST['jfet_l2']."\", `AMP_U2`=\"".$_POST['amp_u2']."\", `AMP_L2`=\"".$_POST['amp_l2']."\", `Defects`=\"".$_POST['defects']."\", `Defects_detail`=\"".$_POST['defects_detail']."\", `Last_update`=".time()." WHERE `ID` = ".$ccd_id;
+    $query = "UPDATE `CCD` SET `CCD_Type`=\"".$_POST['ccd_type']."\",`Name`=\"".$_POST['name']."\", `Size`=\"".$_POST['size']."\",`Status`=\"".$_POST['status']."\",  `Packager`=\"".$_POST['packager']."\", `Location`=\"".$_POST['location']."\", `Delivery_date`=\"".$_POST['delivery']."\", `Wafer_ID`=\"".$_POST['wafer_id']."\",`Production_date`=\"".$_POST['production_date']."\", `Note`=\"".$_POST['note']."\", `Cable_np`=\"".$_POST['cable_np']."\", `JFET_U1`=\"".$_POST['jfet_u1']."\", `AMP_U1`=\"".$_POST['amp_u1']."\", `AMP_L1`=\"".$_POST['amp_l1']."\", `JFET_l1`=\"".$_POST['jfet_l1']."\", `JFET_U2`=\"".$_POST['jfet_u2']."\", `JFET_L2`=\"".$_POST['jfet_l2']."\", `AMP_U2`=\"".$_POST['amp_u2']."\", `AMP_L2`=\"".$_POST['amp_l2']."\", `Defects`=\"".$_POST['defects']."\", `Defects_detail`=\"".$_POST['defects_detail']."\", `Last_update`=".time()." WHERE `ID` = ".$ccd_id;
 
     $result = mysql_query($query);
     if (!$result)
       die ("Could not query the database <br />" . mysql_error());
 
-    foreach ($ccd_parameter_names as $parm_name)
+    foreach ($glue_parameter_names as $glue_parm_name)
       {
-	$update_val = (float)$_POST[$parm_name];
+    	$update_val = (float)$_POST[$glue_parm_name];
 	
-	$query = "UPDATE `CCD` SET `".$parm_name."`=\"".$update_val."\" WHERE `ID` = ".$ccd_id;	
+    	$query = "UPDATE `CCD` SET `".$glue_parm_name."`=\"".$update_val."\" WHERE `ID` = ".$ccd_id;
+
+    	$result = mysql_query($query);
+    	if (!$result)
+    	  die ("Could not query the database <br />" . mysql_error());
+      }
+
+    foreach ($wb_parameter_names as $wb_parm_name)
+      {
+    	$update_val = (float)$_POST[$wb_parm_name];
+	
+    	$query = "UPDATE `CCD` SET `".$wb_parm_name."`=\"".$update_val."\" WHERE `ID` = ".$ccd_id;
+
+    	$result = mysql_query($query);
+    	if (!$result)
+    	  die ("Could not query the database <br />" . mysql_error());
+      }
+	
+    foreach ($testing_parameter_names as $testing_parm_name)
+      {
+	$update_val = (float)$_POST[$testing_parm_name];
+	
+	$query = "UPDATE `CCD` SET `".$testing_parm_name."`=\"".$update_val."\" WHERE `ID` = ".$ccd_id;	
 
 	$result = mysql_query($query);
 	if (!$result)
@@ -370,23 +368,25 @@ echo('<TR>');
 echo ('<TD align="left"  colspan = 1>');
 echo ('Gluing conditions: ');
 echo ('</TD>');
-echo ('<TD align="left"  colspan = 2>');
-echo ('Rel. Humidity = <input type="text" name="glue_humid" value="'.$glue_humid.'" size = 10> (%)');
-echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Temperature = <input type="text" name="glue_temp" value="'.$glue_temp.'" size = 10> (C)');
+echo ('<TD align="left" colspan = 2>');
+foreach ($glue_parameter_names as $glue_parm_name)
+{
+  echo ($glue_parameter_title[$glue_parm_name].' = <input type="text" name="'.$glue_parm_name.'" value="'.$glue_parm_values[$glue_parm_name].'" size = 8> ('.$glue_parameter_units[$glue_parm_name].')');
+  echo ('&nbsp &nbsp &nbsp');	
+}
 echo ('</TD>');
-echo ('</TR>');
+echo ('</TR>');   
 
 echo ('<TR>');
 echo ('<TD align="left"  colspan = 1>');
 echo ('Wirebonding conditions: ');
 echo ('</TD>');
-echo ('<TD align="left"  colspan = 1>');
-echo ('Rel. Humidity = <input type="text" name="wb_humid" value="'.$wb_humid.'" size = 10> (%)');
-echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Temperature = <input type="text" name="wb_temp" value="'.$wb_temp.'" size = 10> (C)');
-echo ('</TD>');
-echo ('<TD align="left"  colspan = 1>');
-echo ('Bond Power = <input type="text" name="wb_power" value="'.$wb_power.'" size = 10>');
-echo ('&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Bond Time = <input type="text" name="wb_time" value="'.$wb_time.'" size = 10> (us)');
+echo ('<TD align="left" colspan = 2>');
+foreach ($wb_parameter_names as $wb_parm_name)
+{
+  echo ($wb_parameter_title[$wb_parm_name].' = <input type="text" name="'.$wb_parm_name.'" value="'.$wb_parm_values[$wb_parm_name].'" size = 8> ('.$wb_parameter_units[$wb_parm_name].')');
+  echo ('&nbsp &nbsp &nbsp');	
+}
 echo ('</TD>');
 echo ('</TR>');
 
@@ -435,11 +435,11 @@ echo ('<TD align="left"  colspan = 2>');
 echo ('Details: <input type="text" name="defects_detail" value="'.$defects_detail.'" size=70>');
 echo ('</TD>');
 echo ('</TR>'); 
-foreach ($ccd_parameter_names as $parm_name)
+foreach ($testing_parameter_names as $testing_parm_name)
 {
   echo ('<TR>');               
   echo ('<TD align="left" colspan = 3>');
-  echo ($ccd_parameter_title[$parm_name].' = <input type="text" name="'.$parm_name.'" value="'.$parm_values[$parm_name].'" size = 8> ('.$ccd_parameter_units[$parm_name].')');
+  echo ($testing_parameter_title[$testing_parm_name].' = <input type="text" name="'.$testing_parm_name.'" value="'.$testing_parm_values[$testing_parm_name].'" size = 8> ('.$testing_parameter_units[$testing_parm_name].')');
   echo ('</TD>');
   echo ('</TR>');   	
 }
