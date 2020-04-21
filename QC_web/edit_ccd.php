@@ -429,7 +429,7 @@ echo('<strong> Testing </strong>');
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 echo ('<TR>');
 echo ('<TD align="left"  colspan = 1>');
-echo ('Defects: <input type="text" name="defects" value="'.$defects.'" size = 10> (row, col; row, col; ...)');
+echo ('Defects: <input type="text" name="defects" value="'.$defects.'" size=50> (row, col; row, col; ...)');
 echo ('</TD>');
 echo ('<TD align="left"  colspan = 2>');
 echo ('Details: <input type="text" name="defects_detail" value="'.$defects_detail.'" size=70>');
