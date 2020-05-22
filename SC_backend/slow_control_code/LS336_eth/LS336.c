@@ -90,6 +90,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	  return(1);
 	}	
     }
+
   else if (strncmp(s_s->subtype, "Heater", 6) == 0) // Read out heater power.
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
@@ -108,6 +109,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	  return(1);
 	}	
     }
+
   else if (strncmp(s_s->subtype, "Setpoint", 8) == 0) //Queries the setpoint 
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
@@ -126,6 +128,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	  return(1);
 	}	
     }
+
   else if (strncmp(s_s->subtype, "Ramprate", 8) == 0) //Queries the ramprate
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
@@ -138,6 +141,8 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 
+      memmove(&ret_string[0], &ret_string[0]+2, sizeof(ret_string)-2); // output in n,+nnn (on/off,value)
+      
       if(sscanf(ret_string, "%lf", val_out) != 1)
         {
           fprintf(stderr, "Bad return string: \"%s\" in read ramprate!\n", ret_string);
@@ -161,7 +166,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
   char       ret_string[64];
   double     ret_val;
 
-  if (strncmp(s_s->subtype, "Setpoint", 8) == 0)  // Set the control loop setpoint
+  if (strncmp(s_s->subtype, "Setsetpoint", 11) == 0)  // Set the control loop setpoint
     {
       if (s_s->new_set_val < 0 ) // check valid value for Temp (>0)
 	{
@@ -199,7 +204,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 	  }
     }
 
-  else if (strncmp(s_s->subtype, "Ramprate", 8) == 0)  // Set the control loop ramprate
+  else if (strncmp(s_s->subtype, "Setramprate", 11) == 0)  // Set the control loop ramprate
     {
       if (s_s->new_set_val < 0 ) // check valid value for Ramp (>0)
 	{
@@ -213,7 +218,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 	  return(1);
 	}
     
-      sprintf(cmd_string, "RAMP %d,%f\n", s_s->num, s_s->new_set_val);
+      sprintf(cmd_string, "RAMP %d,1,%f\n", s_s->num, s_s->new_set_val);
     
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
@@ -223,6 +228,8 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 
+      memmove(&ret_string[0], &ret_string[0]+2, sizeof(ret_string)-2); // output in n,+nnn (on/off,value)
+	    
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
 	{
 	  fprintf(stderr, "Bad return string: \"%s\" in read ramprate!\n", ret_string);
@@ -237,6 +244,41 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 	  }
     }
 
+  else if (strncmp(s_s->subtype, "Heateronoff", 11) == 0)  // Set the heater on/off
+    {
+      if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
+        {
+          fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+          return(1);
+        }
+      
+      sprintf(cmd_string, "RANGE %d,%i\n", s_s->num, (int)s_s->new_set_val);
+      fprintf(stdout, "%s\n", cmd_string);
+	    
+      write_tcp(inst_dev, cmd_string, strlen(cmd_string));
+      sleep(1);
+
+      sprintf(cmd_string, "RANGE? %i\n", s_s->num); //queries control loop on/off
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      msleep(200);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+      fprintf(stdout, "Heater status: %s\n", ret_string);
+      
+      if(sscanf(ret_string, "%lf", &ret_val) != 1)
+        {
+          fprintf(stderr, "Bad return string: \"%s\" in read heater onoff!\n", ret_string);
+          return(1);
+        }
+
+      if (s_s->new_set_val != 0)
+        if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
+          {
+            fprintf(stderr, "New setpoint of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
+            return(1);
+          }
+    }
+   
   else       // Print an error if invalid subtype is entered
     {
       fprintf(stderr, "Wrong type for %s \n", s_s->name);
