@@ -31,11 +31,16 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
   sprintf(cmd_string, "*CLS\n");
   write_tcp(inst_dev, cmd_string, strlen(cmd_string));
   msleep(200);
+
   
   sprintf(cmd_string, "SYST:INT RS232\n");
   write_tcp(inst_dev, cmd_string, strlen(cmd_string));
   msleep(200);
-  
+
+  //sprintf(cmd_string, "SYST:REM\n");
+  //write_tcp(inst_dev, cmd_string, strlen(cmd_string));
+  //msleep(200);
+
   return(0);
 }
 
