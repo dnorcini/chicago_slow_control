@@ -21,7 +21,6 @@
 #define INSTNAME "HiCube80"
 
 int inst_dev;
-int comm_type = -1;
 
 #define _def_set_up_inst
 int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s)  
@@ -52,47 +51,37 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
   char       cmd_string[64];
   char       ret_string[64];                      
 
-
   if (strncmp(s_s->subtype, "actualspd", 9) == 0)  // Read out value for Actual Rotation Speed(Hz)
     {
-      sprintf(cmd_string, "0010030802=?106", int_to_Letter(s_s->num));
+      
+      sprintf(cmd_string, "0010030902=?107\r");
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
-      
+
+      // output in 001030906000000000
+      int data_length = ret_string[9]-'0'; //C convert char to int
+      memmove(&ret_string[0], &ret_string[0]+10, sizeof(ret_string)-10);
+      memmove(&ret_string[0]+data_length, &ret_string[-1], sizeof(ret_string)-data_length); 
+
       if(sscanf(ret_string, "%lf", val_out) != 1)
 	{
 	  fprintf(stderr, "Bad return string: \"%s\" in read rotation speed!\n", ret_string);
 	  return(1);
 	}	
     }
-
-  /*
-  else if (strncmp(s_s->subtype, "setrotspd", 9) == 0)  // Read out value for Set Rotation Speed(Hz)
-    {
-      sprintf(cmd_string, "P:308", int_to_Letter(s_s->num));
-      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
-      msleep(200);
-      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
-      
-      if(sscanf(ret_string, "%lf", val_out) != 1)
-	{
-	  fprintf(stderr, "Bad return string: \"%s\" in read set rotation speed!\n", ret_string);
-	  return(1);
-	}	
-    }
-  */
+  
   else       // Print an error if invalid subtype is entered
     {
       fprintf(stderr, "Wrong type for %s \n", s_s->name);
       return(1);
     } 
   msleep(600);
-
+ 
   return(0);
 }
 
-/*
+
 #define _def_set_sensor
 int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 {
@@ -100,23 +89,126 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
   char       ret_string[64];
   double     ret_val;
 
-  if (strncmp(s_s->subtype, "pumpgstatn", 10) == 0)  // Switch on the pumping station
+  /*
+  if (strncmp(s_s->subtype, "setrotspd", 9) == 0)  // set rotation speed
     {
-    
-      sprintf(cmd_string, "P:010", s_s->num, s_s->new_set_val);
-    
+      //should write a more general funcion, later...
+      char set_data[10]; //convert new_set_val to char array with leading zeroes
+      memset (set_data, 0, sizeof(set_data));
+      snprintf(set_data, sizeof(set_data)-1, "%06d", (int)s_s->new_set_val); //%06d does the padding
+
+      char checksum[6];
+      int sum = (48*4) + (49*2) + 51 + 56;  //start with values we know in telegram
+      for (int i = 0; i < 6; i++) {
+	sum += ((set_data[i] - '0') + 48); //convert to int, then ASCII value
+	fprintf(stdout, "data: %c, sum: %i", set_data[i], sum );
+      }
+      sum %= 256;
+      memset (checksum, 0, sizeof(checksum));
+      snprintf(checksum, sizeof(checksum)-1, "%03d", sum); //%03d does the padding
+      
+      sprintf(cmd_string, "00110308%s%s\r", set_data, checksum);
+
+      fprintf(stdout, "command: %s\n", cmd_string);
+     
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
 
+      sprintf(cmd_string, "0010030802=?106\r"); //queries control loop setpoint
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      msleep(200);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+      // output in 001030806000000000
+      int data_length = ret_string[9]-'0'; //C convert char to int
+      //memmove(&ret_string[0], &ret_string[0]+10, sizeof(ret_string)-10);
+      //memmove(&ret_string[0]+data_length, &ret_string[-1], sizeof(ret_string)-data_length);
+
+      fprintf(stdout, "return: %s\n", ret_string);
+	    
+      if(sscanf(ret_string, "%lf", &ret_val) != 1)
+        {
+          fprintf(stderr, "Bad return string: \"%s\" in switch pump on/off!\n", ret_string);
+          return(1);
+        }
+
+      if (s_s->new_set_val != 0)
+        if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
+          {
+            fprintf(stderr, "New setpoint of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
+            return(1);
+          }
+    }
+  */
+  
+  if (strncmp(s_s->subtype, "pumpgstatn", 9) == 0)  // set on/off pumping station
+    {
+
+      // false = 000000, true = 111111
+      if ((int)s_s->new_set_val == 0) sprintf(cmd_string, "0011001006000000009\r");
+      else sprintf(cmd_string, "0011001006111111015\r");
+      
+      write_tcp(inst_dev, cmd_string, strlen(cmd_string));
+      sleep(1);
+	
+      sprintf(cmd_string, "0010001002=?096\r"); //queries control loop setpoint
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      msleep(200);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+      // output in 001001006000000000
+      int data_length = ret_string[9]-'0'; //C convert char to int
+      memmove(&ret_string[0], &ret_string[0]+10, sizeof(ret_string)-10);
+      memmove(&ret_string[0]+data_length-5, &ret_string[-1], sizeof(ret_string)-data_length);
 
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
 	{
 	  fprintf(stderr, "Bad return string: \"%s\" in switch pump on/off!\n", ret_string);
 	  return(1);
 	}
+
+      if (s_s->new_set_val != 0)
+	if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
+	  {
+	    fprintf(stderr, "New setpoint of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
+	    return(1);
+	  }
     }
 
+  else if (strncmp(s_s->subtype, "motorpump", 9) == 0)  // set on/off turbo motor pump
+    {
 
+      // false = 000000, true = 111111
+      if ((int)s_s->new_set_val == 0) sprintf(cmd_string, "0011002306000000013\r");
+      else sprintf(cmd_string, "0011001006111111019\r");
+
+      write_tcp(inst_dev, cmd_string, strlen(cmd_string));
+      sleep(1);
+
+      sprintf(cmd_string, "0010002302=?100\r"); //queries control loop setpoint
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      msleep(200);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+      // output in 001001006000000000
+      int data_length = ret_string[9]-'0'; //C convert char to int
+      memmove(&ret_string[0], &ret_string[0]+10, sizeof(ret_string)-10);
+       memmove(&ret_string[0]+data_length-5, &ret_string[-1], sizeof(ret_string)-data_length);
+
+      if(sscanf(ret_string, "%lf", &ret_val) != 1)
+        {
+          fprintf(stderr, "Bad return string: \"%s\" in switch turbo on/off!\n", ret_string);
+          return(1);
+        }
+
+      if (s_s->new_set_val != 0)
+        if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
+          {
+            fprintf(stderr, "New setpoint of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
+            return(1);
+          }
+    }
+  
   else       // Print an error if invalid subtype is entered
     {
       fprintf(stderr, "Wrong type for %s \n", s_s->name);
@@ -125,5 +217,5 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
   return(0);
 }
-*/
+
 #include "main.h"
