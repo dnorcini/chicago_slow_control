@@ -49,8 +49,28 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     uint16_t mode[1];
     int      max_tries = 0;
     int      ret;
-        
-    if (strncmp(s_s->subtype, "battcharge", 10) == 0)
+
+    if (strncmp(s_s->subtype, "runtime", 7) == 0)
+    {
+      channel_address += 128;
+
+        do
+        {
+          ret = read_holding_registers(&inst_dev, SLAVE, channel_address, 2, ret_val);
+          msleep(100);
+          max_tries++;
+          if (max_tries > 10)
+            return(1);
+        }
+        while (ret < 2);
+
+	//big endian = lowest register = most sig bits!
+	*val_out = (ret_val[0] + ret_val[1]) / (3600.); //convert to hours
+
+        return(0);
+    }
+    
+    else if (strncmp(s_s->subtype, "battcharge", 10) == 0)
     {
       channel_address += 130;
 
@@ -63,30 +83,25 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	    return(1);
 	} 
 	while (ret < 1);
-	*val_out = ret_val[0]/512;
+	*val_out = ret_val[0]/512.;
  
 	return(0);
     }
-
-    else if (strncmp(s_s->subtype, "powerout", 8) == 0)
+	
+    else if (strncmp(s_s->subtype, "apppower", 8) == 0)
     {
-      channel_address += 145;
+      channel_address += 138;
 
         do
         {
-          ret = read_holding_registers(&inst_dev, SLAVE, channel_address, 2, ret_val);
+          ret = read_holding_registers(&inst_dev, SLAVE, channel_address, 1, ret_val);
           msleep(100);
           max_tries++;
           if (max_tries > 10)
             return(1);
 	}
-	while (ret < 2);
-    
-	// use a union to convert from the two 16 bit bytes returned to a float
-	union { float fVal; uint16_t bytes[2]; } value; 
-	value.bytes[0] = ret_val[0];
-	value.bytes[1] = ret_val[1];    
-	*val_out = value.fVal;
+	while (ret < 1);    
+        *val_out = ret_val[0]/256;
     
 	return(0);
     }

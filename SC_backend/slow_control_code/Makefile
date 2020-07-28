@@ -4,8 +4,10 @@ SUBDIRS = lib \
 	alarm_alert_system \
 	alarm_trip_system \
 	ADAM6000 \
+	AgilentE3646 \
 	Alicat \
 	AMI286 \
+	APC3000 \
 	Arduino_ADC \
 	Arduino_Counter \
 	Arduino_IO \
@@ -24,6 +26,7 @@ SUBDIRS = lib \
         DiffP \
 	Edwards_TIC \
         GFM373 \
+	HiCube80 \
 	Hornet \
 	Keithley485 \
 	LeCroy1458 \
@@ -44,7 +47,8 @@ SUBDIRS = lib \
 	ORTEC974 \
 	PDR2000 \
 	postproc \
-        Remote_Watchdog \
+	Raritan_PX3 \
+	Remote_Watchdog \
 	SL130 \
         SPS125 \
 	SRC_Control \
