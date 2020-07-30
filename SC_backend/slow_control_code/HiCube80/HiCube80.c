@@ -54,7 +54,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
   if (strncmp(s_s->subtype, "actualspd", 9) == 0)  // Read out value for Actual Rotation Speed(Hz)
     {
       
-      sprintf(cmd_string, "0010030902=?107\r");
+      sprintf(cmd_string, "0010039802=?115\r");
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
@@ -146,7 +146,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
       // false = 000000, true = 111111
       if ((int)s_s->new_set_val == 0) sprintf(cmd_string, "0011001006000000009\r");
-      else sprintf(cmd_string, "0011001006111111015\r");
+      else if ((int)s_s->new_set_val == 1) sprintf(cmd_string, "0011001006111111015\r");
       
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
@@ -180,7 +180,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
       // false = 000000, true = 111111
       if ((int)s_s->new_set_val == 0) sprintf(cmd_string, "0011002306000000013\r");
-      else sprintf(cmd_string, "0011001006111111019\r");
+      else if ((int)s_s->new_set_val == 1) sprintf(cmd_string, "0011002306111111019\r");
 
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
