@@ -1,12 +1,7 @@
 /* Program for reading HiCube80 pump with over an ethernet RS-485 serial device server */
 /* and putting said readings in to a mysql database. */
 /* defined below. */
-/* Code by James Nikkel */
-/* james.nikkel@yale.edu */
-/* Copyright 2006, 2007, 2015 */
-/* James public licence. */
 /**********************/
-/* adapted LS335 for HiCube80*/
 /* D.Norcini, UChicago, 2020*/
 
 #include "SC_db_interface.h"
@@ -51,7 +46,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
   char       cmd_string[64];
   char       ret_string[64];                      
 
-  if (strncmp(s_s->subtype, "actualspd", 9) == 0)  // Read out value for Actual Rotation Speed(Hz)
+  if (strncmp(s_s->subtype, "actualspd", 9) == 0)  // Read out value for Actual Rotation Speed (rpm)
     {
       
       sprintf(cmd_string, "0010039802=?115\r");

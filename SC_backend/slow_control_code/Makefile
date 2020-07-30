@@ -16,7 +16,8 @@ SUBDIRS = lib \
 	cams \
 	CDL204 \
 	CP2800 \
-        disk_free \
+	CenterThree \
+	disk_free \
 	DWP_scale \
 	CryoCon18C \
         CryoCon24C \
