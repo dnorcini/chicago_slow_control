@@ -196,14 +196,16 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 	  return(1);
 	}
 	
-      if (s_s->new_set_val != 0)
+      /*      if (s_s->new_set_val != 0)
 	if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
 	  {
 	    fprintf(stderr, "New setpoint of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
 	    return(1);
 	  }
+      */
     }
-
+      
+      
   else if (strncmp(s_s->subtype, "Setramprate", 11) == 0)  // Set the control loop ramprate
     {
       if (s_s->new_set_val < 0 ) // check valid value for Ramp (>0)
