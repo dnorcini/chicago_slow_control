@@ -1,13 +1,13 @@
--- MySQL dump 10.15  Distrib 10.0.25-MariaDB, for Linux (x86_64)
+-- MySQL dump 10.17  Distrib 10.3.17-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: ASC_control
+-- Host: localhost    Database: control
 -- ------------------------------------------------------
--- Server version	10.0.25-MariaDB
+-- Server version	10.3.17-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -201,14 +201,14 @@ DROP TABLE IF EXISTS `globals`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `globals` (
   `name` varchar(16) COLLATE latin1_general_cs NOT NULL,
-  `int1` int(11) NOT NULL DEFAULT '0',
-  `int2` int(11) NOT NULL DEFAULT '0',
-  `int3` int(11) NOT NULL DEFAULT '0',
-  `int4` int(11) NOT NULL DEFAULT '0',
-  `double1` double NOT NULL DEFAULT '0',
-  `double2` double NOT NULL DEFAULT '0',
-  `double3` double NOT NULL DEFAULT '0',
-  `double4` double NOT NULL DEFAULT '0',
+  `int1` int(11) NOT NULL DEFAULT 0,
+  `int2` int(11) NOT NULL DEFAULT 0,
+  `int3` int(11) NOT NULL DEFAULT 0,
+  `int4` int(11) NOT NULL DEFAULT 0,
+  `double1` double NOT NULL DEFAULT 0,
+  `double2` double NOT NULL DEFAULT 0,
+  `double3` double NOT NULL DEFAULT 0,
+  `double4` double NOT NULL DEFAULT 0,
   `string1` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `string2` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `string3` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
@@ -261,7 +261,7 @@ DROP TABLE IF EXISTS `lug_entries`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lug_entries` (
   `entry_id` int(11) NOT NULL AUTO_INCREMENT,
-  `important_flag` tinyint(1) DEFAULT '0',
+  `important_flag` tinyint(1) DEFAULT 0,
   `action_user` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `action_time` int(11) NOT NULL,
   `edit_user` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -270,12 +270,12 @@ CREATE TABLE `lug_entries` (
   `category` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `subcategory` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `entry_description` longtext COLLATE utf8_unicode_ci NOT NULL,
-  `entry_image` mediumblob,
-  `entry_image_thumb` blob,
-  `entry_file` mediumblob,
+  `entry_image` mediumblob DEFAULT NULL,
+  `entry_image_thumb` blob DEFAULT NULL,
+  `entry_file` mediumblob DEFAULT NULL,
   `filename` char(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `source` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `strikeme` tinyint(1) DEFAULT '0',
+  `strikeme` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`entry_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -302,9 +302,9 @@ CREATE TABLE `msg_log` (
   `time` int(11) NOT NULL,
   `ip_address` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `subsys` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
-  `msgs` text COLLATE latin1_general_cs,
+  `msgs` text COLLATE latin1_general_cs DEFAULT NULL,
   `type` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
-  `is_error` tinyint(4) NOT NULL DEFAULT '0',
+  `is_error` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`msg_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=83 DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -352,7 +352,7 @@ DROP TABLE IF EXISTS `runs`;
 CREATE TABLE `runs` (
   `num` int(11) NOT NULL AUTO_INCREMENT,
   `start_t` int(11) NOT NULL,
-  `end_t` int(11) NOT NULL DEFAULT '0',
+  `end_t` int(11) NOT NULL DEFAULT 0,
   `file_path` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
   `file_root` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
   `note` char(128) COLLATE latin1_general_cs DEFAULT NULL,
@@ -382,20 +382,20 @@ CREATE TABLE `sc_insts` (
   `name` varchar(16) COLLATE latin1_general_cs NOT NULL,
   `description` varchar(64) COLLATE latin1_general_cs DEFAULT NULL,
   `subsys` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
-  `run` tinyint(1) NOT NULL DEFAULT '0',
-  `restart` tinyint(1) NOT NULL DEFAULT '0',
-  `WD_ctrl` tinyint(1) NOT NULL DEFAULT '1',
+  `run` tinyint(1) NOT NULL DEFAULT 0,
+  `restart` tinyint(1) NOT NULL DEFAULT 0,
+  `WD_ctrl` tinyint(1) NOT NULL DEFAULT 1,
   `path` varchar(256) COLLATE latin1_general_cs NOT NULL DEFAULT 'rel_path',
   `dev_type` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `dev_address` varchar(24) COLLATE latin1_general_cs DEFAULT NULL,
-  `start_time` int(11) NOT NULL DEFAULT '-1',
-  `last_update_time` int(11) NOT NULL DEFAULT '-1',
-  `PID` int(11) NOT NULL DEFAULT '-1',
+  `start_time` int(11) NOT NULL DEFAULT -1,
+  `last_update_time` int(11) NOT NULL DEFAULT -1,
+  `PID` int(11) NOT NULL DEFAULT -1,
   `user1` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `user2` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
-  `parm1` double NOT NULL DEFAULT '0',
-  `parm2` double NOT NULL DEFAULT '0',
-  `notes` text COLLATE latin1_general_cs,
+  `parm1` double NOT NULL DEFAULT 0,
+  `parm2` double NOT NULL DEFAULT 0,
+  `notes` text COLLATE latin1_general_cs DEFAULT NULL,
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -458,154 +458,6 @@ LOCK TABLES `sc_sens_Alarm_Siren` WRITE;
 /*!40000 ALTER TABLE `sc_sens_Alarm_Siren` DISABLE KEYS */;
 INSERT INTO `sc_sens_Alarm_Siren` VALUES (1459350470,0,0);
 /*!40000 ALTER TABLE `sc_sens_Alarm_Siren` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sc_sens_DAQ_ctrl`
---
-
-DROP TABLE IF EXISTS `sc_sens_DAQ_ctrl`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sc_sens_DAQ_ctrl` (
-  `time` int(11) NOT NULL,
-  `value` double NOT NULL,
-  `rate` double NOT NULL,
-  KEY `time` (`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sc_sens_DAQ_ctrl`
---
-
-LOCK TABLES `sc_sens_DAQ_ctrl` WRITE;
-/*!40000 ALTER TABLE `sc_sens_DAQ_ctrl` DISABLE KEYS */;
-INSERT INTO `sc_sens_DAQ_ctrl` VALUES (1461529514,1,0),(1461529515,0,0);
-/*!40000 ALTER TABLE `sc_sens_DAQ_ctrl` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sc_sens_Run_ctrl`
---
-
-DROP TABLE IF EXISTS `sc_sens_Run_ctrl`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sc_sens_Run_ctrl` (
-  `time` int(11) NOT NULL,
-  `value` double NOT NULL,
-  `rate` double NOT NULL,
-  KEY `time` (`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sc_sens_Run_ctrl`
---
-
-LOCK TABLES `sc_sens_Run_ctrl` WRITE;
-/*!40000 ALTER TABLE `sc_sens_Run_ctrl` DISABLE KEYS */;
-INSERT INTO `sc_sens_Run_ctrl` VALUES (1461529604,1,0),(1461529605,0,0);
-/*!40000 ALTER TABLE `sc_sens_Run_ctrl` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sc_sens_Set_Temp_A`
---
-
-DROP TABLE IF EXISTS `sc_sens_Set_Temp_A`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sc_sens_Set_Temp_A` (
-  `time` int(11) NOT NULL,
-  `value` double NOT NULL,
-  `rate` double NOT NULL,
-  KEY `time` (`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sc_sens_Set_Temp_A`
---
-
-LOCK TABLES `sc_sens_Set_Temp_A` WRITE;
-/*!40000 ALTER TABLE `sc_sens_Set_Temp_A` DISABLE KEYS */;
-INSERT INTO `sc_sens_Set_Temp_A` VALUES (1457977153,23,0);
-/*!40000 ALTER TABLE `sc_sens_Set_Temp_A` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sc_sens_TC_onoff`
---
-
-DROP TABLE IF EXISTS `sc_sens_TC_onoff`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sc_sens_TC_onoff` (
-  `time` int(11) NOT NULL,
-  `value` double NOT NULL,
-  `rate` double NOT NULL,
-  KEY `time` (`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sc_sens_TC_onoff`
---
-
-LOCK TABLES `sc_sens_TC_onoff` WRITE;
-/*!40000 ALTER TABLE `sc_sens_TC_onoff` DISABLE KEYS */;
-INSERT INTO `sc_sens_TC_onoff` VALUES (1457977139,1,0),(1457977151,0,0);
-/*!40000 ALTER TABLE `sc_sens_TC_onoff` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sc_sens_Temp_A`
---
-
-DROP TABLE IF EXISTS `sc_sens_Temp_A`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sc_sens_Temp_A` (
-  `time` int(11) NOT NULL,
-  `value` double NOT NULL,
-  `rate` double NOT NULL,
-  KEY `time` (`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sc_sens_Temp_A`
---
-
-LOCK TABLES `sc_sens_Temp_A` WRITE;
-/*!40000 ALTER TABLE `sc_sens_Temp_A` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sc_sens_Temp_A` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sc_sens_Temp_B`
---
-
-DROP TABLE IF EXISTS `sc_sens_Temp_B`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sc_sens_Temp_B` (
-  `time` int(11) NOT NULL,
-  `value` double NOT NULL,
-  `rate` double NOT NULL,
-  KEY `time` (`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sc_sens_Temp_B`
---
-
-LOCK TABLES `sc_sens_Temp_B` WRITE;
-/*!40000 ALTER TABLE `sc_sens_Temp_B` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sc_sens_Temp_B` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -694,35 +546,35 @@ CREATE TABLE `sc_sensors` (
   `type` varchar(16) COLLATE latin1_general_cs NOT NULL DEFAULT 'unknown',
   `subtype` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `ctrl_priv` varchar(128) COLLATE latin1_general_cs NOT NULL DEFAULT 'full',
-  `num` int(11) NOT NULL DEFAULT '0',
+  `num` int(11) NOT NULL DEFAULT 0,
   `instrument` varchar(16) COLLATE latin1_general_cs NOT NULL DEFAULT 'inst_name',
   `units` varchar(16) COLLATE latin1_general_cs NOT NULL DEFAULT 'units',
   `discrete_vals` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
-  `al_set_val_low` double NOT NULL DEFAULT '0',
-  `al_set_val_high` double NOT NULL DEFAULT '0',
-  `al_arm_val_low` tinyint(1) NOT NULL DEFAULT '0',
-  `al_arm_val_high` tinyint(1) NOT NULL DEFAULT '0',
-  `al_set_rate_low` double NOT NULL DEFAULT '0',
-  `al_set_rate_high` double NOT NULL DEFAULT '0',
-  `al_arm_rate_low` tinyint(1) NOT NULL DEFAULT '0',
-  `al_arm_rate_high` tinyint(1) NOT NULL DEFAULT '0',
-  `alarm_tripped` tinyint(1) NOT NULL DEFAULT '0',
-  `grace` int(11) NOT NULL DEFAULT '0',
-  `last_trip` int(11) NOT NULL DEFAULT '-1',
-  `settable` tinyint(1) NOT NULL DEFAULT '0',
-  `show_rate` tinyint(1) NOT NULL DEFAULT '0',
-  `hide_sensor` tinyint(1) NOT NULL DEFAULT '0',
-  `update_period` int(11) NOT NULL DEFAULT '60',
+  `al_set_val_low` double NOT NULL DEFAULT 0,
+  `al_set_val_high` double NOT NULL DEFAULT 0,
+  `al_arm_val_low` tinyint(1) NOT NULL DEFAULT 0,
+  `al_arm_val_high` tinyint(1) NOT NULL DEFAULT 0,
+  `al_set_rate_low` double NOT NULL DEFAULT 0,
+  `al_set_rate_high` double NOT NULL DEFAULT 0,
+  `al_arm_rate_low` tinyint(1) NOT NULL DEFAULT 0,
+  `al_arm_rate_high` tinyint(1) NOT NULL DEFAULT 0,
+  `alarm_tripped` tinyint(1) NOT NULL DEFAULT 0,
+  `grace` int(11) NOT NULL DEFAULT 0,
+  `last_trip` int(11) NOT NULL DEFAULT -1,
+  `settable` tinyint(1) NOT NULL DEFAULT 0,
+  `show_rate` tinyint(1) NOT NULL DEFAULT 0,
+  `hide_sensor` tinyint(1) NOT NULL DEFAULT 0,
+  `update_period` int(11) NOT NULL DEFAULT 60,
   `num_format` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `user1` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `user2` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `user3` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
   `user4` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
-  `parm1` double NOT NULL DEFAULT '0',
-  `parm2` double NOT NULL DEFAULT '0',
-  `parm3` double NOT NULL DEFAULT '0',
-  `parm4` double NOT NULL DEFAULT '0',
-  `notes` text COLLATE latin1_general_cs,
+  `parm1` double NOT NULL DEFAULT 0,
+  `parm2` double NOT NULL DEFAULT 0,
+  `parm3` double NOT NULL DEFAULT 0,
+  `parm4` double NOT NULL DEFAULT 0,
+  `notes` text COLLATE latin1_general_cs DEFAULT NULL,
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -772,7 +624,7 @@ DROP TABLE IF EXISTS `user_shift_status`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_shift_status` (
   `status` varchar(16) COLLATE latin1_general_cs NOT NULL,
-  `can_manage` tinyint(1) NOT NULL DEFAULT '0',
+  `can_manage` tinyint(1) NOT NULL DEFAULT 0,
   UNIQUE KEY `status` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -802,9 +654,9 @@ CREATE TABLE `users` (
   `email` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
   `sms` varchar(32) COLLATE latin1_general_cs DEFAULT NULL,
   `phone` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
-  `on_call` tinyint(1) NOT NULL DEFAULT '0',
+  `on_call` tinyint(1) NOT NULL DEFAULT 0,
   `shift_status` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
-  `privileges` text COLLATE latin1_general_cs,
+  `privileges` text COLLATE latin1_general_cs DEFAULT NULL,
   UNIQUE KEY `username` (`user_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -828,4 +680,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-09-22  9:45:02
+-- Dump completed on 2020-08-06 11:30:08
