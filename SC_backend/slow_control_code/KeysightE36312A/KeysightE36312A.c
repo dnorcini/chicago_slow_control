@@ -64,7 +64,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 
   if (strncmp(s_s->subtype, "volt", 4) == 0)  // Read out value for voltage
    {
-     sprintf(cmd_string, "MEAS:VOLT? (@%i)\n", s_s->num);
+     sprintf(cmd_string, "MEAS:VOLT? (@%d)\n", s_s->num); 
      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
      msleep(200);
      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
@@ -101,12 +101,11 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
   
   if (strncmp(s_s->subtype, "setvolt", 7) == 0)  // Set the control loop set voltage
     {    
-      sprintf(cmd_string, "VOLT (@%i) %f\n", s_s->num, s_s->new_set_val);
-    
+      sprintf(cmd_string, "VOLT %f, (@%d)\n", s_s->num, s_s->new_set_val);
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
 	
-      sprintf(cmd_string, "MEAS:VOLT? (@%i)\n", s_s->num); //queries control loop set voltage
+      sprintf(cmd_string, "MEAS:VOLT? (@%d)\n", s_s->num); //queries control loop set voltage
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
@@ -116,7 +115,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 	  fprintf(stderr, "Bad return string: \"%s\" in read set voltage!\n", ret_string);
 	  return(1);
 	}
-	
+
       if (s_s->new_set_val != 0)
 	if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
 	  {
@@ -133,11 +132,11 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
   else if (strncmp(s_s->subtype, "setonoff", 8) == 0)  // Set output voltage on/off
     {      
-      sprintf(cmd_string, "OUTP (@%i) %i\n", s_s->num, (int)s_s->new_set_val); //need to convert to int, otherwise goes crazy
+      sprintf(cmd_string, "OUTP %i, (@%d)\n", (int)s_s->new_set_val, s_s->num); //need to convert to int, otherwise goes crazy
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
 
-      sprintf(cmd_string, "OUTP?(@%i)\n", s_s->num); //queries control loop set on/off
+      sprintf(cmd_string, "OUTP? (@%d)\n", s_s->num); //queries control loop set on/off
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
