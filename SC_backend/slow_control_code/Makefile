@@ -30,6 +30,7 @@ SUBDIRS = lib \
 	HiCube80 \
 	Hornet \
 	Keithley485 \
+	KeysightE36312A \	
 	LeCroy1458 \
         LevelBox \
 	Listen_Daemon \
@@ -56,6 +57,7 @@ SUBDIRS = lib \
 	SRS350 \
 	SRS_RGA \
 	SuperLogics \
+        TPG261 \
 	TPG26X \
 	Transcell_Scale \
         TSctrl \
