@@ -74,7 +74,21 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	 return(1);
        }	
    }
-  
+
+   else if (strncmp(s_s->subtype, "current", 7) == 0)  // Read out value for current
+   {
+     sprintf(cmd_string, "MEAS:CURR? (@%d)\n", s_s->num);
+     query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+     msleep(200);
+     query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+     if(sscanf(ret_string, "%lf", val_out) != 1)
+       {
+         fprintf(stderr, "Bad return string: \"%s\" in read current!\n", ret_string);
+         return(1);
+       }
+   }
+
   else       // Print an error if invalid subtype is entered
     {
       fprintf(stderr, "Wrong type for %s \n", s_s->name);
