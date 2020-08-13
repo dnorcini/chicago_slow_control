@@ -74,7 +74,7 @@ foreach ($my_sensor_names as $sensor_name)
 	    echo ('('.$sensor_units[$sensor_name].')');
 	}
 	echo ('</TH>');
-	if ($i % 3 ==0)
+	if ($i % 2 ==0)
 	{
 	    echo ('</TR>');
 	    echo ('<TR>');
@@ -96,7 +96,7 @@ foreach ($my_sensor_names as $sensor_name)
 	echo ('<br>');
 	echo ('('.$sensor_units[$sensor_name].'/s)');
 	echo ('</TH>');
-	if ($i % 3 ==0)
+	if ($i % 2 ==0)
 	{
 	    echo ('</TR>');
 	    echo ('<TR>');

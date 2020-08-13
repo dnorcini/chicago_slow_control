@@ -142,7 +142,7 @@ foreach ($my_sensor_names as $sensor_name)
       echo ('</TABLE>');
 		
       echo ('</TD>');
-      if ($i % 3 ==0)
+      if ($i % 2 ==0)
 	{
 	  echo ('</TR>');
 	  echo ('<TR>');
