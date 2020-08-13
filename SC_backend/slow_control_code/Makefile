@@ -30,7 +30,7 @@ SUBDIRS = lib \
 	HiCube80 \
 	Hornet \
 	Keithley485 \
-	KeysightE36312A \	
+	KeysightE36312A \
 	LeCroy1458 \
         LevelBox \
 	Listen_Daemon \

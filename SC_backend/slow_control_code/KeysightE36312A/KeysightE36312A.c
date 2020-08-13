@@ -32,8 +32,7 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
   write_tcp(inst_dev, cmd_string, strlen(cmd_string));
   msleep(200);
 
-  
-  sprintf(cmd_string, "SYST:INT RS232\n");
+  printf(cmd_string, "SYST:INT RS232\n");
   write_tcp(inst_dev, cmd_string, strlen(cmd_string));
   msleep(200);
 
@@ -116,13 +115,15 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 	  return(1);
 	}
 
+      /*
       if (s_s->new_set_val != 0)
 	if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
 	  {
 	    fprintf(stderr, "New set voltage of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
 	    return(1);
 	  }
-
+      */
+      
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
         {
           fprintf(stderr, "Bad return string: \"%s\" in read set voltage!\n", ret_string);
