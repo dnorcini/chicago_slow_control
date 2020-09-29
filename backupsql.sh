@@ -47,7 +47,7 @@ while read -r file; do count=`expr $count + 1`; done <<<"$backupfiles"
 ### Send mail ###
 mail -s "Backups Report" $EMAILID << END
 Success with $count of $attempts
-The following databases were attempted backed up
+The following databases were attempted to be backed up
 $DBS
 Files transferred:
 $backupfiles
