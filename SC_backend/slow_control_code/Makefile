@@ -24,7 +24,8 @@ SUBDIRS = lib \
 	CryoCon34 \
 	CryoCon44 \
         CryoMag_LM500 \
-        DiffP \
+	CryoTelGT_AVC \
+	DiffP \
 	Edwards_TIC \
         GFM373 \
 	HiCube80 \
