@@ -54,8 +54,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     if (strncmp(s_s->subtype, "current", 7) == 0)
     {
       channel_address += 12298;
-
-        do
+      do
         {
           ret = read_holding_registers(&inst_dev, SLAVE, channel_address, 2, ret_val);
           msleep(100);
@@ -79,9 +78,8 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     }
 
     else if (strncmp(s_s->subtype, "power", 5) == 0)
-    {
-      channel_address += 12306;
-
+    { 
+      channel_address += 12306; 
         do
         {
           ret = read_holding_registers(&inst_dev, SLAVE, channel_address, 2, ret_val);
@@ -114,7 +112,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     int      max_tries = 0;
     int      ret;
  
-    if (strncmp(s_s->subtype, "outlet1", 7) == 0)
+    if (strncmp(s_s->subtype, "outlet", 6) == 0)
       {
 	uint16_t start_address = 256;
 	
@@ -134,7 +132,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 	
 	s_s->new_set_val = set_val;
 	
-	channel_address = start_address; //+i if looping through all outlets
+	channel_address = start_address + (s_s->num-1); //if looping through all outlets
 
 	do 
 	  {
