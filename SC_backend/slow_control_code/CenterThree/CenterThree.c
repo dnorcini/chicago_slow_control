@@ -44,6 +44,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 {
 
   char       cmd_string[64];
+  char       awk_string[64];
   char       ret_string[64];    
   
   if (strncmp(s_s->subtype, "pressure", 8) == 0)  // Read out value for pressure (mbar)
@@ -53,29 +54,14 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	  fprintf(stderr, "%d is an incorrect value for num. Must be 1, 2, or 3. \n", s_s->num);
 	  return(1);
 	}
-      double val_out1, val_out2, val_out3;
-                                                                                                                               
-      sprintf(cmd_string, "COM,2 \r\n");
+  
+      sprintf(cmd_string, "PR%d\r\n", (int)s_s->num);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), awk_string, sizeof(awk_string)/sizeof(char));
+      msleep(100);
+      sprintf(cmd_string, "\x05"); //hex for <ENQ>
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
-      msleep(200);
-      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
-
-      sscanf(ret_string, "%*d,%lE,%*d,%lE,%*d,%lE", &val_out1, &val_out2, &val_out3);
-
-      if (s_s->num == 1)		      
-        *val_out = val_out1;                                                                                           
-      else if (s_s->num == 2)                                                                                              
-        *val_out = val_out2;                                                                                               
-      else if (s_s->num == 3)                                                                                              
-        *val_out = val_out3;                                                                                               
-      else                                                                                                                 
-	{                                                                                                                  
-          fprintf(stderr, "Channel number can only be 1, 2, or 3.\n");                                                     
-          return(1);                                                                                                       
-        }       
-
-      fprintf(stdout, "Val out: %f\n", *val_out);
-
+     
+      sscanf(ret_string, "%*d, %lE", val_out);                    
     }
   
   else       // Print an error if invalid subtype is entered
@@ -83,6 +69,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
       fprintf(stderr, "Wrong type for %s \n", s_s->name);
       return(1);
     }
+  
   msleep(600);
   
   return(0);
@@ -92,47 +79,26 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 {
     char       cmd_string[64];
+    char       awk_string[64];
     char       ret_string[64];
     double     ret_val;
   
-    if (strncmp(s_s->subtype, "setreset", 8) == 0)  // set the reset flag
+    if (strncmp(s_s->subtype, "setgauge1onoff", 14) == 0)  // set the reset flag
       {
-	sprintf(cmd_string, "RES,%i \r\n", (int)s_s->new_set_val);
-	query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
-	msleep(200);
-	query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
-	
-	fprintf(stdout, "Reset return: %s\n", ret_string);
-	/*
-	  if(sscanf(ret_string, "%lf", &ret_val) != 1)
+	if (s_s->num != 1)
 	  {
-	  fprintf(stderr, "Bad return string: \"%s\" in reset flag!\n", ret_string);
-	  return(1);
-	  }
-	*/	
-      }
-
-    else if (strncmp(s_s->subtype, "setgauge1onoff", 14) == 0)  // set the reset flag
-      {
-	if (s_s->num < 1 || s_s->num > 3) // Checks correct Loop number
-	  {
-	    fprintf(stderr, "%d is an incorrect value for num. Must be 1, 2 or 3. \n", s_s->num);
+	    fprintf(stderr, "%d is an incorrect value for num. Must be channel 1.\n", s_s->num);
 	    return(1);
 	  }
 	
-        sprintf(cmd_string, "HVC,%i,, \r\n", (int)s_s->new_set_val);
-        query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
-      	msleep(200);
-      	query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+        sprintf(cmd_string, "HVC,%d,0,0 \r\n", (int)s_s->new_set_val);
+        fprintf(stdout, "command: %s\n", cmd_string);
+      	query_tcp(inst_dev, cmd_string, strlen(cmd_string), awk_string, sizeof(awk_string)/sizeof(char));
+	msleep(100);
+	sprintf(cmd_string, "\x05"); //hex for <ENQ>                                                               
+	query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 	
-        fprintf(stdout, "Onoff return: %s\n", ret_string);
-      	/*
-          if(sscanf(ret_string, "%lf", &ret_val) != 1)
-          {
-          fprintf(stderr, "Bad return string: \"%s\" in reset flag!\n", ret_string);
-          return(1);
-          }
-        */
+        fprintf(stdout, "return: %s\n", ret_string);
       }
     
     return(0);
