@@ -56,12 +56,12 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	}
   
       sprintf(cmd_string, "PR%d\r\n", (int)s_s->num);
-      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), awk_string, sizeof(awk_string)/sizeof(char));
 
       msleep(300);
 
       sprintf(cmd_string, "\x05"); //hex for <ENQ>
-      query_tcp(inst_dev, cmd_string, strlen(cmd_string), awk_string, sizeof(awk_string)/sizeof(char));
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 
       msleep(300);                                                                                                
 
@@ -78,34 +78,5 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
   
   return(0);
 }
-
-#define _def_set_sensor
-int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
-{
-    char       cmd_string[64];
-    char       awk_string[64];
-    char       ret_string[64];
-    double     ret_val;
-  
-    if (strncmp(s_s->subtype, "setgauge1onoff", 14) == 0)  // set the reset flag
-      {
-	if (s_s->num != 1)
-	  {
-	    fprintf(stderr, "%d is an incorrect value for num. Must be channel 1.\n", s_s->num);
-	    return(1);
-	  }
-	
-        sprintf(cmd_string, "HVC,%d,0,0 \r\n", (int)s_s->new_set_val);
-        fprintf(stdout, "command: %s\n", cmd_string);
-      	query_tcp(inst_dev, cmd_string, strlen(cmd_string), awk_string, sizeof(awk_string)/sizeof(char));
-	msleep(100);
-	sprintf(cmd_string, "\x05"); //hex for <ENQ>                                                               
-	query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
-	
-        fprintf(stdout, "return: %s\n", ret_string);
-      }
-    
-    return(0);
-}  
 
 #include "main.h"
