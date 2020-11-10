@@ -9,7 +9,7 @@ PROGS = TPG261
 
 all: $(PROGS) 
 
-HiCube80: $(PROGS).o
+TPG261: $(PROGS).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $@.o $(LIBS)
 	rm -f $@.o
 
