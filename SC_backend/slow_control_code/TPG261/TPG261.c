@@ -58,9 +58,6 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
       sprintf(cmd_string, "PR%d\r\n", (int)s_s->num);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 
-      fprintf(stdout, "command1: %s\n", cmd_string);
-      fprintf(stdout, "return: %s\n", ret_string);
-
       msleep(300);
 
       sprintf(cmd_string, "\x05"); //hex for <ENQ>
