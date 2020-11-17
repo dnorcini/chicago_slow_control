@@ -36,6 +36,7 @@ SUBDIRS = lib \
         LevelBox \
 	Listen_Daemon \
 	LS218 \
+	LS321_eth \
 	LS330 \
 	LS330Keithley \
 	LS331 \
