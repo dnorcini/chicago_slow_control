@@ -74,9 +74,9 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 
   if (strncmp(s_s->subtype, "Temp", 4) == 0)  // Read out value for temperature from A or B.
     {
-      if (s_s->num < 1 || s_s->num > 2) // Checks correct sensor number
+      if (s_s->num < 1 || s_s->num > 4) // Checks correct sensor number
 	{
-	  fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+	  fprintf(stderr, "%d is an incorrect value for num. Must between 1 and 4. \n", s_s->num);
 	  return(1);
 	}
       sprintf(cmd_string, "KRDG? %c\n", int_to_Letter(s_s->num));
@@ -280,7 +280,65 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
             return(1);
           }
     }
-   
+  /*
+  else if (strncmp(s_s->subtype, "Outmode", 7) == 0)  // Set the heater on/off                                                                
+    {
+      if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number                                                                              
+        {
+          fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+          return(1);
+        }
+
+      sprintf(cmd_string, "OUTMODE %d,%i,%d,0\n", s_s->num, (int)s_s->new_set_val, s_s->num);
+      fprintf(stdout, "%s\n", cmd_string);
+
+      write_tcp(inst_dev, cmd_string, strlen(cmd_string));
+      sleep(1);
+
+      sprintf(cmd_string, "OUTMODE? %i\n", s_s->num); //queries control loop on/off                                                            
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      msleep(200);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+      fprintf(stdout, "Output Mode: %s\n", ret_string);
+
+      if(sscanf(ret_string, "%lf", &ret_val) != 1)
+	{
+          fprintf(stderr, "Bad return string: \"%s\" in read outmode!\n", ret_string);
+          return(1);
+	}
+    }
+
+  else if (strncmp(s_s->subtype, "Mout", 4) == 0)  // Set the heater on/off                                                                     
+    {
+      if (s_s->num < 1 || s_s->num > 2) // Checks corect Loop number
+	{
+          fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+          return(1);
+        }
+
+      sprintf(cmd_string, "MOUT %d,%f\n", s_s->num, s_s->new_set_val);
+      fprintf(stdout, "%s\n", cmd_string);
+
+      write_tcp(inst_dev, cmd_string, strlen(cmd_string));
+      sleep(1);
+
+      sprintf(cmd_string, "MOUT? %i\n", s_s->num); //queries control loop on/off                                                               \
+                                                                                                                                                   
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      msleep(200);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+      fprintf(stdout, "Manual Output Mode: %s\n", ret_string);
+
+      if(sscanf(ret_string, "%lf", &ret_val) != 1)
+        {
+          fprintf(stderr, "Bad return string: \"%s\" in read outmode!\n", ret_string);
+          return(1);
+        }
+    }
+
+  */
   else       // Print an error if invalid subtype is entered
     {
       fprintf(stderr, "Wrong type for %s \n", s_s->name);
