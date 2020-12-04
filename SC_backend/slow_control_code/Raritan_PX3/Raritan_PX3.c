@@ -116,7 +116,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
       {
 	uint16_t start_address = 256;
 	
-	if ((s_s->num >= 8) || (s_s->num < 1))
+	if ((s_s->num > 8) || (s_s->num < 1))
 	  {
 	    fprintf(stderr, "Wrong value for num (%d != 1-%d) in %s \n", s_s->num, 8, s_s->name);
 	    return(1);
