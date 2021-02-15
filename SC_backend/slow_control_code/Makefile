@@ -56,6 +56,7 @@ SUBDIRS = lib \
 	SL130 \
         SPS125 \
 	SRC_Control \
+	SRSDC205 \
 	SRS350 \
 	SRS_RGA \
 	SuperLogics \
