@@ -16,7 +16,7 @@
 
 // These are modbus parameters:
 #define SLAVE    0xFF
-#define mod_port 5502
+#define mod_port 502
 
 modbus_param_t inst_dev;
 
