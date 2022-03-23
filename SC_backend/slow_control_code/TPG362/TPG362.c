@@ -3,7 +3,6 @@
 /* defined below. */
 /**********************/
 /* D.Norcini, UChicago, 2020*/
-/* M.Traina, LPNHE, Sorbonne Universite, 2021*/
 
 #include "SC_db_interface.h"
 #include "SC_aux_fns.h"
