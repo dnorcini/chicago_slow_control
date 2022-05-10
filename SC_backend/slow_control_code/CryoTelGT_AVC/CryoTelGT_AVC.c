@@ -62,7 +62,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	}	
     }
    
-  else if (strncmp(s_s->subtype, "p", 1) == 0)  // Read out value for power (by controller)
+  else if (strncmp(s_s->subtype, "pwout", 1) == 0)  // Read out value for power (by controller)
     {
       sprintf(cmd_string, "P\r");
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
@@ -88,6 +88,23 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 
       // output in TTARGET\n<power>                                                                                                               
+      int data_length = ret_string[0]-ret_string[6];
+      memmove(&ret_string[0], &ret_string[7], sizeof(ret_string)-data_length);
+
+      if(sscanf(ret_string, "%lf", val_out) != 1)
+        {
+          fprintf(stderr, "Bad return string: \"%s\" in read temperature!\n", ret_string);
+          return(1);
+        }
+    }
+  else if (strncmp(s_s->subtype, "treject", 7) == 0)  // Read out value for target temp
+    {
+      sprintf(cmd_string, "TEMP RJ\r");
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      msleep(200);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+      // output in TTARGET\n<power>
       int data_length = ret_string[0]-ret_string[6];
       memmove(&ret_string[0], &ret_string[7], sizeof(ret_string)-data_length);
 

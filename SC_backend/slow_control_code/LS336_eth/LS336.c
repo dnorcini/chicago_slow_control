@@ -80,6 +80,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	  return(1);
 	}
       sprintf(cmd_string, "KRDG? %c\n", int_to_Letter(s_s->num));
+      //printf("%s",int_to_Letter(s_s->num));
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
