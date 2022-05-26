@@ -25,6 +25,7 @@ SUBDIRS = lib \
 	CryoCon44 \
         CryoMag_LM500 \
 	CryoTelGT_AVC \
+	CTC100 \
 	DiffP \
 	Edwards_TIC \
         GFM373 \
