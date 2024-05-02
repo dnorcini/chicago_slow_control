@@ -1,7 +1,7 @@
 SHELL = /bin/sh
-CC = gcc -O3
+CC = gcc -Wl,--no-as-needed -O3
 
-CFLAGS = `mysql_config --cflags` -I../include -I/usr/local/include/gpib/
+CFLAGS = `mariadb_config --cflags` -I../include -I/usr/local/include/gpib/
 
 LDFLAGS =  -L../lib -lslow_control -I/usr/local/include -lgpib
 
