@@ -1,5 +1,5 @@
 SHELL = /bin/sh
-CC = gcc -O3
+CC = gcc -Wl,--no-as-needed -O3
 
 CFLAGS = `mariadb_config --cflags` -I../include 
 
