@@ -1,8 +1,8 @@
 SHELL = /bin/sh
-CC = gcc -O3
+CC = gcc -O3 -fcommon
 
-CFLAGS = `mysql_config --cflags` -I../include 
-LDFLAGS = `mysql_config --libs`
+CFLAGS = `mariadb_config --cflags` -I../include 
+LDFLAGS = `mariadb_config --libs`
 
 AR = ar
 ARFLAGS = rv
