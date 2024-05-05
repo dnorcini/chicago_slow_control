@@ -2,14 +2,15 @@
 Refer to old notes (i.e. CentOS 7 install) for more detailed explanation of certain steps. Here we provide a “quick (-er)” guide to get the SC running on Debian 12 (DAMIC-M official OS).
 
 ## Dependencies
-* LAMP ==ADD VERSIONS==
-  * Apache2 webserver
-  * php v5
-  * MySQL + utilities 
-  * phpMyAdmin
+* LAMP
+  * Apache2 webserver, v2.4.59
+  * php v5, v5.6.40
+  * MariaDB/MySQL + utilities, v10.11.6
+  * phpMyAdmin, v4.9.1
 * SC software
   * C/C++ dev tools
-
+  * gcc, v12.2.0
+  
 ## LAMP Install
 ### Apache
 To install and start:
@@ -276,26 +277,30 @@ $ cd /home/damicm/SC_backend/slow_control_code/LS336_eth
 $ make
 ```
 
-If you are not using the Debian 12 branch of the SC code, you will run into an issue when compiling (the short answer is the newer gcc version that is probably default on your OS is not compatible with old commands). The following things need to be changed in the Makefile, .e.g.:
+If you are not using the Debian 12 branch of the SC code, you will run into an issue when compiling (the short answer is the newer gcc version that is probably default on your OS is not compatible with old commands). The following flags need to be changed in the Makefile (again, only if using the generic SC branch):
 ```
 CC = gcc -O3
 CFLAGS = `mysql_config --cflags` -I../include
 LDFLAGS = `mysql_config --libs`
+```
 
-change to 
-
-CC = gcc -Wl,--no-as-needed -03
- -fcommon -O3 
-CFLAGS = `mariadb_config --cflags` -I../include
+change to, in `slow_control_code/lib/Makefile`:
+```
+CC = gcc -fcommon -O3 
+CFLAGS = `mariadb_config --cflags` 
 LDFLAGS = `mariadb_config --libs`
 ```
-==FIX==
 
-Without these new flags, you can get errors about undefined variables (can’t link to the shared library), multiple definitions, etc.. You can see which libraries are available via:
+change to, in `slow_control_code/Makefile`:
 ```
-$ nm -D lib.so
+CC = gcc -Wl,--no-as-needed -03
+CFLAGS = `mariadb_config --cflags`
+LDFLAGS = `mariadb_config --libs`
 ```
-==CHECK==
+
+Without these new flags, you can get errors about undefined variables (can’t link to the shared library), multiple definitions, etc.. You can see which variables are loaded in the library via:
+```
+$ nm -D /home/damicm/SC_backend/slow_control_code/lib/libslow-control.so
 
 ### Set up the database
 Before setting up the database, copy the config file example to the `/etc` directory and edit it with the location of the master database (localhost if on same computer), and credentials to log into MySQL through control_user (which we will add to MySQL users in the next step:
@@ -325,9 +330,8 @@ $ sudo emacs -nw /etc/mysql/client.cnf
 character-set-server  = utf8mb4
 collation-server      = utf8mb4_unicode_ci
 ```
-==CHECK==
 
-To load these new configs, In phpMyAdmin go to the `mysql` table and change the view:  mysql -> Views -> user -> structure -> edit view -> Go. Then in the `mysql` table: operations -> collation -> ==HERE==.
+To load these new configs, In phpMyAdmin go to the `mysql` table and change the view:  mysql -> Views -> user -> structure -> edit view -> Go. Then in the `mysql` table: operations -> collation -> utf8mb4_unicode_ci -> Go.
 
 Now we can create the `control_user` (with the same password as written in the config file) under the User accounts tab. This user should be given all privileges and grant access over `localhost`. Set MariaDB to load the `control` database by default:
 ```
@@ -359,8 +363,7 @@ DO NOT give full permissions to the other files.
 
 ## Run SC 
 ### Set up Watchdog 
-The Watchdog program should always be running, as it gives us the ability to start all instrumentation/daemons automatically (if their ‘run’  flag is set).  This is the only program that needs to be run manually, and must be run with it's full path. First, we enter the path to the directory where `SC_Watchdog` is located into the Watchdog config: Config -> Edit Instrument Configuration:
-![](April%2010,%202024%20SC%20installation%20on%20Debian12/Screen%20Shot%202020-02-19%20at%209.51.34%20AM.png)
+The Watchdog program should always be running, as it gives us the ability to start all instrumentation/daemons automatically (if their ‘run’  flag is set).  This is the only program that needs to be run manually, and must be run with it's full path. First, we enter the path to the directory where `SC_Watchdog` is located into the Watchdog config: Config -> Edit Instrument Configuration.
 
 Then execute the program using the full path to start the Watchdog:
 ```
