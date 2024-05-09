@@ -1,5 +1,4 @@
-# April 10, 2024: SC installation on Debian12
-#lab notebook/2024/DAMIC# #slow control# #computing
+April 2024: SC installation on Debian12
 
 Refer to old notes (i.e. CentOS 7 install) for more detailed explanation of certain steps. Here we provide a “quick (-er)” guide to get the SC running on Debian 12 (DAMIC-M official OS).
 ## Dependencies
