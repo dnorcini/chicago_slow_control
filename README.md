@@ -1,6 +1,7 @@
+# April 10, 2024: SC installation on Debian12
+#lab notebook/2024/DAMIC# #slow control# #computing
 
 Refer to old notes (i.e. CentOS 7 install) for more detailed explanation of certain steps. Here we provide a “quick (-er)” guide to get the SC running on Debian 12 (DAMIC-M official OS).
-
 ## Dependencies
 * LAMP
   * Apache2 webserver, v2.4.59
@@ -10,7 +11,7 @@ Refer to old notes (i.e. CentOS 7 install) for more detailed explanation of cert
 * SC software
   * C/C++ dev tools
   * gcc, v12.2.0
-  
+
 ## LAMP Install
 ### Apache
 To install and start:
@@ -48,7 +49,7 @@ If you need to remove old  packages, [follow the purge instructions here:](https
 To work with our code, we DO NOT want to install MariaDB >v10 (otherwise, when you go to compile the SC code, you will get issues finding `myglobals.h` and `mysql.h` includes (even if you see them in the includes directory). Stick with v10:
 ```
 # apt-get install mariadb-server=“1:10.11.6-0+deb12u1”
-# apt-get install libariadb-dev
+# apt-get install libmariadb-dev
 
 # systemctl enable mariadb
 # systemctl start mariadb
@@ -142,6 +143,7 @@ Although it has not been supported in, forever, we continue to use php v5 until 
 # apt install software-properties-common ca-certificates lsb-release apt-transport-https
 # sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
 # wget -qO - https://packages.sury.org/php/apt.gpg | sudo apt-key add -
+# apt update
 # apt install php5.6 php5.6-mysqlnd php5.6-cli php5.6-gd php5.6-zip
 ```
 
@@ -193,6 +195,53 @@ Import `create_tables.sql` so that new tables can be created via phpMyAdmin:
 $ sudo mysql < /usr/share/phpMyAdmin/sql/create_tables.sql -uroot -p
 ```
 
+Create an alias in apache so we can access phpMyAdmin via http://localhost/phpmyadmin (copy and paste below into the file):
+```
+$ sudo emacs -nw /etc/apache2/conf-available/phpMyAdmin.conf
+
+Alias /phpMyAdmin /usr/share/phpMyAdmin
+Alias /phpmyadmin /usr/share/phpMyAdmin
+
+<Directory /usr/share/phpMyAdmin/>
+   AddDefaultCharset UTF-8
+
+   <IfModule mod_authz_core.c>
+     # Apache 2.4
+     <RequireAny> 
+      Require all granted
+     </RequireAny>
+   </IfModule>
+   <IfModule !mod_authz_core.c>
+     # Apache 2.2
+     Order Deny,Allow
+     Deny from All
+     Allow from 127.0.0.1
+     Allow from ::1
+   </IfModule>
+</Directory>
+
+<Directory /usr/share/phpMyAdmin/setup/>
+   <IfModule mod_authz_core.c>
+     # Apache 2.4
+     <RequireAny>
+       Require all granted
+     </RequireAny>
+   </IfModule>
+   <IfModule !mod_authz_core.c>
+     # Apache 2.2
+     Order Deny,Allow
+     Deny from All
+     Allow from 127.0.0.1
+     Allow from ::1
+   </IfModule>
+</Directory>
+```
+
+To reset settings:
+```
+$ sudo a2enconf phpmyadmin.conf 
+```
+
 Create a temp directory for phpMyAdmin, change permissions, and set ownership:
 ```
 $ ps aux | egrep '(apache)'
@@ -205,12 +254,6 @@ $ sudo systemctl apache2 restart
 
 Point browser to http://localhost/phpMyAdmin. If the login fails and complains about credentials, try resetting the root user info via `sudo mysql_secure_installation`.
 
-==????==
-touch /etc/apache2/conf-available/phpMyAdmin.conf 
-in conf-available
-sudo a2enconf phpmyadmin.conf 
-==????==
-
 ## Install SC software
 ### Get the source code
 Give your user sudo permissions (in this case, `damicm` is the username):
@@ -220,8 +263,13 @@ username ALL=(ALL:ALL) ALL
 su - damicm
 ```
 
-Copy the SC code from GitHub.
-==Note: if you want to keep up-to-date with any changes, you should [clone the repo](https://dylancastillo.co/how-to-use-github-deploy-keys/) instead of downloading the files==:
+Copy the SC code from GitHub. If you want to keep up-to-date with any changes, you should [clone the repo](https://dylancastillo.co/how-to-use-github-deploy-keys/) instead of downloading the files:
+```
+$ git clone git@github-chicago_SC:username/chicago_slow_control.git 
+$ git checkout damicm-debian12             
+```
+
+If you need to deploy key as a developer:
 ```
 $ ssh-keygen -t ed25519 -C "USERNAME@EMAIL.com"
 $ touch ~/.ssh/config 
@@ -237,13 +285,7 @@ $ cat ~/.ssh/id_ed25519.pub
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILs35pzG5jZakTEHDWeRErgkAmabhQj2yj/onxlIQgli USERNAME@EMAIL.com
 ```
 
-In your browser, go to the repo -> settings -> deploy keys -> add deploy key. Copy the public key. Do not check the box that gives you write access from the deploy key. Then clone repo:
-```
-$ git clone git@github-chicago_SC:username/chicago_slow_control.git              
-```
-
-Checkout the Debian 12 branch:
-==ADD==
+The owner will have to go into the browser: repo -> settings -> deploy keys -> add deploy key. Copy the public key. Do not check the box that gives you write access from the deploy key. Then clone repo.
 
 ### Configure
 To ensure any local changes you make don’t interfere with the code repo, it is best to make a copy of the pieces we need and put them in the appropriate directories:
@@ -301,6 +343,7 @@ LDFLAGS = `mariadb_config --libs`
 Without these new flags, you can get errors about undefined variables (can’t link to the shared library), multiple definitions, etc.. You can see which variables are loaded in the library via:
 ```
 $ nm -D /home/damicm/SC_backend/slow_control_code/lib/libslow-control.so
+```
 
 ### Set up the database
 Before setting up the database, copy the config file example to the `/etc` directory and edit it with the location of the master database (localhost if on same computer), and credentials to log into MySQL through control_user (which we will add to MySQL users in the next step:
@@ -331,7 +374,7 @@ character-set-server  = utf8mb4
 collation-server      = utf8mb4_unicode_ci
 ```
 
-To load these new configs, In phpMyAdmin go to the `mysql` table and change the view:  mysql -> Views -> user -> structure -> edit view -> Go. Then in the `mysql` table: operations -> collation -> utf8mb4_unicode_ci -> Go.
+To load these new configs, In phpMyAdmin go to the `mysql` table and change the view:  mysql -> Views -> user -> structure -> edit view -> Go. Then in the `mysql` table: operations -> collation -> utf8mb4_unicode_ci -> Go
 
 Now we can create the `control_user` (with the same password as written in the config file) under the User accounts tab. This user should be given all privileges and grant access over `localhost`. Set MariaDB to load the `control` database by default:
 ```
@@ -367,7 +410,7 @@ The Watchdog program should always be running, as it gives us the ability to sta
 
 Then execute the program using the full path to start the Watchdog:
 ```
-$ /home/damic/SC_backend/slow_control_code/SC_Watchdog/SC_Watchdog
+$ /home/damicm/SC_backend/slow_control_code/SC_Watchdog/SC_Watchdog
 ```
 
 To make this process more automatic, we can use an install script to link the shared libraries and start the Watchdog. The script is called `install.sh` within the `SC_backend/slow_code`directory. This creates a symbolic link to the slow control library and put it in our library path `/usr/local/lib`:
@@ -375,7 +418,7 @@ To make this process more automatic, we can use an install script to link the sh
 $ sudo /home/damicm/SC_backend/slow_control_code/install.sh
 ```
 
-It will also create a script `slow_start.sh` which starts the Watchdog, located in `/usr/local/bin`.  So this program executes upon boot, create a start-up service:
+It will also create a script `slow_start.sh` which starts the Watchdog, located in `/usr/local/bin`.  You will need to update the MySQL password in this file (this is a work around for a bug, not the best practice but it does the job). To have this program execute upon boot, create a start-up service:
 ```
 $ sudo emacs -nw /etc/systemd/system/slow-start.servce
 [Unit]
