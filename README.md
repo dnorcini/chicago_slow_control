@@ -464,16 +464,7 @@ You can check the last time the database logged an entry on the web interface. N
 ## Backup database
 This can be done however you choose. We provide a simple script (`SC_backend/Docs/backupsql.sh`) that dumps the specified databases into a .sql file and then rsyncs them onto our cluster. We send an email when the process is complete and delete backups older then a specified number of days. Copy this file and put it in the directory that you want it to run from.
 
-Instead of setting up an internal SMTP server to send the emails, it may be easier just to make a gmail account to use the google server to relay emails through mailx:
-```
-$ emacs -nw /etc/mail.rc
-  set smtp=smtps://smtp.gmail.com:465
-  set smtp-auth=login
-  set smtp-auth-user=your_email@gmail.com
-  set smtp-auth-password=TYPE_PASSWORD_HERE...
-  set ssl-verify=ignore
-  set nss-config-dir=/etc/pki/nssdb/
-```
+Instead of setting up an internal SMTP server to send the emails, it may be easier just to make a gmail account to use the google server to relay emails through mailutil, see: https://medium.com/@FlorenceOkoli/smtp-mailutils-how-to-send-your-mails-via-the-linux-terminal-6d95803a1104.
 
 To have the backup script run at a certain time every day (or whatever interval), set up a cronjob:
 ```
