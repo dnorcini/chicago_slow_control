@@ -66,6 +66,26 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 	  return(1);
 	}	
     }
+
+else if (strncmp(s_s->subtype, "drvpower", 8) == 0)  // Read out value for drive power [W]
+    {
+      
+      sprintf(cmd_string, "0010031602=?119\r");
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      msleep(200);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+      // output in 001031606000000000
+      int data_length = ret_string[9]-'0'; //C convert char to int
+      memmove(&ret_string[0], &ret_string[0]+10, sizeof(ret_string)-10);
+      memmove(&ret_string[0]+data_length, &ret_string[-1], sizeof(ret_string)-data_length); 
+
+      if(sscanf(ret_string, "%lf", val_out) != 1)
+	{
+	  fprintf(stderr, "Bad return string: \"%s\" in read drive power!\n", ret_string);
+	  return(1);
+	}	
+    }
   
   else       // Print an error if invalid subtype is entered
     {
