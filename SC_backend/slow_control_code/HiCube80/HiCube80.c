@@ -70,7 +70,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 else if (strncmp(s_s->subtype, "drvpower", 8) == 0)  // Read out value for drive power [W]
     {
       
-      sprintf(cmd_string, "0010031602=?119\r");
+      sprintf(cmd_string, "0010031602=?105\r");
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
