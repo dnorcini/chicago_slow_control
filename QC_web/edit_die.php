@@ -1,6 +1,6 @@
 <?php
-  // edit_ccd.php
-  // D.Norcini, UChicago, 2020
+  // edit_die.php
+  // D.Norcini, Hopkins, 2024
   //
 
 session_start();
@@ -8,7 +8,7 @@ $req_priv = "full";
 include("db_login.php");
 include("page_setup.php");
 
-$table = "CCD";
+$table = "DIE";
 
 if (!empty($_SESSION['req_id']))
   $_SESSION['choosen_ccd'] = $_SESSION['req_id'];
@@ -17,8 +17,8 @@ if (!empty($_SESSION['req_id']))
 if (!empty($_POST['choosen']))
   $_SESSION['choosen_ccd'] = $_POST['choosen'];
   
-if (empty($_SESSION['choosen_ccd']))
-  $_SESSION['choosen_ccd'] = 1;
+if (empty($_SESSION['choosen_die']))
+  $_SESSION['choosen_die'] = 1;
  
 //////////////////////////////////// New entry:
 
@@ -31,41 +31,41 @@ if (isset($_POST['new']))
     die ("Could not query the database <br />" . mysql_error());
   
   include("aux/get_last_table_id.php");
-  $_SESSION['choosen_ccd'] = $last_id;
+  $_SESSION['choosen_die'] = $last_id;
 }
 
 ////////////////////////////   Goto specific entry:
 
 if (isset($_POST['first']))
-  $_SESSION['choosen_ccd'] = 1;
+  $_SESSION['choosen_die'] = 1;
 
 if (isset($_POST['last']))
 {
-  include("aux/get_last_ccd_id.php");
-  $_SESSION['choosen_ccd'] = $last_id;
+  include("aux/get_last_die_id.php");
+  $_SESSION['choosen_die'] = $last_id;
 }
 if (isset($_POST['prev']))
-  $_SESSION['choosen_ccd'] -= 1;
+  $_SESSION['choosen_die'] -= 1;
   
 if (isset($_POST['next']))
-  $_SESSION['choosen_ccd'] += 1;
+  $_SESSION['choosen_die'] += 1;
 
-include("aux/get_last_ccd_id.php");
-if ($_SESSION['choosen_ccd'] < 1)
-  $_SESSION['choosen_ccd'] = 1;
+include("aux/get_last_die_id.php");
+if ($_SESSION['choosen_die'] < 1)
+  $_SESSION['choosen_die'] = 1;
 
-if ($_SESSION['choosen_ccd'] > $last_id)
-  $_SESSION['choosen_ccd'] =  $last_id;
+if ($_SESSION['choosen_die'] > $last_id)
+  $_SESSION['choosen_die'] =  $last_id;
 
 
-$id = (int)$_SESSION['choosen_ccd'];
+$id = (int)$_SESSION['choosen_die'];
 
 ////////////////////////////////////    Do table updates :
 
 if (isset($_POST['id']))
   {
   
-    $ccd_id = (int)$_POST['id'];
+    $die_id = (int)$_POST['id'];
 
     // clean up strings:
     $_POST['ccd_type'] = trim($_POST['ccd_type']);
