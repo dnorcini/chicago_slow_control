@@ -14,7 +14,10 @@ if (!$result)
 
 $glue_parm_values = array();
 $wb_parm_values = array();
-$testing_parm_values = array();
+$testing_noise_values = array();
+$testing_resolution_values = array();
+$testing_gain_values = array();
+$testing_dark_current_values = array();
 
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
   {
@@ -34,12 +37,36 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
     	  $wb_parm_values[] = NULL;
       }
    
-    foreach ($testing_parameter_names as $testing_parm_name)
+    foreach ($testing_noise_names as $testing_noise_name)
       {
-	if (isset($row[$testing_parm_name]))
-	  $testing_parm_values[] = (double)$row[$testing_parm_name];
+	if (isset($row[$testing_noise_name]))
+	  $testing_noise_values[] = (double)$row[$testing_noise_name];
 	else
-	  $testing_parm_values[] = NULL;
+	  $testing_noise_values[] = NULL;
+      }
+
+    foreach ($testing_resolution_names as $testing_resolution_name)
+      {
+	if (isset($row[$testing_resolution_name]))
+	  $testing_resolution_values[] = (double)$row[$testing_resolution_name];
+	else
+	  $testing_resolution_values[] = NULL;
+      }
+
+    foreach ($testing_gain_names as $testing_gain_name)
+      {
+	if (isset($row[$testing_gain_name]))
+	  $testing_gain_values[] = (double)$row[$testing_gain_name];
+	else
+	  $testing_gain_values[] = NULL;
+      }
+
+    foreach ($testing_dark_current_names as $testing_dark_current_name)
+      {
+	if (isset($row[$testing_dark_current_name]))
+	  $testing_dark_current_values[] = (double)$row[$testing_dark_current_name];
+	else
+	  $testing_dark_current_values[] = NULL;
       }
 
     if (isset($row['ID']))
@@ -77,20 +104,25 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
     else
       $location = "Unknown";
 
-    if (isset($row['Delivery_date']))
-      $delivery = $row['Delivery_date'];
+    if (isset($row['Packaging_date']))
+      $packaging = $row['Packaging_date'];
     else
-      $delivery = "";
+      $packaging = "";
 
     if (isset($row['Wafer_ID']))
       $wafer_id = $row['Wafer_ID'];
     else
-      $wafer_id = "0";
+      $wafer_id = "";
 
+    if (isset($row['Wafer_position']))
+      $wafer_position = $row['Wafer_position'];
+    else
+      $wafer_position = "";
+      
     if (isset($row['Production_date']))
       $production_date = $row['Production_date'];
     else
-      $production_date = "Unknown";
+      $production_date = "";
       
     if (isset($row['Note']))
       $note = $row['Note'];
@@ -156,6 +188,16 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
       $jfet_l2 = (int)$row['JFET_L2'];
     else
       $jfet_l2 = 0;
+
+    if (isset($row['Gluing_details']))
+      $gluing_details = $row['Gluing_details'];
+    else
+      $gluing_details = "";
+      
+    if (isset($row['Wirebonding_details']))
+      $wirebonding_details = $row['Wirebonding_details'];
+    else
+      $wirebonding_details = "";
       
     if (isset($row['AMP_U1']))
       $amp_u1 = (int)$row['AMP_U1'];
@@ -180,13 +222,38 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
     if (isset($row['Defects']))
       $defects = $row['Defects'];
     else
-      $defects = 0;
+      $defects = "";
 
-    if (isset($row['Defects_detail']))
-      $defects_detail = $row['Defects_detail'];
+   if (isset($row['Eff_resistivity']))
+      $eff_resistivity = $row['Eff_resistivity'];
     else
-      $defects_detail = "";
- }
+      $eff_resistivity = "";
+
+   if (isset($row['Test_temp']))
+      $test_temp = $row['Test_temp'];
+    else
+      $test_temp = NULL;
+
+   if (isset($row['Test_vref']))
+      $test_vref = $row['Test_vref'];
+    else
+      $test_vref = NULL;
+
+   if (isset($row['Tester']))
+      $tester = $row['Tester'];
+    else
+      $tester = "Unknown";
+
+   if (isset($row['Test_date']))
+      $test_date = $row['Test_date'];
+    else
+      $test_date = "";
+      
+   if (isset($row['Test_details']))
+      $test_details = $row['Test_details'];
+    else
+      $test_details = "";
+}
 
 
 $glue_parm_values = array_combine($glue_parameter_names, $glue_parm_values);
@@ -201,8 +268,28 @@ $wb_radon = $wb_parm_values["Wb_radon"];
 $wb_power = $wb_parm_values["Wb_power"];
 $wb_time = $wb_parm_values["Wb_time"];
 
-$testing_parm_values = array_combine($testing_parameter_names, $testing_parm_values);
-$dark_current = $testing_parm_values["Dark_current"];
-$resolution = $testing_parm_values["Resolution"];
-$eff_resistivity = $testing_parm_values["Eff_resistivity"];
+$testing_noise_values = array_combine($testing_noise_names, $testing_noise_values);
+$noise_u1 = $testing_noise_values["Noise_U1"];
+$noise_l1 = $testing_noise_values["Noise_L1"];
+$noise_u2 = $testing_noise_values["Noise_U2"];
+$noise_l2 = $testing_noise_values["Noise_L2"];
+
+$testing_resolution_values = array_combine($testing_resolution_names, $testing_resolution_values);
+$resolution_u1 = $testing_resolution_values["Resolution_U1"];
+$resolution_l1 = $testing_resolution_values["Resolution_L1"];
+$resolution_u2 = $testing_resolution_values["Resolution_U2"];
+$resolution_l2 = $testing_resolution_values["Resolution_L2"];
+
+$testing_gain_values = array_combine($testing_gain_names, $testing_gain_values);
+$gain_u1 = $testing_gain_values["Gain_U1"];
+$gain_l1 = $testing_gain_values["Gain_L1"];
+$gain_u2 = $testing_gain_values["Gain_U2"];
+$gain_l2 = $testing_gain_values["Gain_L2"];
+
+$testing_dark_current_values = array_combine($testing_dark_current_names, $testing_dark_current_values);
+$dark_current_u1 = $testing_dark_current_values["Dark_current_U1"];
+$dark_current_l1 = $testing_dark_current_values["Dark_current_L1"];
+$dark_current_u2 = $testing_dark_current_values["Dark_current_U2"];
+$dark_current_l2 = $testing_dark_current_values["Dark_current_L2"];
+
 ?>

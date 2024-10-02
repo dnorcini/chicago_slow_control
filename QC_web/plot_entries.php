@@ -38,7 +38,7 @@ echo ('</TABLE>');
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 
 //ADD ALL PARAMETERS TO SAME ARRAY
-$ccd_parameter_names = array_merge($glue_parameter_names, $wb_parameter_names, $testing_parameter_names);
+$ccd_parameter_names = array_merge($glue_parameter_names, $wb_parameter_names, $testing_noise_names, $testing_resolution_names, $testing_gain_names, $testing_dark_current_names);
 
 if ($_SESSION['choose_type'] == "CCDs")
   {

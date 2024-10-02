@@ -65,10 +65,12 @@ if ($_SESSION['choose_type'] == "Summary")
      echo ('<TH align="left">');  echo ('Name');     echo ('</TH>');
      echo ('<TH align="left">');  echo ('Type');       echo ('</TH>');
      echo ('<TH align="left">');  echo ('Size');     echo ('</TH>');
-     echo ('<TH align="left">');  echo ('Status');     echo ('</TH>');
-     echo ('<TH align="left">');  echo ('Location');   echo ('</TH>');
-     echo ('<TH align="left">');  echo ('Dark Current');   echo ('</TH>');
-     echo ('<TH align="left">');  echo ('Resolution');   echo ('</TH>');
+     echo ('<TH align="left">');  echo ('Wafer ID'); echo ('</TH>');
+     echo ('<TH align="left">');  echo ('Wafer position'); echo ('</TH>');
+     echo ('<TH align="left">');  echo ('Status');     echo ('</TH>');	
+     echo ('<TH align="left">');  echo ('Current location');   echo ('</TH>');
+     //echo ('<TH align="left">');  echo ('Dark current');   echo ('</TH>');
+     //echo ('<TH align="left">');  echo ('Resolution');   echo ('</TH>');	
      echo ('</TR>');
     
      $table = "CCD";
@@ -81,14 +83,14 @@ if ($_SESSION['choose_type'] == "Summary")
 	 /////////////  Get selected ccd values:
 	 include("aux/get_ccd_vals.php");
 
-	 if ($status=='Science-grade')
-	   {
-	     $ave_DC += $dark_current;
-	     $ave_DC_count++;
+//	 if ($status=='Science-grade')
+//	   {
+//	     $ave_DC += $dark_current;
+//	     $ave_DC_count++;
 
-             $ave_Res += $dark_current;
-             $ave_Res_count++;
-           }
+//           $ave_Res += $resolution;
+//           $ave_Res_count++;
+//         }
          echo ('<TR>');
 	 echo ('<TD align="left">'); 
 	 echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
@@ -97,11 +99,13 @@ if ($_SESSION['choose_type'] == "Summary")
 
 	 echo ('<TD align="left">'); echo ($name);   echo ('</TD>');
 	 echo ('<TD align="left">'); echo ($ccd_type); echo ('</TD>');
-	 echo ('<TD align="left">'); echo ($size);   echo ('</TD>');	
+	 echo ('<TD align="left">'); echo ($size);   echo ('</TD>');
+	 echo ('<TD align="left">'); echo ($wafer_id);  echo('</TD>');
+         echo ('<TD align="left">'); echo ($wafer_position);  echo('</TD>');
 	 echo ('<TD align="left">'); echo ($status);   echo ('</TD>');
 	 echo ('<TD align="left">'); echo ($location); echo ('</TD>');
-	 echo ('<TD align="left">'); echo ($dark_current); echo ('</TD>');
-         echo ('<TD align="left">'); echo ($resolution);   echo ('</TD>');
+	 //echo ('<TD align="left">'); echo ($dark_current); echo ('</TD>');
+         //echo ('<TD align="left">'); echo ($resolution);   echo ('</TD>');
 	 echo ('</TR>');
        }
     
@@ -109,9 +113,9 @@ if ($_SESSION['choose_type'] == "Summary")
 	 
 echo ('</TABLE>');
 
-echo("Average Dark Current (Science-grade only) = ".$ave_DC/$ave_DC_count." e-/pixel/image");
-echo("<br>");
-echo("Average Resolution (Science-grade only) = ".$ave_Res/$ave_Res_count." e-");
+//echo("Average Dark Current (Science-grade only) = ".$ave_DC/$ave_DC_count." e-/pixel/image");
+//echo("<br>");
+//echo("Average Resolution (Science-grade only) = ".$ave_Res/$ave_Res_count." e-");
 
 mysql_close($connection);
 echo(' </body>');

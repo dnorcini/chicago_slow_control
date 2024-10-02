@@ -30,8 +30,8 @@ if (empty($_SESSION['scatt_y_sensor']))
     $_SESSION['scatt_y_sensor'] = $plot_type_array[0];
 
 //ADD ALL PARAMETERS TO SAME ARRAY
-$ccd_parameter_names = array_merge($glue_parameter_names, $wb_parameter_names, $testing_parameter_names);
-$ccd_parameter_units = array_merge($glue_parameter_units, $wb_parameter_units, $testing_parameter_units);
+$ccd_parameter_names = array_merge($glue_parameter_names, $wb_parameter_names, $testing_noise_names, $testing_resolution_names, $testing_gain_names, $testing_dark_current_names);
+$ccd_parameter_units = array_merge($glue_parameter_units, $wb_parameter_units, $testing_noise_units, $testing_resolution_units, $testing_gain_units, $testing_dark_current_units);
 
 echo ('<TABLE border="0" cellpadding="20" width=100%>');
 echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
