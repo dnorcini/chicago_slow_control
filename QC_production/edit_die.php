@@ -118,119 +118,142 @@ if (isset($_POST['id'])) {
     $file_fields = ['trace_file'];
     $log_fields = ['trace_log'];
 
-
     // Add image fields dynamically for image1 to image6
     for ($i = 1; $i <= 6; $i++) {
-	$file_fields[] = 'image' . $i . '_file';
-	$log_fields[] = 'image' . $i . '_log';
-
+        $file_fields[] = 'image' . $i . '_file';
+        $log_fields[] = 'image' . $i . '_log';
     }
 
     // Ensure the session arrays are initialized if not already
     if (!isset($_SESSION['file_url_' . $die_id])) {
-	$_SESSION['file_url_' . $die_id] = [];
+        $_SESSION['file_url_' . $die_id] = [];
     }
     if (!isset($_SESSION['file_exists_' . $die_id])) {
-	$_SESSION['file_exists_' . $die_id] = [];
+        $_SESSION['file_exists_' . $die_id] = [];
     }
-
     if (!isset($_SESSION['log_url_' . $die_id])) {
-	$_SESSION['log_url_' . $die_id] = [];
+        $_SESSION['log_url_' . $die_id] = [];
     }
     if (!isset($_SESSION['log_exists_' . $die_id])) {
-	$_SESSION['log_exists_' . $die_id] = [];
+        $_SESSION['log_exists_' . $die_id] = [];
     }
 
     // Loop through all file fields (trace and image files)
     foreach ($file_fields as $file_field) {
-	$file_exists = false;  // Initialize existence flag
-	$file_name = '';       // Initialize file name
+        $file_exists = false;  // Initialize existence flag
+        $file_name = '';       // Initialize file name
 
-	// Handle new file uploads if the form has been submitted
-	if (isset($_FILES[$file_field]) && $_FILES[$file_field]['error'] == 0) {
+        // Handle new file uploads if the form has been submitted
+        if (isset($_FILES[$file_field]) && $_FILES[$file_field]['error'] == 0) {
 
             // Get file extension and ensure it matches allowed types
             $file_type = $_FILES[$file_field]['type'];
             if (in_array($file_type, $allowed_types)) {
-		// Create a unique filename for the file
-		$file_name = $file_field . '.' . pathinfo($_FILES[$file_field]['name'], PATHINFO_EXTENSION);
-		$target_path = $upload_dir . $file_name;
+                // Create a unique filename for the file
+                $file_name = $file_field . '.' . pathinfo($_FILES[$file_field]['name'], PATHINFO_EXTENSION);
+                $target_path = $upload_dir . $file_name;
 
-		// Move uploaded file to target directory (this will overwrite the existing file)
-		if (file_exists($target_path)) {
+                // Move uploaded file to target directory (this will overwrite the existing file)
+                if (file_exists($target_path)) {
                     unlink($target_path); // Delete the old file
-		}
+                }
 
-		if (move_uploaded_file($_FILES[$file_field]['tmp_name'], $target_path)) {
+                if (move_uploaded_file($_FILES[$file_field]['tmp_name'], $target_path)) {
                     // Save the file name to the session specific to this die
                     $_SESSION['file_url_' . $die_id][$file_field] = $base_url . '/' . $file_name;
                     $_SESSION['file_exists_' . $die_id][$file_field] = true;
-		} else {
+                } else {
                     echo "Failed to upload file: " . $file_name . '<br>';
-		}
+                }
             } else {
-		echo "Invalid file type for: " . $_FILES[$file_field]['name'] . '<br>';
+                echo "Invalid file type for: " . $_FILES[$file_field]['name'] . '<br>';
             }
-	} else {
+        } else {
             // No new upload, but check if there is an existing session value
             if (isset($_SESSION['file_url_' . $die_id][$file_field])) {
-		echo "$file_field session file_url: " . $_SESSION['file_url_' . $die_id][$file_field] . '<br>';
+                echo "$file_field session file_url: " . $_SESSION['file_url_' . $die_id][$file_field] . '<br>';
             }
-	}
+        }
     }
 
     // Loop through all log fields (trace and image logs)
     foreach ($log_fields as $log_field) {
-    	    $log_exists = false;  // Initialize existence flag
-    	    $log_name = '';       // Initialize log name
+        $log_exists = false;  // Initialize existence flag
+        $log_name = '';       // Initialize log name
 
-    	    // Handle new log uploads if the form has been submitted
-    	    if (isset($_FILES[$log_field]) && $_FILES[$log_field]['error'] == 0) {
+        // Handle new log uploads if the form has been submitted
+        if (isset($_FILES[$log_field]) && $_FILES[$log_field]['error'] == 0) {
 
             // Get log extension and ensure it matches allowed types
             $log_extension = strtolower(pathinfo($_FILES[$log_field]['name'], PATHINFO_EXTENSION));
 
             // Check if the file has the correct extension
             if ($log_extension === 'log') {
-               // Create a unique log name for the log
-               $log_name = $log_field . '.' . $log_extension;
-               $target_path = $upload_dir . $log_name;
+                // Create a unique log name for the log
+                $log_name = $log_field . '.' . $log_extension;
+                $target_path = $upload_dir . $log_name;
 
-               // Move uploaded log to target directory (this will overwrite the existing log)
-               if (file_exists($target_path)) {
-                  unlink($target_path); // Delete the old log
+                // Move uploaded log to target directory (this will overwrite the existing log)
+                if (file_exists($target_path)) {
+                    unlink($target_path); // Delete the old log
                 }
 
-            	if (move_uploaded_file($_FILES[$log_field]['tmp_name'], $target_path)) {
-                   // Save the log name to the session specific to this die
-                   $_SESSION['log_url_' . $die_id][$log_field] = $base_url . '/' . $log_name;
-                   $_SESSION['log_exists_' . $die_id][$log_field] = true;
-            	} else {
-                  echo "Failed to upload log: " . $log_name . '<br>';
+                if (move_uploaded_file($_FILES[$log_field]['tmp_name'], $target_path)) {
+                    // Save the log name to the session specific to this die
+                    $_SESSION['log_url_' . $die_id][$log_field] = $base_url . '/' . $log_name;
+                    $_SESSION['log_exists_' . $die_id][$log_field] = true;
+                } else {
+                    echo "Failed to upload log: " . $log_name . '<br>';
                 }
-       	    } else {
-              echo "Invalid file type for: " . $_FILES[$log_field]['name'] . '<br>';
+            } else {
+                echo "Invalid file type for: " . $_FILES[$log_field]['name'] . '<br>';
             }
-    	  } else {
+        } else {
             // No new upload, but check if there is an existing session value
             if (isset($_SESSION['log_url_' . $die_id][$log_field])) {
-            echo "$log_field session log_url: " . $_SESSION['log_url_' . $die_id][$log_field] . '<br>';
-          }
+                echo "$log_field session log_url: " . $_SESSION['log_url_' . $die_id][$log_field] . '<br>';
+            }
+        }
     }
-}
 
     // ======================
-    // Loop Through Amplifiers for Other Fields
+    // Handle Form Fields and Amplifiers
     // ======================
+    
+    // Include all relevant form fields to update
+    $fields = array('name', 'status', 'wafer_id', 'wafer_position', 'activation', 'tester', 'test_date', 'test_time', 'chamber', 'temp', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_L1', 'grade_L2', 'grade_U1', 'grade_U2', 'notes', 'notes_L1', 'notes_L2', 'notes_U1', 'notes_U2', 'reviewer');
+    $checkboxes = ['check_L1', 'check_L2', 'check_U1', 'check_U2'];
+    $fields = array_merge($fields, $checkboxes);
+    $fields = array_merge($fields, $trace_fields);
+    $fields = array_merge($fields, $image_fields);
+
+    // Iterate over each checkbox to set them to 0 if not set in POST
+    foreach ($checkboxes as $checkbox) {
+    	    $_POST[$checkbox] = isset($_POST[$checkbox]) ? $_POST[$checkbox] : 0;
+    }
+
+    // Initialize an array to hold the parts of the query
+    $query_parts = array();
+
+    // Loop through regular form fields and construct query parts
+    foreach ($fields as $field) {
+    	    // Special handling for checkboxes
+    	    if (in_array($field, $checkboxes)) {
+               // Include the checkbox even if its value is 0
+               $query_parts[] = "`$field` = '" . mysql_real_escape_string($_POST[$field]) . "'";
+    	    } else {
+              // For other fields, keep the existing condition to avoid empty values
+              if (array_key_exists($field, $_POST) && !empty($_POST[$field])) {
+              	 $query_parts[] = "`$field` = '" . mysql_real_escape_string($_POST[$field]) . "'";
+              }
+    	   }
+     }
+
+    // Handle dynamic fields for amplifiers
     foreach ($amplifiers as $amp) {
-        // Loop through trace fields related to amplifiers
         foreach ($trace_fields as $base_field) {
             $field_name = $base_field . $amp; // E.g., trace_saturation_L1
-
-            // Initialize the field in the array using $_POST if available, or set a default value
             $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
-
-            // Add this to the query if it's not empty
             if (!empty($dynamic_fields[$field_name])) {
                 $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
             }
@@ -240,11 +263,7 @@ if (isset($_POST['id'])) {
         foreach ($image_numbers as $number_field) {
             foreach ($image_fields as $base_field) {
                 $field_name = 'image' . $number_field . $base_field . $amp; // E.g., image1_tracks_L1
-
-                // Initialize the field in the array using $_POST if available, or set a default value
                 $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
-
-                // Add this to the query if it's not empty
                 if (!empty($dynamic_fields[$field_name])) {
                     $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
                 }
@@ -261,6 +280,7 @@ if (isset($_POST['id'])) {
         }
     }
 }
+
 
 // Fetch die details again after updates
 include("aux/get_die_vals.php");
@@ -389,7 +409,6 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		<?php generate_dropdown('grade_L1', $grade_array, $grade_L1); ?>
             </td>
             <td style="width: 5%;">
-                <!-- Hidden field to ensure unchecked checkboxes are handled -->
                 <input type="hidden" name="check_L1" value="0">
 		<input type="checkbox" name="check_L1" value="1" <?php echo ($check_L1 == 1) ? 'checked' : ''; ?>>
             </td>
@@ -399,7 +418,6 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		<?php generate_dropdown('grade_L2', $grade_array, $grade_L2); ?>
             </td>
             <td style="width: 5%;">
-                <!-- Hidden field to ensure unchecked checkboxes are handled -->
                 <input type="hidden" name="check_L2" value="0">
 		<input type="checkbox" name="check_L2" value="1" <?php echo ($check_L2 == 1) ? 'checked' : ''; ?>>
             </td>
@@ -409,7 +427,6 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		<?php generate_dropdown('grade_U1', $grade_array, $grade_U1); ?>
             </td>
             <td style="width: 5%;">
-                <!-- Hidden field to ensure unchecked checkboxes are handled -->
                 <input type="hidden" name="check_U1" value="0">
 		<input type="checkbox" name="check_U1" value="1" <?php echo ($check_U1 == 1) ? 'checked' : ''; ?>>
             </td>
@@ -419,7 +436,6 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		<?php generate_dropdown('grade_U2', $grade_array, $grade_U2); ?>
             </td>
             <td style="width: 5%;">
-                <!-- Hidden field to ensure unchecked checkboxes are handled -->
                 <input type="hidden" name="check_U2" value="0">
 		<input type="checkbox" name="check_U2" value="1" <?php echo ($check_U2 == 1) ? 'checked' : ''; ?>>
             </td>
@@ -900,7 +916,6 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		    // File exists, keep the session variables and show the icon
 		    $file_exists = true;
 		    $file_url = $_SESSION['file_url_' . $die_id]['image3_file'];
-		    echo "image3_file exists, URL: " . $file_url . "<br>";
 		} else {
 		    // File does not exist, clear the session variables and remove the icon
 		    $file_exists = false;
@@ -1006,7 +1021,6 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		    // File exists, keep the session variables and show the icon
 		    $file_exists = true;
 		    $file_url = $_SESSION['file_url_' . $die_id]['image4_file'];
-		    echo "image4_file exists, URL: " . $file_url . "<br>";
 		} else {
 		    // File does not exist, clear the session variables and remove the icon
 		    $file_exists = false;
@@ -1110,7 +1124,6 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		    // File exists, keep the session variables and show the icon
 		    $file_exists = true;
 		    $file_url = $_SESSION['file_url_' . $die_id]['image5_file'];
-		    echo "image5_file exists, URL: " . $file_url . "<br>";
 		} else {
 		    // File does not exist, clear the session variables and remove the icon
 		    $file_exists = false;
@@ -1226,7 +1239,6 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		    // File exists, keep the session variables and show the icon
 		    $file_exists = true;
 		    $file_url = $_SESSION['file_url_' . $die_id]['image6_file'];
-		    echo "image6_file exists, URL: " . $file_url . "<br>";
 		} else {
 		    // File does not exist, clear the session variables and remove the icon
 		    $file_exists = false;
