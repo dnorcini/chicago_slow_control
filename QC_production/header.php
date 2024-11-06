@@ -59,19 +59,38 @@ if (strpos($_SERVER['PHP_SELF'], "list_entries.php") === false)
     if (check_access($_SESSION['privileges'], "basic", $allowed_host_array))
     {
 	echo('<TH>');
-	echo('<A HREF="list_entries.php">List</A>');
+	echo('<A HREF="list_entries.php">DIE</A>');
 	echo('</TH>'); 
     }
 }
-
 
 if (strpos($_SERVER['PHP_SELF'], "edit_die.php") === false)
 {
     if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
     {
-	echo('<TH>');
-	echo('<A HREF="edit_die.php">DIE Details</A>');
-	echo('</TH>'); 
+        echo('<TH>');
+        echo('<A HREF="edit_die.php">DIE Details</A>');
+        echo('</TH>');
+    }
+}
+
+if (strpos($_SERVER['PHP_SELF'], "list_module_surface_entries.php") === false)
+{
+    if (check_access($_SESSION['privileges'], "basic", $allowed_host_array))
+    {
+        echo('<TH>');
+        echo('<A HREF="list_module_surface_entries.php">MODULES</A>');
+        echo('</TH>');
+    }
+}
+
+if (strpos($_SERVER['PHP_SELF'], "edit_module_surface.php") === false)
+{
+    if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
+    {
+        echo('<TH>');
+        echo('<A HREF="edit_module_surface.php">MODULE SURFACE Details</A>');
+        echo('</TH>');
     }
 }
 

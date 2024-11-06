@@ -70,11 +70,18 @@ $feedthru_positions = array(" ", "1", "2", "3", "4");
 $yes_no_blank_array = array(" ", "Yes", "No");
 
 // Amplifier labels (assuming it's a list of amplifiers for L1, L2, U1, U2, etc.)
+$amp_array = array(" ", "L1", "L2", "U1", "U2"); 
 $amplifiers = array("L1", "L2", "U1", "U2");
+
+// CCD label
+$ccds = array("A", "B", "C", "D");
 
 // Define trace fields
 $trace_fields = array(
     'trace_saturation_', 'trace_comments_', 'trace_reference_'
+);
+$trace_fields_low = array(
+    'trace_low_saturation_', 'trace_low_comments_', 'trace_low_reference_'
 );
 
 // Define other image-related fields (for defect maps, tracks, etc.)
@@ -84,4 +91,6 @@ $image_fields = array(
 );
 
 $image_numbers = array("1_", "2_", "3_", "4_", "5_", "6_");
+$image_numbers_low = array("1_low_", "2_low_", "3_low_", "4_low_", "5_low_", "6_low_");
+$image_numbers_high = array("1_high_", "2_high_", "3_high_", "4_high_", "5_high_", "6_high_");
 ?>

@@ -1,22 +1,18 @@
 <?php
 // scatter_entries.php
-// based on slow_control_scatter.php
-// D.Norcini, UChicago, 2020
-//
+// D.Norcini, Hopkins, 2024
+
 session_start();
 $req_priv = "full";
 include("db_login.php");
 include("page_setup.php");
+include("jpgraph/jpgraph.php");
+include("jpgraph/jpgraph_scatter.php");
+include("jpgraph/jpgraph_line.php");
+include("jpgraph/jpgraph_plotline.php");
 
-include ("jpgraph/jpgraph.php");
-include	("jpgraph/jpgraph_scatter.php");
-include	("jpgraph/jpgraph_line.php");
-include ("jpgraph/jpgraph_plotline.php");
+$plot_type_array = array("DIEs");
 
-$plot_type_array = array(
-			"DIEs",
-			);
-			
 ///////  Find which sensors we want to plot
 if (!empty($_POST['x_sensor_selection']))
      $_SESSION['scatt_x_sensor'] = $_POST['x_sensor_selection'];
@@ -25,25 +21,64 @@ if (!empty($_POST['y_sensor_selection']))
 
 if (empty($_SESSION['scatt_x_sensor']))
     $_SESSION['scatt_x_sensor'] = $plot_type_array[0];
-
 if (empty($_SESSION['scatt_y_sensor']))
     $_SESSION['scatt_y_sensor'] = $plot_type_array[0];
 
-//ADD ALL PARAMETERS TO SAME ARRAY
-$die_parameter_names = array_merge($glue_parameter_names, $wb_parameter_names, $testing_parameter_names);
-$die_parameter_units = array_merge($glue_parameter_units, $wb_parameter_units, $testing_parameter_units);
+$die_parameter_names = array(
+    "Activation",
+    "Temp",
+    "Image1_Noise_L1",
+    "Image1_Noise_L2",
+    "Image1_Noise_U1",
+    "Image1_Noise_U2",
+    "Image2_Pixel_Defects_L1",
+    "Image2_Pixel_Defects_L2",
+    "Image2_Pixel_Defects_U1",
+    "Image2_Pixel_Defects_U2",
+    "Image2_Noise_Overscan_L1",
+    "Image2_Noise_Overscan_L2",
+    "Image2_Noise_Overscan_U1",
+    "Image2_Noise_Overscan_U2",
+    "Image2_CTI_Code_L1",
+    "Image2_CTI_Code_L2",
+    "Image2_CTI_Code_U1",
+    "Image2_CTI_Code_U2",
+    "Image3_Pixel_Defects_L1",
+    "Image3_Pixel_Defects_L2",
+    "Image3_Pixel_Defects_U1",
+    "Image3_Pixel_Defects_U2",
+    "Image3_Noise_Overscan_L1",
+    "Image3_Noise_Overscan_L2",
+    "Image3_Noise_Overscan_U1",
+    "Image3_Noise_Overscan_U2",
+    "Image3_CTI_Code_L1",
+    "Image3_CTI_Code_L2",
+    "Image3_CTI_Code_U1",
+    "Image3_CTI_Code_U2",
+    "Image4_Dark_Current_L1",
+    "Image4_Dark_Current_L2",
+    "Image4_Dark_Current_U1",
+    "Image4_Dark_Current_U2",
+    "Image6_CTI_Code_L1",
+    "Image6_CTI_Code_L2",
+    "Image6_CTI_Code_U1",
+    "Image6_CTI_Code_U2",
+    "Image6_Noise_Overscan_L1",
+    "Image6_Noise_Overscan_L2",
+    "Image6_Noise_Overscan_U1",
+    "Image6_Noise_Overscan_U2"
+);
 
 echo ('<TABLE border="0" cellpadding="20" width=100%>');
 echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
-
 echo ('<TH align="left">');
 echo ('X parameter selection: <select name="x_sensor_selection">');
 foreach ($die_parameter_names as $sensor_name)
 {
     echo('<option ');
-    if (strcmp($sensor_name ,$_SESSION['scatt_x_sensor']) == 0)
+    if (strcmp($sensor_name, $_SESSION['scatt_x_sensor']) == 0)
     {
-    echo ('selected="selected"');
+        echo ('selected="selected"');
     }
     echo(' value="'.$sensor_name.'" >'.$sensor_name.' </option> ');
 }
@@ -56,9 +91,9 @@ echo ('Y parameter selection: <select name="y_sensor_selection">');
 foreach ($die_parameter_names as $sensor_name)
 {
     echo('<option ');
-    if (strcmp($sensor_name ,$_SESSION['scatt_y_sensor']) == 0)
+    if (strcmp($sensor_name, $_SESSION['scatt_y_sensor']) == 0)
     {
-    echo ('selected="selected"');
+        echo ('selected="selected"');
     }
     echo(' value="'.$sensor_name.'" >'.$sensor_name.' </option> ');
 }
@@ -91,11 +126,12 @@ if (empty($_SESSION['single_view_x_size']))
 $plot_name = "jpgraph_cache/plot_scatter.png";
 $plot_title = "Scatter Plot";
 
-$query = "SELECT id, ".$x_sensor_name." FROM DIE LIMIT 500";
+// Properly include the variables in the SQL queries using backticks
+$query = "SELECT `id`, `" . $x_sensor_name . "` FROM DIE LIMIT 500";
 $result = mysql_query($query);
 if (!$result)
 {	
-    die ("Could not query the database <br />" . mysql_error());
+    die ("Could not query the database <br />" . mysql_error() . "<br>Query: " . $query);
 }
 
 $id_x = array();
@@ -106,11 +142,11 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
     $x[] = (double)$row[$x_sensor_name];
 }
 
-$query = "SELECT id, ".$y_sensor_name." FROM DIE LIMIT 500";
+$query = "SELECT `id`, `" . $y_sensor_name . "` FROM DIE LIMIT 500";
 $result = mysql_query($query);
 if (!$result)
 {
-    die ("Could not query the database <br />" . mysql_error());
+    die ("Could not query the database <br />" . mysql_error() . "<br>Query: " . $query);
 }
 
 $id_y = array();
@@ -121,8 +157,9 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
     $y[] = (double)$row[$y_sensor_name];
 }
 
-$y = interpolate_arrays($x, $y, $id_x, $id_y);
+// Rest of the code remains the same as before
 
+$y = interpolate_arrays($x, $y, $id_x, $id_y);
 
 if (!empty($_POST['lin_reg']))
     $y_reg = linear_regression($x, $y);
@@ -139,10 +176,10 @@ $graph->SetBackgroundGradient('darkblue','blue', GRAD_MIDHOR, BGRAD_PLOT);
 $graph->SetColor("darkblue");
 $graph->SetMarginColor($_SESSION['bgcolour']);
 $graph->img->SetMargin(100, 20, 10, 50);  
-$graph ->xgrid->Show(true);
-$graph ->ygrid->Show(true);
-$graph ->xgrid->SetColor("black");
-$graph ->ygrid->SetColor("black");
+$graph->xgrid->Show(true);
+$graph->ygrid->Show(true);
+$graph->xgrid->SetColor("black");
+$graph->ygrid->SetColor("black");
 $graph->xaxis->title->Set($x_sensor_name." (".$die_parameter_units[$x_sensor_name].")");
 $graph->yaxis->title->Set($y_sensor_name." (".$die_parameter_units[$y_sensor_name].")");	
 $graph->xaxis->SetTitleMargin(10);
@@ -156,7 +193,7 @@ $graph->Add($scatterplot);
 
 if (!empty($y_reg))
 {
-    $x_reg=array(min($x), max($x)); 
+    $x_reg = array(min($x), max($x)); 
     $linereg = new LinePlot(array($y_reg[0], $y_reg[1]), $x_reg);	
     $linereg->SetColor("green");
     $graph->AddLine($linereg);

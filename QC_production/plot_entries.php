@@ -38,7 +38,50 @@ echo ('</TABLE>');
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 
 //ADD ALL PARAMETERS TO SAME ARRAY
-$die_parameter_names = array_merge($glue_parameter_names, $wb_parameter_names, $testing_parameter_names);
+$die_parameter_names = array(
+    "Activation",
+    "Temp",
+    "Image1_Noise_L1",
+    "Image1_Noise_L2",
+    "Image1_Noise_U1",
+    "Image1_Noise_U2",
+    "Image2_Pixel_Defects_L1",
+    "Image2_Pixel_Defects_L2",
+    "Image2_Pixel_Defects_U1",
+    "Image2_Pixel_Defects_U2",
+    "Image2_Noise_Overscan_L1",
+    "Image2_Noise_Overscan_L2",
+    "Image2_Noise_Overscan_U1",
+    "Image2_Noise_Overscan_U2",
+    "Image2_CTI_Code_L1",
+    "Image2_CTI_Code_L2",
+    "Image2_CTI_Code_U1",
+    "Image2_CTI_Code_U2",
+    "Image3_Pixel_Defects_L1",
+    "Image3_Pixel_Defects_L2",
+    "Image3_Pixel_Defects_U1",
+    "Image3_Pixel_Defects_U2",
+    "Image3_Noise_Overscan_L1",
+    "Image3_Noise_Overscan_L2",
+    "Image3_Noise_Overscan_U1",
+    "Image3_Noise_Overscan_U2",
+    "Image3_CTI_Code_L1",
+    "Image3_CTI_Code_L2",
+    "Image3_CTI_Code_U1",
+    "Image3_CTI_Code_U2",
+    "Image4_Dark_Current_L1",
+    "Image4_Dark_Current_L2",
+    "Image4_Dark_Current_U1",
+    "Image4_Dark_Current_U2",
+    "Image6_CTI_Code_L1",
+    "Image6_CTI_Code_L2",
+    "Image6_CTI_Code_U1",
+    "Image6_CTI_Code_U2",
+    "Image6_Noise_Overscan_L1",
+    "Image6_Noise_Overscan_L2",
+    "Image6_Noise_Overscan_U1",
+    "Image6_Noise_Overscan_U2"
+);
 
 if ($_SESSION['choose_type'] == "DIEs")
   {

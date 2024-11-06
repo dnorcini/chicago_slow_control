@@ -221,7 +221,7 @@ if (isset($_POST['id'])) {
     // ======================
     
     // Include all relevant form fields to update
-    $fields = array('name', 'status', 'wafer_id', 'wafer_position', 'activation', 'tester', 'test_date', 'test_time', 'chamber', 'temp', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_L1', 'grade_L2', 'grade_U1', 'grade_U2', 'notes', 'notes_L1', 'notes_L2', 'notes_U1', 'notes_U2', 'reviewer');
+    $fields = array('name', 'status', 'wafer_id', 'wafer_position', 'activation', 'humidity', 'radon', 'tester', 'test_date', 'test_time', 'chamber', 'temp', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_L1', 'grade_L2', 'grade_U1', 'grade_U2', 'notes', 'notes_L1', 'notes_L2', 'notes_U1', 'notes_U2', 'reviewer');
     $checkboxes = ['check_L1', 'check_L2', 'check_U1', 'check_U2'];
     $fields = array_merge($fields, $checkboxes);
     $fields = array_merge($fields, $trace_fields);
@@ -393,6 +393,14 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
                 UW Activation [days]: <input type="text" name="activation" value="<?php echo $activation; ?>" size="10">
             </td>
         </tr>
+	<tr>
+	    <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
+	        Packaging humidity [%]: <input type="text" name="humidity" value="<?php echo $humidity; ?>" size="10">
+	    </td>
+	    <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
+	      	Packaging radon [Bq/m^3]: <input type="text" name="radon" value="<?php echo $radon; ?>" size="10">
+	    </td>
+        </tr>
     </table>
     <input type="submit" id="hiddenSubmit" style="display: none;">
 </form>
@@ -460,7 +468,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 	    </td>
 
             <td colspan="10">
-                Notes: <textarea name="notes" rows="1" style="width: 90%;"><?php echo $notes; ?></textarea>
+                Notes: <textarea name="notes" rows="4" style="width: 90%;"><?php echo $notes; ?></textarea>
             </td>
         </tr>
         <tr>
@@ -863,6 +871,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 	</tr>
 	<?php
 
+        $count = 1;
 	foreach ($amplifiers as $amp):
 	?>
 	    <tr>
