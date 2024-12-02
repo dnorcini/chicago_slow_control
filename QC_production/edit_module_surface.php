@@ -35,7 +35,7 @@ if (isset($_POST['new'])) {
     $query = "INSERT INTO `" . $table . "` (`ID`, `Last_update`) VALUES (NULL, '" . time() . "')";
     $result = mysql_query($query);
     if (!$result) {
-        module_surface("Could not query the database <br />" . mysql_error());
+        die("Could not query the database <br />" . mysql_error());
     }
     include("aux/get_last_table_id.php");
     $_SESSION['choosen_module_surface'] = $last_id;
@@ -1369,7 +1369,28 @@ if (isset($_POST['go'])) {
                 } else {
                     // Log does not exist, clear the session variables and remove the icon
                     $log_exists = false;
-                }
+		    }
+
+		// Check if image5_low_file already exists in the directory even if no form is submitted
+		$image5_low_file_name = 'image5_low_file.png';
+		$image5_low_file_path = $upload_dir . $image5_low_file_name;  // Use the absolute server path for file_exists()
+                $image5_low_log_name = 'image5_low_log.log';
+                $image5_low_log_path = $upload_dir . $image5_low_log_name;  // Use the absolute server path for file_exists()
+
+		// If image5_low_file exists in the directory but no session is set, initialize the session
+		if (file_exists($image5_low_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image5_low_file'])) {
+		    $_SESSION['file_url_' . $module_surface_id]['image5_low_file'] = $base_url . $image5_low_file_name;  // Use base_url for the web link
+		}
+
+		// Check if the file exists on the server (file system path)
+		if (!empty($image5_low_file_name) && file_exists($image5_low_file_path)) {
+		    // File exists, keep the session variables and show the icon
+		    $file2_exists = true;
+		    $file2_url = $_SESSION['file_url_' . $die_id]['image5_low_file'];
+		} else {
+		    // File does not exist, clear the session variables and remove the icon
+		    $file2_exists = false;
+		}
 
                 ?>
 
@@ -1382,6 +1403,15 @@ if (isset($_POST['go'])) {
                 <input type="file" name="image4_low_file" accept="image/png, image/jpeg, application/pdf">
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
+                <?php if ($file2_exists): ?>
+                      <a href="<?php echo htmlspecialchars($file2_url); ?>" target="_blank">
+                      <img src="pixmaps/icon.png" alt="Image5_Low File" style="height: 20px; width: auto;">
+                      </a>
+                <?php endif; ?>
+                      <label for="image5_low_file">Image File:</label>
+                      <input type="file" name="image5_low_file" accept="image/png, image/jpeg, application/pdf">
+                      &nbsp; &nbsp; &nbsp; &nbsp;
+		      
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
 			<img src="pixmaps/icon2.png" alt="Image4_Low Log" style="height: 20px; width: auto;">
