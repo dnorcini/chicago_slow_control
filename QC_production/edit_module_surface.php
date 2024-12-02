@@ -1386,7 +1386,7 @@ if (isset($_POST['go'])) {
 		if (!empty($image5_low_file_name) && file_exists($image5_low_file_path)) {
 		    // File exists, keep the session variables and show the icon
 		    $file2_exists = true;
-		    $file2_url = $_SESSION['file_url_' . $die_id]['image5_low_file'];
+		    $file2_url = $_SESSION['file_url_' . $module_surface_id]['image5_low_file'];
 		} else {
 		    // File does not exist, clear the session variables and remove the icon
 		    $file2_exists = false;
