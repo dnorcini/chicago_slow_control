@@ -80,14 +80,15 @@ $ccds = array("A", "B", "C", "D");
 $trace_fields = array(
     'trace_saturation_', 'trace_comments_', 'trace_reference_'
 );
-$trace_fields_low = array(
-    'trace_low_saturation_', 'trace_low_comments_', 'trace_low_reference_'
+$trace_fields_high = array(
+    'trace_high_saturation_', 'trace_high_comments_', 'trace_high_reference_'
 );
 
 // Define other image-related fields (for defect maps, tracks, etc.)
 $image_fields = array(
     'tracks_', 'noise_', 'defects_', 'saturation_', 'sharpness_tracks_', 'cti_code_', 'cti_visual_',
-    'comments_', 'reference_', 'region_defect_', 'noise_overscan_', 'res_', 'gain_', 'dark_current_', 'column_defects_', 'pixel_defects_'
+    'comments_', 'reference_', 'region_defect_', 'noise_overscan_', 'res_', 'gain_', 'dark_current_', 'column_defects_', 'pixel_defects_',
+    'peak1_', 'peak2_', 'sigma_','front_' 
 );
 
 $image_numbers = array("1_", "2_", "3_", "4_", "5_", "6_");

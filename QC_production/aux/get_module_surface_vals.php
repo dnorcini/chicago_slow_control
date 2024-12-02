@@ -36,6 +36,10 @@ $grade_A = isset($row['Grade_A']) ? $row['Grade_A'] : "";
 $grade_B = isset($row['Grade_B']) ? $row['Grade_B'] : "";
 $grade_C = isset($row['Grade_C']) ? $row['Grade_C'] : "";
 $grade_D = isset($row['Grade_D']) ? $row['Grade_D'] : "";
+$defects_A = isset($row['Defects_A']) ? $row['Defects_A'] : "";
+$defects_B = isset($row['Defects_B']) ? $row['Defects_B'] : "";
+$defects_C = isset($row['Defects_C']) ? $row['Defects_C'] : "";
+$defects_D = isset($row['Defects_D']) ? $row['Defects_D'] : ""; 
 $notes_A = isset($row['Notes_A']) ? $row['Notes_A'] : "";
 $notes_B = isset($row['Notes_B']) ? $row['Notes_B'] : "";
 $notes_C = isset($row['Notes_C']) ? $row['Notes_C'] : "";
@@ -59,9 +63,9 @@ $image_dir = isset($row['Image_Dir']) ? $row['Image_Dir'] : "";
 
 // Trace fields
 foreach ($ccds as $amp) {
-    ${'trace_low_saturation_' . $amp} = isset($row['Trace_Low_Saturation_' . $amp]) ? $row['Trace_Low_Saturation_' . $amp] : "";
-    ${'trace_low_comments_' . $amp} = isset($row['Trace_Low_Comments_' . $amp]) ? $row['Trace_Low_Comments_' . $amp] : "";
-    ${'trace_low_reference_' . $amp} = isset($row['Trace_Low_Reference_' . $amp]) ? $row['Trace_Low_Reference_' . $amp] : "";
+    ${'trace_high_saturation_' . $amp} = isset($row['Trace_High_Saturation_' . $amp]) ? $row['Trace_High_Saturation_' . $amp] : "";
+    ${'trace_high_comments_' . $amp} = isset($row['Trace_High_Comments_' . $amp]) ? $row['Trace_High_Comments_' . $amp] : "";
+    ${'trace_high_reference_' . $amp} = isset($row['Trace_High_Reference_' . $amp]) ? $row['Trace_High_Reference_' . $amp] : "";
 }
 //$trace_file = isset($row['Trace_File']) ? $row['Trace_File'] : "";
 //$trace_log = isset($row['Trace_Log']) ? $row['Trace_Log'] : "";
@@ -87,6 +91,10 @@ foreach ($image_numbers_low as $img) {
         ${'image' . $img . 'res_' . $amp} = isset($row['Image' . $capitalized_img . 'Res_' . $amp]) ? $row['Image' . $capitalized_img . 'Res_' . $amp] : "";
         ${'image' . $img . 'gain_' . $amp} = isset($row['Image' . $capitalized_img . 'Gain_' . $amp]) ? $row['Image' . $capitalized_img . 'Gain_' . $amp] : "";
         ${'image' . $img . 'dark_current_' . $amp} = isset($row['Image' . $capitalized_img . 'Dark_Current_' . $amp]) ? $row['Image' . $capitalized_img . 'Dark_Current_' . $amp] : "";
+       ${'image' . $img . 'peak1_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak1_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak1_' . $amp] : "";
+       ${'image' . $img . 'peak2_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak2_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak2_' . $amp] : "";
+       ${'image' . $img . 'sigma_' . $amp} = isset($row['Image' . $capitalized_img . 'Sigma_' . $amp]) ? $row['Image' . $capitalized_img . 'Sigma_' . $amp] : "";
+       ${'image' . $img . 'front_' . $amp} = isset($row['Image' . $capitalized_img . 'Front_' . $amp]) ? $row['Image' . $capitalized_img . 'Front_' . $amp] : "";
     }
 
     // Handling file field separately if needed
@@ -113,7 +121,11 @@ foreach ($image_numbers_high as $img) {
         ${'image' . $img . 'res_' . $amp} = isset($row['Image' . $capitalized_img . 'Res_' . $amp]) ? $row['Image' . $capitalized_img . 'Res_' . $amp] : "";
         ${'image' . $img . 'gain_' . $amp} = isset($row['Image' . $capitalized_img . 'Gain_' . $amp]) ? $row['Image' . $capitalized_img . 'Gain_' . $amp] : "";
         ${'image' . $img . 'dark_current_' . $amp} = isset($row['Image' . $capitalized_img . 'Dark_Current_' . $amp]) ? $row['Image' . $capitalized_img . 'Dark_Current_' . $amp] : "";
-    }
+       ${'image' . $img . 'peak1_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak1_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak1_' . $amp] : "";
+       ${'image' . $img . 'peak2_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak2_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak2_' . $amp] : "";
+       ${'image' . $img . 'sigma_' . $amp} = isset($row['Image' . $capitalized_img . 'Sigma_' . $amp]) ? $row['Image' . $capitalized_img . 'Sigma_' . $amp] : "";
+       ${'image' . $img . 'front_' . $amp} = isset($row['Image' . $capitalized_img . 'Front_' . $amp]) ? $row['Image' . $capitalized_img . 'Front_' . $amp] : "";
+       }
 
     // Handling file field separately if needed
     ${'image' . $img . '_file'} = isset($row['Image' . $capitalized_img . '_File']) ? $row['Image' . $capitalized_img . '_File'] : "";
