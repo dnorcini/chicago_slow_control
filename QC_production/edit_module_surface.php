@@ -639,7 +639,7 @@ if (isset($_POST['go'])) {
 	foreach ($ccds as $amp):
 	?>
 	    <tr>
-		<td><?php echo "ch" . $count_plus . " (ext" . $count . ")"; ?></td>
+		<td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
 		<td>
 		    <?php generate_dropdown('trace_high_saturation_' . $amp, $yes_no_blank_array, ${'trace_high_saturation_' . $amp}); ?>
 		</td>
@@ -746,7 +746,7 @@ if (isset($_POST['go'])) {
 	foreach ($ccds as $amp):
 	?>
 	    <tr>
-                <td><?php echo "ch" . $count_plus . " (ext" . $count . ")"; ?></td>
+                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
 		<td>
 		    <?php generate_dropdown('image1_high_tracks_' . $amp, $yes_no_blank_array, ${'image1_high_tracks_' . $amp}); ?>
 		</td>
@@ -856,7 +856,7 @@ if (isset($_POST['go'])) {
 	foreach ($ccds as $amp):
 	?>
 	    <tr>
-                <td><?php echo "ch" . $count_plus . " (ext" . $count . ")"; ?></td>
+                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
 		<td><input type="text" name="image2_high_column_defects_<?php echo $amp; ?>" value="<?php echo ${'image2_high_column_defects_' . $amp}; ?>"></td>
 		<td><input type="text" name="image2_high_noise_<?php echo $amp; ?>" value="<?php echo ${'image2_high_noise_' . $amp}; ?>"></td>
 		<td><input type="text" name="image2_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image2_high_comments_' . $amp}; ?>" size="40"></td>
@@ -964,7 +964,7 @@ if (isset($_POST['go'])) {
 	foreach ($ccds as $amp):
 	?>
 	    <tr>
-                <td><?php echo "ch" . $count_plus . " (ext" . $count . ")"; ?></td>
+                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
 		<td><input type="text" name="image3_high_res_<?php echo $amp; ?>" value="<?php echo ${'image3_high_res_' . $amp}; ?>"></td>
 		<td><input type="text" name="image3_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image3_high_gain_' . $amp}; ?>"></td>
 		<td><input type="text" name="image3_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image3_high_dark_current_' . $amp}; ?>"></td>
@@ -1074,7 +1074,7 @@ if (isset($_POST['go'])) {
 	foreach ($ccds as $amp):
 	?>
 	    <tr>
-                <td><?php echo "ch" . $count_plus . " (ext" . $count . ")"; ?></td>
+                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
 		<td><input type="text" name="image4_high_pixel_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_pixel_defects_' . $amp}; ?>"></td>
 		<td><input type="text" name="image4_high_column_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_column_defects_' . $amp}; ?>"></td>
 		<td><input type="text" name="image4_high_region_defect_<?php echo $amp; ?>" value="<?php echo ${'image4_high_region_defect_' . $amp}; ?>" size="10"></td>
@@ -1189,7 +1189,7 @@ if (isset($_POST['go'])) {
 	foreach ($ccds as $amp):
 	?>
 	    <tr>
-                <td><?php echo "ch" . $count_plus . " (ext" . $count . ")"; ?></td>
+                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
 		<td><input type="text" name="image3_low_res_<?php echo $amp; ?>" value="<?php echo ${'image3_low_res_' . $amp}; ?>"></td>
 		<td><input type="text" name="image3_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image3_low_gain_' . $amp}; ?>"></td>
 		<td><input type="text" name="image3_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image3_low_dark_current_' . $amp}; ?>"></td>
@@ -1299,7 +1299,7 @@ if (isset($_POST['go'])) {
 	foreach ($ccds as $amp):
 	?>
 	    <tr>
-                <td><?php echo "ch" . $count_plus . " (ext" . $count . ")"; ?></td>
+                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td>
                     <?php generate_dropdown('image4_low_defects_' . $amp, $yes_no_blank_array, ${'image4_low_defects_' . $amp}); ?>
                 </td>
