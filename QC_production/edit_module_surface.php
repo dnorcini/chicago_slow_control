@@ -727,7 +727,7 @@ if (isset($_POST['go'])) {
 <br><br>
 
 <!-- Image 1 - Track Defects-->
-<?php echo "<b>Image 1, High Temp - [1skip, 10x10binning, 160rx640c, Active region, 60s Exposure] - Aim: To see tracks</b>"; ?>
+<?php echo "<b>Image 1, High Temp - [1skip, 20x20binning, 80rx320c, Active region, 3s Exposure] - Aim: To see tracks</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
@@ -838,7 +838,7 @@ if (isset($_POST['go'])) {
 <br><br>
 
 <!-- Image 2 - Serial Register Defect -->
-<?php echo "<b>Image 2, High Temp - [1skip, 1x1binning, 30rx3400c, Serial register, 10s Exposure] - Aim: Serial Register Defect</b>"; ?>
+<?php echo "<b>Image 2, High Temp - [1skip, 1x1binning, 30rx6400c, Serial register, 10s Exposure] - Aim: Serial Register Defect</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
@@ -1052,7 +1052,7 @@ if (isset($_POST['go'])) {
 <br><br>
 
 <!-- Image 4 - Track Defects, High VSub and V Clk -->
-<?php echo "<b>Image 4, High Temp - [1skip, 1x1binning, 800rx3400c, Active region, 300s Exposure, high VSub and V Clk] - Aim: Defect Map, Sharpness of tracks, CTI, Noise</b>"; ?>
+<?php echo "<b>Image 4, High Temp - [1skip, 1x1binning, 1600rx6400c, Active region, 500s Exposure] - Aim: Defect Map, Sharpness of tracks, CTI, Noise, CCD channel mapping</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
@@ -1171,7 +1171,7 @@ if (isset($_POST['go'])) {
 
 <!-- LOW TEMP -->
 <!-- Image 3 - Single Electron Resolution -->
-<?php echo "<b>Image 3, Low Temp - [1000skip, 1x1binning, 30rx640c, Serial register, 0s Exposure] - Aim: Single Electron Resolution</b>"; ?>
+<?php echo "<b>Image 3, Low Temp - [1000skip, 1x10binning, 30rx640c, Serial register, 0s Exposure] - Aim: Single Electron Resolution</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
@@ -1277,7 +1277,7 @@ if (isset($_POST['go'])) {
 <br><br>
 
 <!-- Image 4 - Single Electron Resolution -->
-<?php echo "<b>Image 4, Low Temp - [1000skip, 1x1binning, 30rx640c, Serial register, 0s Exposure] - Aim: Single Electron Resolution</b>"; ?>
+<?php echo "<b>Image 4, Low Temp - [1skip, 1x1binning, 1600rx6400c, Active region, 500s Exposure] - Aim: Defect Map, Sharpness of tracks, CTI, Noise, Fe55 clusters</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
