@@ -1,18 +1,19 @@
 <?php
-// get_module_surface_vals.php
+// get_module_underground_vals.php
 // D.Norcini, Hopkins, 2024
+// Cinyu Zhu, Hopkins, 2025
 
-if (empty($_SESSION['choosen_module_surface'])) {
-    $_SESSION['choosen_module_surface'] = 1;
+if (empty($_SESSION['choosen_module_underground'])) {
+    $_SESSION['choosen_module_underground'] = 1;
 }
 
-$id = (int)$_SESSION['choosen_module_surface'];
+$id = (int)$_SESSION['choosen_module_underground'];
 
-// Query to fetch data from the MODULE_SURFACE table
-$query = "SELECT * FROM `MODULE_SURFACE` WHERE `ID` = " . $id;
+// Query to fetch data from the MODULE_UNDERGROUND table
+$query = "SELECT * FROM `MODULE_UNDERGROUND` WHERE `ID` = " . $id;
 $result = mysql_query($query);
 if (!$result) {
-    module_surface("Could not query the database <br />" . mysql_error());
+    module_underground("Could not query the database <br />" . mysql_error());
 }
 
 $row = mysql_fetch_assoc($result);
@@ -79,7 +80,7 @@ foreach ($image_numbers_low as $img) {
         ${'image' . $img . 'tracks_' . $amp} = isset($row['Image' . $capitalized_img . 'Tracks_' . $amp]) ? $row['Image' . $capitalized_img . 'Tracks_' . $amp] : "";
         ${'image' . $img . 'defects_' . $amp} = isset($row['Image' . $capitalized_img . 'Defects_' . $amp]) ? $row['Image' . $capitalized_img . 'Defects_' . $amp] : "";
         ${'image' . $img . 'noise_' . $amp} = isset($row['Image' . $capitalized_img . 'Noise_' . $amp]) ? $row['Image' . $capitalized_img . 'Noise_' . $amp] : "";
-	${'image' . $img . 'sharpness_tracks_' . $amp} = isset($row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp]) ? $row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp] : "";
+	    ${'image' . $img . 'sharpness_tracks_' . $amp} = isset($row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp]) ? $row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp] : "";
         ${'image' . $img . 'cti_code_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Code_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Code_' . $amp] : "";
         ${'image' . $img . 'cti_visual_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Visual_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Visual_' . $amp] : "";
         ${'image' . $img . 'comments_' . $amp} = isset($row['Image' . $capitalized_img . 'Comments_' . $amp]) ? $row['Image' . $capitalized_img . 'Comments_' . $amp] : "";
@@ -95,6 +96,10 @@ foreach ($image_numbers_low as $img) {
        ${'image' . $img . 'peak2_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak2_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak2_' . $amp] : "";
        ${'image' . $img . 'sigma_' . $amp} = isset($row['Image' . $capitalized_img . 'Sigma_' . $amp]) ? $row['Image' . $capitalized_img . 'Sigma_' . $amp] : "";
        ${'image' . $img . 'front_' . $amp} = isset($row['Image' . $capitalized_img . 'Front_' . $amp]) ? $row['Image' . $capitalized_img . 'Front_' . $amp] : "";
+       ${'image' . $img . 'testxxx_' . $amp} = isset($row['Image' . $capitalized_img . 'testxxx_' . $amp]) ? $row['Image' . $capitalized_img . 'testxxx_' . $amp] : "";
+
+
+       
     }
 
     // Handling file field separately if needed

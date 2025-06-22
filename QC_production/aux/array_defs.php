@@ -88,10 +88,10 @@ $trace_fields_high = array(
 $image_fields = array(
     'tracks_', 'noise_', 'defects_', 'saturation_', 'sharpness_tracks_', 'cti_code_', 'cti_visual_',
     'comments_', 'reference_', 'region_defect_', 'noise_overscan_', 'res_', 'gain_', 'dark_current_', 'column_defects_', 'pixel_defects_',
-    'peak1_', 'peak2_', 'sigma_','front_' 
+    'peak1_', 'peak2_', 'sigma_','front_' ,'testxxx_','file_'
 );
 
-$image_numbers = array("1_", "2_", "3_", "4_", "5_", "6_");
-$image_numbers_low = array("1_low_", "2_low_", "3_low_", "4_low_", "5_low_", "6_low_");
-$image_numbers_high = array("1_high_", "2_high_", "3_high_", "4_high_", "5_high_", "6_high_");
+$image_numbers = array("1_", "2_", "3_", "4_", "5_", "6_","98_","99_");
+$image_numbers_low = array("1_low_", "2_low_", "3_low_","31_low_","32_low_", "4_low_", "5_low_", "6_low_","7_low_","98_low_","99_low_");
+$image_numbers_high = array("1_high_", "2_high_", "3_high_", "4_high_", "5_high_", "6_high_","98_high_", "99_high_");
 ?>
