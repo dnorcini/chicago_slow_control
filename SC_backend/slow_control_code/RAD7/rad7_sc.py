@@ -1,0 +1,132 @@
+#Adapted from SNOLAB radon monitoring code for DAMIC-M slow control (chicago_slow_control)
+#Michelangelo Traina, CENPA - University of Washington, 2023
+#Rachana Yajur, UChicago, 2023
+
+
+import serial
+import time
+import datetime
+from time import gmtime, strftime
+
+#set serial paramentes
+ser = serial.Serial(
+port='/dev/ttyS0',
+baudrate=19200,
+parity=serial.PARITY_NONE,
+stopbits=serial.STOPBITS_ONE,
+bytesize=serial.EIGHTBITS,
+xonxoff=0,
+rtscts=0
+)
+
+ser.isOpen()
+#print(dir(ser))
+first = '\x03\r\n'
+ser.write(first.encode())
+time.sleep(10)
+out=''
+while ser.inWaiting() > 0:
+    out += ser.read(1).decode("utf-8")
+#print(out)
+time.sleep(1)
+"""
+input = 'test start \r\n'
+ser.write(input.encode())
+time.sleep(10)
+out=''
+while ser.inWaiting() > 0:
+    out +=ser.read(1).decode("utf-8")
+print(out)
+
+
+input = 'test save \r\n'
+ser.write(input.encode())
+time.sleep(10)
+out=''
+while ser.inWaiting() > 0:
+    out += ser.read(1).decode("utf-8")
+print(out)
+"""
+input='data com 0'+'\r\n'
+ser.write(input.encode())
+time.sleep(10)
+out=''
+while ser.inWaiting() > 0:
+    out += ser.read(1).decode("utf-8")
+
+#print(out)
+
+#print('>>' + out)
+if out != '':
+    print(out)
+    lastReading = out.splitlines()[-3]
+    print(lastReading.split(','))
+    output_line = lastReading.split(',')
+    print(output_line)
+    if(output_line[0]=='Data Com 00'):
+        input = 'data erase yes \r\n'
+        ser.write(input.encode())
+        time.sleep(10)
+        out1 = ''
+        while ser.inWaiting() > 0:
+            out1 += ser.read(1).decode("utf-8")
+        print(out1)
+        time.sleep(1)
+        print('erased')
+        print('testing')
+        test = 'test print \r\n '
+        ser.write(test.encode())
+        time.sleep(10)
+        out3 = ''
+        while ser.inWaiting() > 0:
+            out3 += ser.read(1).decode("utf-8")
+        print(out3)
+        test = 'test save \r\n '
+        ser.write(test.encode())
+        time.sleep(10)
+        out3 = ''
+        while ser.inWaiting() > 0:
+            out3 += ser.read(1).decode("utf-8")
+        print(out3)
+        test = 'test start \r\n'
+        ser.write(test.encode())
+        time.sleep(10)
+        out3 = ''
+        while ser.inWaiting() > 0 :
+            out3 += ser.read(1).decode("utf-8")
+        print(out3)
+    t=datetime.datetime(int(output_line[1])+2000,int(output_line[2]),int(output_line[3]),int(output_line[4]),int(output_line[5]))
+    radon_conc=float(output_line[20])
+    print(t,radon_conc)
+    
+ser.close()
+
+import mysql.connector
+from mysql.connector import Error
+
+# Connect to the database
+db = mysql.connector.connect(host='localhost', database='control', user='root', password='Modane0', port='3306')
+
+# Create a cursor object
+cursor = db.cursor()
+
+# Prepare the SQL query
+cursor.execute("SELECT time FROM control.sc_sens_Temp_A ORDER BY time DESC LIMIT 1;")
+time_for_db = cursor.fetchone()[0]
+sql = "INSERT INTO control.sc_sens_Rn_Concentration (time, value, rate) VALUES (%s, %s, %s)"
+
+try:
+    val = (time_for_db, radon_conc,0)
+    #print(val)
+    # Execute the query
+    cursor.execute(sql, val)
+    # Commit the changes to the database
+    db.commit()
+except:
+    print('Could not read from RAD7')
+
+# Close the cursor and database connection
+cursor.close()
+db.close()
+
+exit()

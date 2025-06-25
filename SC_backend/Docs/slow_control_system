@@ -1,0 +1,117 @@
+
+  
+
+The slow control system consists of one or more PCs running Linux.  These can
+be pretty modest machines: two cores, at least 2 GB of RAM, a couple of hard
+drives is not a bad idea.  An machine with integrated video is a good idea as
+they normally use less power than a discrete video card.  Get a good UPS.
+
+For the machine that will actually communicate with the hardware:
+--Try to get build-in serial port, just in case.
+--Try to get 2 ethernet ports, or add a secondary ethernet card
+
+If you need GPIB, get a National Instruments GPIB card.  I've used the PCI
+ones, but the PCI-E cards are reputed to be good as well.
+
+If you need a few RS232 serial ports (one instrument per port) get
+a USB to serial converter with more ports than you need.  You can not sanely
+just add more converter boxes due to the way the ports are enumerated.   
+
+A better option for serial is a serial device server which is a small computer
+with one or two serial ports that effectively converts serial to tcp.  They
+can usually be configured for RS232, RS485 or RS488.
+
+
+If you want webcams, try to buy one of the supported ones from this list:
+
+http://mxhaard.free.fr/spca5xx.html
+
+You can plug in as many as you want, and they will show up on the cams page.
+
+
+If you have ethernet devices, get a second network card, or make sure you
+purchase a computer with 2 built in.  DO NOT attach network capable
+instruments to the internet unless you really know what you are doing!  Many
+run crappy old versions of Windows that can not be patched and get eaten
+alive.  You'll also need an ethernet switch to connect the devices and computer
+together.  
+
+
+For operating system, any modern Linux is fine.  You can download a DVD of
+openSUSE here: 
+
+http://software.opensuse.org/
+
+
+During installation, you need to install:
+MySql
+phpMyAdmin  (this is just a convenience really) 
+Apache  (or any other webserver)
+php
+C/C++ dev tools
+gspca  (if you want cameras)
+subversion
+kernel source (if you want GPIB)
+
+
+Choosing the install everything option makes a lot of sense, as hard drive
+space is cheap.  
+
+If this is an important server, carefully go through the run levels to only
+run the services you need (webserver, mysql, ntp)
+
+I normally run the servers headless at runlevel 3.  There isn't any point in
+having X running in the background if it can't or won't ever be called on.
+
+You can turn off your firewall to the slow control network if you configured
+it to be a physically isolated network.  
+
+------------------------------------------------------------------------------
+Now for the actual slow control software.  There are two repositories to make
+the system easier to use and keep updated.  All the documentation (including
+this one) is kept in the backend repository.  The front end can be checked out
+directly into your web server directory and contains only php code currently.
+
+Check out the slow control backend:
+
+svn co svn://clean.physics.yale.edu/SC_backend
+
+go to:
+SC_backend/slow_control_code
+and run make.
+
+If you have GPIB devices, go to:
+SC_backend/slow_control_code/extras
+unpack the linux-gpib-*.tar.gz and install (as root since it is a kernel
+driver).
+
+Go to your web server directory (with appropriate permissions):
+svn co svn://clean.physics.yale.edu/SC_web
+
+
+------------------------------------------------------------------------------
+
+See the DB doc ( Readne_DB.txt) in the 
+SC_backend/Docs/
+directory to make the control database and set up the necessary users.
+
+Set permissions so that jpgraph_cache can be written to by whatever user your
+web server uses for php code.  (a+rw is probably safe here, but only this
+directory). 
+
+Copy slow_control_db_conf.ini to /etc and edit the control_user_password and
+port number.
+
+Go to your web server directory, and in SC_web copy
+db_login.php.base to db_login.php
+and
+master_db_login.php.base to master_db_login.php
+
+Edit the password lines in both, and if this is the master computer, then 
+set the `host' line in both to `localhost'
+(db_login.php and master_db_login.php should be identical)
+If this is a replication slave, then `host' in db_login.php should be
+`localhost', but should be a, IP or fully resolvable hostname in
+master_db_login.php.
+
+

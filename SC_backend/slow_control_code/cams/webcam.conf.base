@@ -1,0 +1,40 @@
+// this is the configuration file
+// for the webcam daemon 
+// use c++ type comments.
+
+// The root device name   (the actual cams add 0, 1, 2, ... to the end)
+device_root = /dev/video
+
+// this is where pictures go:  (add a 0, 1, 2, ... +.jpg to the end)
+// CentOS:
+//pic_file_root = /var/www/html/php/webcam/cam
+// SUSE:
+pic_file_root = /srv/www/htdocs/php/webcam/cam
+
+// CentOS:
+// font_dir = /usr/share/fonts/bitstream-vera/
+// SUSE:
+font_dir = /usr/local/root/fonts/
+
+// CentOS:
+//font_family = Vera
+
+// SUSE:
+font_family = arial
+
+font_size = 8
+
+// This is the number of aquires of each camera before
+// saving a pic.  This must be >10 in non-ideal
+// lighting situations.
+pre_samples = 40
+
+//  This is the minimum time between shots in seconds.
+//  if the pre_samples take up too much time, this
+//  is corected downward
+grab_period = 5.23
+
+pid_file = ./webcam.pid
+
+// end of configuration file
+
