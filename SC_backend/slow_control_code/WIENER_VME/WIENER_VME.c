@@ -259,3 +259,5 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
   return(0);
 }
+
+#include "main.h"
