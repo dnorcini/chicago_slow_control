@@ -1,8 +1,12 @@
-
 <?php
 // edit_module_underground.php
 // D.Norcini, Hopkins, 2024
 // Cinyu Zhu, Hopkins, 2025
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 
 session_start();
 
@@ -47,6 +51,8 @@ if (isset($_POST['new'])) {
     $check_A = $check_B = $check_C = $check_D = 0;
     $grade_A = $grade_B = $grade_C = $grade_D = '';
     $notes_A = $notes_B = $notes_C = $notes_D = '';
+    // $channel_A = $channel_B = $channel_C = $channel_D = '';
+    
 
     // Clear any session variables related to file uploads
     unset($_SESSION['log_url'], $_SESSION['file_url'], $_SESSION['upload_dir'], $_SESSION['base_url'], $_SESSION['log_exists'], $_SESSION['file_exists']);
@@ -108,7 +114,8 @@ if (isset($_POST['id'])) {
     }
 
     if (!is_writable($upload_dir)) {
-        module_underground("Directory is not writable: $upload_dir");
+        // if I mute this line, there won't be an error message.... why.....
+        // module_underground("Directory is not writable: $upload_dir");
     }
 
     // Allowed file types
@@ -227,7 +234,7 @@ if (isset($_POST['id'])) {
     // ======================
     
     // Include all relevant form fields to update
-    $fields = array('name', 'status', 'pitch_adaptor_id', 'humidity', 'radon', 'activation', 'die_A', 'die_B', 'die_C', 'die_D', 'amp_A', 'amp_B', 'amp_C', 'amp_D', 'tester', 'test_date', 'test_time', 'chamber', 'temp_low', 'temp_high', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_A', 'grade_B', 'grade_C', 'grade_D', 'defects_A', 'defects_B', 'defects_C', 'defects_D', 'notes', 'notes_A', 'notes_B', 'notes_C', 'notes_D', 'reviewer');
+    $fields = array('name', 'status', 'pitch_adaptor_id', 'humidity', 'radon', 'activation', 'die_A', 'die_B', 'die_C', 'die_D', 'amp_A', 'amp_B', 'amp_C', 'amp_D', 'tester', 'test_date', 'test_time', 'chamber', 'temp_low', 'temp_high', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_A', 'grade_B', 'grade_C', 'grade_D', 'defects_A', 'defects_B', 'defects_C', 'defects_D', 'notes', 'notes_A', 'notes_B', 'notes_C', 'notes_D', 'reviewer', 'channel_A', 'channel_B', 'channel_C', 'channel_D');
     $checkboxes = ['check_A', 'check_B', 'check_C', 'check_D'];
     $fields = array_merge($fields, $checkboxes);
     $fields = array_merge($fields, $trace_fields_high);
@@ -503,47 +510,62 @@ if (isset($_POST['go'])) {
       <table border="1" cellpadding="2" width="100%">
 	<tr>
             <td><?php echo "A"; ?></td>
-            <td style="width: 20%;">
+            <td style="width: 10%;">
 		<?php generate_dropdown('grade_A', $grade_array, $grade_A); ?>
-		<?php echo "Matched?"; ?>
-                <?php generate_dropdown('defects_A', $yes_no_blank_array, $defects_A); ?>
+		<!-- <?php echo "Matched?"; ?> -->
+                <!-- <?php generate_dropdown('defects_A', $yes_no_blank_array, $defects_A); ?> -->
+                <!-- <input type="checkbox" name="check_A" value="1" <?php echo ($check_A == 1) ? 'checked' : ''; ?>> -->
             </td>
             <td style="width: 5%;">
                 <input type="hidden" name="check_A" value="0">
-		<input type="checkbox" name="check_A" value="1" <?php echo ($check_A == 1) ? 'checked' : ''; ?>>
+        <?php echo "ch"; ?>
+        <?php generate_dropdown('channel_A', $channels, $channel_A); ?>
+
             </td>
 
             <td><?php echo "B"; ?></td>
-            <td style="width: 20%;">
+            <td style="width: 10%;">
 		<?php generate_dropdown('grade_B', $grade_array, $grade_B); ?>
-                <?php echo "Matched?"; ?>
-                <?php generate_dropdown('defects_B', $yes_no_blank_array, $defects_B); ?>
+                <!-- <?php echo "Matched?"; ?> -->
+                <!-- <?php generate_dropdown('defects_B', $yes_no_blank_array, $defects_B); ?> -->
+                <!-- <input type="checkbox" name="check_B" value="1" <?php echo ($check_B == 1) ? 'checked' : ''; ?>> -->
+
             </td>
             <td style="width: 5%;">
                 <input type="hidden" name="check_B" value="0">
-		<input type="checkbox" name="check_B" value="1" <?php echo ($check_B == 1) ? 'checked' : ''; ?>>
+
+        <?php echo "ch"; ?>
+        <?php generate_dropdown('channel_B', $channels, $channel_B); ?>
+
             </td>
 
             <td><?php echo "C"; ?></td>
-            <td style="width: 20%;">
+            <td style="width: 10%;">
 		<?php generate_dropdown('grade_C', $grade_array, $grade_C); ?>
-		                <?php echo "Matched?"; ?>
-                <?php generate_dropdown('defects_C', $yes_no_blank_array, $defects_C); ?>
+		                <!-- <?php echo "Matched?"; ?> -->
+                <!-- <?php generate_dropdown('defects_C', $yes_no_blank_array, $defects_C); ?> -->
+                <!-- <input type="checkbox" name="check_C" value="1" <?php echo ($check_C == 1) ? 'checked' : ''; ?>> -->
+
             </td>
             <td style="width: 5%;">
                 <input type="hidden" name="check_C" value="0">
-		<input type="checkbox" name="check_C" value="1" <?php echo ($check_C == 1) ? 'checked' : ''; ?>>
+        <?php echo "ch"; ?>
+        <?php generate_dropdown('channel_C', $channels, $channel_C); ?>
+
             </td>
 
             <td><?php echo "D"; ?></td>
-            <td style="width: 20%;">
+            <td style="width: 10%;">
 		<?php generate_dropdown('grade_D', $grade_array, $grade_D); ?>
-		<?php echo "Matched?"; ?>
-                <?php generate_dropdown('defects_D', $yes_no_blank_array, $defects_D); ?>
+		<!-- <?php echo "Matched?"; ?> -->
+                <!-- <?php generate_dropdown('defects_D', $yes_no_blank_array, $defects_D); ?> -->
+                <!-- <input type="checkbox" name="check_D" value="1" <?php echo ($check_D == 1) ? 'checked' : ''; ?>> -->
             </td>
             <td style="width: 5%;">
                 <input type="hidden" name="check_D" value="0">
-		<input type="checkbox" name="check_D" value="1" <?php echo ($check_D == 1) ? 'checked' : ''; ?>>
+        <?php echo "ch"; ?>
+        <?php generate_dropdown('channel_D', $channels, $channel_D); ?>
+
             </td>
 	</tr>
 	<tr>

@@ -103,3 +103,39 @@ check the upload block in `edit_module_underground.php`
 
 # add a new module entry (a new row in the table)
 INSERT INTO MODULE_UNDERGROUND () VALUES ();
+
+# add a new dropdown menu for matched channel (ch0-3) for each CCD
+### 1. add SQL entries
+ALTER TABLE MODULE_UNDERGROUND
+ADD COLUMN Channel_A VARCHAR(10),
+ADD COLUMN Channel_B VARCHAR(10),
+ADD COLUMN Channel_C VARCHAR(10),
+ADD COLUMN Channel_D VARCHAR(10);
+
+### 2. add array defs
+`$channels = array('ch0', 'ch1', 'ch2', 'ch3')`
+
+### 3. update get module underground values:
+```
+$channel_A = isset($row['Channel_A']) ? $row['Channel_A'] : "";
+$channel_B = isset($row['Channel_B']) ? $row['Channel_B'] : "";
+$channel_C = isset($row['Channel_C']) ? $row['Channel_C'] : "";
+$channel_D = isset($row['Channel_D']) ? $row['Channel_D'] : "";
+```
+### 4. edit php file
+add:
+````
+<?php echo "ch"; ?>
+<?php generate_dropdown('matched_channel_D', $channels, $channel_D); ?>
+````
+
+add reset default val:
+    // Reset only the problematic section when creating a new module_underground
+    $check_A = $check_B = $check_C = $check_D = 0;
+    $grade_A = $grade_B = $grade_C = $grade_D = '';
+    $notes_A = $notes_B = $notes_C = $notes_D = '';
+    $channel_A = $channel_B = $channel_C = $channel_D = '';
+
+add new entries to fields:
+    $fields = array('name', 'status', 'pitch_adaptor_id', 'humidity', 'radon', 'activation', 'die_A', 'die_B', 'die_C', 'die_D', 'amp_A', 'amp_B', 'amp_C', 'amp_D', 'tester', 'test_date', 'test_time', 'chamber', 'temp_low', 'temp_high', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_A', 'grade_B', 'grade_C', 'grade_D', 'defects_A', 'defects_B', 'defects_C', 'defects_D', 'notes', 'notes_A', 'notes_B', 'notes_C', 'notes_D', 'reviewer', 'channel_A', 'channel_B', 'channel_C', 'channel_D');
+

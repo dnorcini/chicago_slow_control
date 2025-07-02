@@ -76,6 +76,10 @@ $amplifiers = array("L1", "L2", "U1", "U2");
 // CCD label
 $ccds = array("A", "B", "C", "D");
 
+// channels
+$channels = array('','ch0', 'ch1', 'ch2', 'ch3');
+
+
 // Define trace fields
 $trace_fields = array(
     'trace_saturation_', 'trace_comments_', 'trace_reference_'
