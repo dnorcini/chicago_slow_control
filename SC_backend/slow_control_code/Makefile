@@ -25,6 +25,7 @@ SUBDIRS = lib \
         TPG261 \
 	TPG26X \
 	WIENER_VME \
+	Sentry_PDU\
 
 .PHONY: $(SUBDIRS)
 

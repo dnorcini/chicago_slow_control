@@ -268,6 +268,7 @@ void write_temporary_sensor_data(struct sensor_struct *s_s)
     if ((file_des = fopen(file_name, "w")) == NULL)
     {
 	fprintf(stderr, "Unable to open temp file: %s \n", file_name);
+	return;
     }
     fprintf(file_des, "# %s:%s (%s) || Rate: %e (%s/sec) \n",  
 	    s_s->name, s_s->description, s_s->units, s_s->rate, s_s->units);

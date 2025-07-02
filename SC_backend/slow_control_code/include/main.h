@@ -36,7 +36,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 int main (int argc, char *argv[])
 {
   char                   **my_argv;
-  char                   inst_name[16];
+  char                   inst_name[16] = {0};
   int                    i;
   struct inst_struct     this_inst;
   struct sensor_struct   *all_sensors;
@@ -56,7 +56,7 @@ int main (int argc, char *argv[])
     
   // detach current process
   daemonize(this_inst.name);
-    
+  
   my_signal = 0;
   // ignore these signals 
   signal(SIGINT, SIG_IGN);
