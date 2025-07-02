@@ -42,8 +42,6 @@
 *.i*86
 *.x86_64
 *.hex
-#file without suffix
-**/*/[^.]* 
 
 # Debug files
 *.dSYM/
