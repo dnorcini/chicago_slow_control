@@ -3,9 +3,10 @@
 // D.Norcini, Hopkins, 2024
 // Cinyu Zhu, Hopkins, 2025
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 
 session_start();
@@ -114,8 +115,7 @@ if (isset($_POST['id'])) {
     }
 
     if (!is_writable($upload_dir)) {
-        // if I mute this line, there won't be an error message.... why.....
-        // module_underground("Directory is not writable: $upload_dir");
+        module_underground("Directory is not writable: $upload_dir");
     }
 
     // Allowed file types

@@ -6,7 +6,7 @@
 // added scatter plot function
 // D.Norcini, UChicago, 2020
 //
-// Refactor and add underground entries
+// Refactor and add underground and fixed tab positions
 // Cinyu Zhu, JHU, 2025
 // xzhu98@jh.edu
 session_start();
