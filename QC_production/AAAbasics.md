@@ -139,3 +139,76 @@ add reset default val:
 add new entries to fields:
     $fields = array('name', 'status', 'pitch_adaptor_id', 'humidity', 'radon', 'activation', 'die_A', 'die_B', 'die_C', 'die_D', 'amp_A', 'amp_B', 'amp_C', 'amp_D', 'tester', 'test_date', 'test_time', 'chamber', 'temp_low', 'temp_high', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_A', 'grade_B', 'grade_C', 'grade_D', 'defects_A', 'defects_B', 'defects_C', 'defects_D', 'notes', 'notes_A', 'notes_B', 'notes_C', 'notes_D', 'reviewer', 'channel_A', 'channel_B', 'channel_C', 'channel_D');
 
+# merge to the main folders
+## 1. copy and replace files
+
+after making sure everything in `QC_underground` folder works
+
+use  `cp -rf QC_underground/* QC_production/` to copy the entire content of the folder and force rewrite for the existing files (= replace)
+
+I considered using 
+
+## 2. clean the sql database
+make all the (nullable) column (except `name`) null
+
+i.e. clean all the copies entries from the surface and other testing data
+
+script see in AAAbasics.ipynb
+````
+import mysql.connector
+from time import sleep
+
+def chunk_list(lst, n):
+    """Yield successive n-sized chunks from list."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
+# --- CONFIGURATION ---
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'MyLife4Aiur',
+    'database': 'die_qc'
+}
+
+table_name = 'MODULE_UNDERGROUND'
+preserve_column = 'Name'
+
+# --- CONNECT TO DATABASE ---
+conn = mysql.connector.connect(**db_config)
+cursor = conn.cursor()
+
+# --- GET ALL COLUMNS ---
+cursor.execute(f"SHOW COLUMNS FROM {table_name}")
+columns_info = cursor.fetchall()
+
+# --- FILTER NULLABLE COLUMNS (excluding 'Name') ---
+columns_to_null = [
+    col[0] for col in columns_info
+    if col[0] != preserve_column and col[2].upper() == 'YES'
+]
+
+print(f"Found {len(columns_to_null)} nullable columns to clear.")
+
+# --- UPDATE IN CHUNKS OF 10 ---
+for i, chunk in enumerate(chunk_list(columns_to_null, 1), start=1):
+    set_clause = ",\n  ".join([f"`{col}` = NULL" for col in chunk])
+    sql = f"UPDATE {table_name} SET\n  {set_clause};"
+    
+    print(f"\n⏳ Executing chunk {i}: {len(chunk)} columns")
+    try:
+        cursor.execute(sql)
+        conn.commit()
+        print(f"✔ Chunk {i} succeeded.")
+    except mysql.connector.Error as e:
+        print(f"❌ Chunk {i} failed: {e}")
+        break  # Stop on failure
+    sleep(1)  # optional: delay to reduce locking issues
+
+cursor.close()
+conn.close()
+````
+
+Note that here the sql order if executed one column after another.
+
+It will stuck if sending out the commands of all columns (~600 columns) together
