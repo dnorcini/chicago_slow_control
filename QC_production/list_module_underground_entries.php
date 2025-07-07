@@ -100,7 +100,8 @@ else if ($_SESSION['choose_type'] == "MODULE_UNDERGROUNDs") {
 
 	// Check if any reviewer grade is empty; if so, set text color to red
         $text_color = "";
-        if (empty($check_A) || empty($check_B) || empty($check_C) || empty($check_D)) {
+        if (empty($channel_A) || empty($channel_B) || empty($channel_C) || empty($channel_D))
+        {
             $text_color = "color: red;";
         }
 	

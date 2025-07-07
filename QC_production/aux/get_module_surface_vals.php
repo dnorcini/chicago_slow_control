@@ -12,7 +12,7 @@ $id = (int)$_SESSION['choosen_module_surface'];
 $query = "SELECT * FROM `MODULE_SURFACE` WHERE `ID` = " . $id;
 $result = mysql_query($query);
 if (!$result) {
-    module_surface("Could not query the database <br />" . mysql_error());
+    die("Could not query the database <br />" . mysql_error());
 }
 
 $row = mysql_fetch_assoc($result);

@@ -97,9 +97,10 @@ else if ($_SESSION['choose_type'] == "MODULE_SURFACEs") {
             $bg_color = "background-color: red;";
         }
 
-	// Check if any reviewer grade is empty; if so, set text color to red
+    // Check if any reviewer grade is empty; if so, set text color to red
+    // checkbox removed, dropdown menu added
         $text_color = "";
-        if (empty($check_A) || empty($check_B) || empty($check_C) || empty($check_D)) {
+        if (empty($channel_A) || empty($channel_B) || empty($channel_C) || empty($channel_D)) {
             $text_color = "color: red;";
         }
 	

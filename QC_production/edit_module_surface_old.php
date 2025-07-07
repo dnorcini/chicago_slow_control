@@ -35,7 +35,7 @@ if (isset($_POST['new'])) {
     $query = "INSERT INTO `" . $table . "` (`ID`, `Last_update`) VALUES (NULL, '" . time() . "')";
     $result = mysql_query($query);
     if (!$result) {
-        module_surface("Could not query the database <br />" . mysql_error());
+        die("Could not query the database <br />" . mysql_error());
     }
     include("aux/get_last_table_id.php");
     $_SESSION['choosen_module_surface'] = $last_id;
@@ -100,12 +100,12 @@ if (isset($_POST['id'])) {
     // Create the directory if it doesn't exist
     if (!is_dir($upload_dir)) {
         if (!mkdir($upload_dir, 0777, true)) {
-            module_surface('Failed to create directory: ' . $upload_dir);
+            die('Failed to create directory: ' . $upload_dir);
         }
     }
 
     if (!is_writable($upload_dir)) {
-        module_surface("Directory is not writable: $upload_dir");
+        die("Directory is not writable: $upload_dir");
     }
 
     // Allowed file types
@@ -287,7 +287,7 @@ if (isset($_POST['id'])) {
         $query = "UPDATE `" . $table . "` SET " . implode(', ', $query_parts) . " WHERE `ID` = " . $module_surface_id;
         $result = mysql_query($query);
         if (!$result) {
-            module_surface('Query failed: ' . mysql_error());
+            die('Query failed: ' . mysql_error());
         }
     }
 }

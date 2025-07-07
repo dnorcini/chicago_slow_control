@@ -13,7 +13,7 @@ $id = (int)$_SESSION['choosen_module_underground'];
 $query = "SELECT * FROM `MODULE_UNDERGROUND` WHERE `ID` = " . $id;
 $result = mysql_query($query);
 if (!$result) {
-    module_underground("Could not query the database <br />" . mysql_error());
+    die("Could not query the database <br />" . mysql_error());
 }
 
 $row = mysql_fetch_assoc($result);

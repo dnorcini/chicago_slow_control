@@ -110,12 +110,12 @@ if (isset($_POST['id'])) {
     // Create the directory if it doesn't exist
     if (!is_dir($upload_dir)) {
         if (!mkdir($upload_dir, 0777, true)) {
-            module_underground('Failed to create directory: ' . $upload_dir);
+            die('Failed to create directory: ' . $upload_dir);
         }
     }
 
     if (!is_writable($upload_dir)) {
-        module_underground("Directory is not writable: $upload_dir");
+        die("Directory is not writable: $upload_dir");
     }
 
     // Allowed file types
@@ -298,7 +298,7 @@ if (isset($_POST['id'])) {
         $result = mysql_query($query);
         if (!$result) {
             echo "Generated Query: $query<br>";
-            module_underground('Query failed: ' . mysql_error());
+            die('Query failed: ' . mysql_error());
         }
     }
 }
