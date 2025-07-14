@@ -40,7 +40,7 @@ if (empty($_SESSION['choosen_module_underground'])) {
 
 // Create a new entry if requested
 if (isset($_POST['new'])) {
-    $query = "INSERT INTO `" . $table . "` (`ID`, `Last_update`) VALUES (NULL, '" . time() . "')";
+    $query = "INSERT INTO `" . $table . "` (`Name`, `Last_update`) VALUES (NULL, '" . time() . "')";
     $result = mysql_query($query);
     if (!$result) {
         die("Could not query the database <br />" . mysql_error());
@@ -977,9 +977,9 @@ if (isset($_POST['go'])) {
     <table border="1">
 	<tr>
             <td align="left" style="width: 7%; white-space: nowrap;">Amplifier</td>
-            <td align="left" style="width: 15%; white-space: nowrap;">Resolution [e-]</td>
-            <td align="left" style="width: 15%; white-space: nowrap;">Gain [ADU]</td>
-            <td align="left" style="width: 15%; white-space: nowrap;">Dark Current [e-/pix/img]</td>
+            <td align="left" style="width: 15%; white-space: nowrap;">Resolution [ADU]</td>
+            <td align="left" style="width: 15%; white-space: nowrap;">Gain [ADU/e]</td>
+            <td align="left" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
             <td align="left" style="width: 35%; white-space: nowrap;">Comments</td>
             <td align="left" style="width: 45%; white-space: nowrap;">Reference Image</td>
 	</tr>
