@@ -10,7 +10,7 @@ if (empty($_SESSION['choosen_module_underground'])) {
 $id = (int)$_SESSION['choosen_module_underground'];
 
 // Query to fetch data from the MODULE_UNDERGROUND table
-$query = "SELECT * FROM `MODULE_UNDERGROUND` WHERE `ID` = " . $id;
+$query = "SELECT * FROM `MODULE_UNDERGROUND_NEW` WHERE `ID` = " . $id;
 $result = mysql_query($query);
 if (!$result) {
     die("Could not query the database <br />" . mysql_error());

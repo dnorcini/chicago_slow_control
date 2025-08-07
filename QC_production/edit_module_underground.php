@@ -1,3 +1,4 @@
+<!-- 
 <?php
 // edit_module_underground.php
 // D.Norcini, Hopkins, 2024
@@ -16,7 +17,7 @@ include("db_login.php");
 include("page_setup.php");
 include("aux/array_defs.php"); // Import all array definitions
 
-$table = "MODULE_UNDERGROUND";
+$table = "MODULE_UNDERGROUND_NEW";
 
 // Clear session variables when module_underground_id changes to prevent data from other module_undergrounds interfering
 if (isset($_POST['choosen']) && $_POST['choosen'] !== $_SESSION['choosen_module_underground']) {
@@ -24,23 +25,23 @@ if (isset($_POST['choosen']) && $_POST['choosen'] !== $_SESSION['choosen_module_
 }
 
 
-// Set the chosen module_underground based on session or POST data
+// Set the chosen module_underground from session "req_id"
 if (!empty($_SESSION['req_id'])) {
     $_SESSION['choosen_module_underground'] = $_SESSION['req_id'];
     unset($_SESSION['req_id']);
 }
-
+// If the user manually selects a module from a dropdown or button, it updates the current session to reflect that selection.
 if (isset($_POST['choosen'])) {
     $_SESSION['choosen_module_underground'] = $_POST['choosen'];
 }
-
+// Set default as first module if none is chosen
 if (empty($_SESSION['choosen_module_underground'])) {
     $_SESSION['choosen_module_underground'] = 1;
 }
 
 // Create a new entry if requested
 if (isset($_POST['new'])) {
-    $query = "INSERT INTO `" . $table . "` (`Name`, `Last_update`) VALUES (NULL, '" . time() . "')";
+    $query = "INSERT INTO `" . $table . "` (`ID`, `Last_update`) VALUES (NULL, '" . time() . "')";
     $result = mysql_query($query);
     if (!$result) {
         die("Could not query the database <br />" . mysql_error());
@@ -293,14 +294,18 @@ if (isset($_POST['id'])) {
     }
 
     // Construct and execute the final query if there are parts
-    if (!empty($query_parts)) {
-        $query = "UPDATE `" . $table . "` SET " . implode(', ', $query_parts) . " WHERE `ID` = " . $module_underground_id;
-        $result = mysql_query($query);
-        if (!$result) {
-            echo "Generated Query: $query<br>";
-            die('Query failed: ' . mysql_error());
-        }
+if (!empty($query_parts)) {
+    // Add the Last_update timestamp
+    $query_parts[] = "`Last_update` = '" . time() . "'";
+
+    $query = "UPDATE `" . $table . "` SET " . implode(', ', $query_parts) . " WHERE `ID` = " . $module_underground_id;
+    $result = mysql_query($query);
+    if (!$result) {
+        echo "Generated Query: $query<br>";
+        die('Query failed: ' . mysql_error());
     }
+}
+
 }
 
 // Fetch module_underground details again after updates
@@ -399,7 +404,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <?php generate_dropdown('status', $status_array, $status); ?>
             </td>
             <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
-                Entry Last updated: <?php echo date("G:i:s M d, Y", $last_update); ?>
+                Entry Last updated: <?php echo date("G:i:s M d, Y", $last_update); ?> (ET)
             </td>
         </tr>
         <tr>
@@ -609,7 +614,7 @@ if (isset($_POST['go'])) {
             <td>Tester: <input type="text" name="tester" value="<?php echo $tester; ?>" size="10"></td>
             <td>
                 Test Date: <input type="date" name="test_date" value="<?php echo $test_date; ?>">
-                Test Time [PT]: <input type="time" name="test_time" value="<?php echo $test_time; ?>">
+                Test Time [CET]: <input type="time" name="test_time" value="<?php echo $test_time; ?>">
             </td>
             <td>
                 Chamber: <?php generate_dropdown('chamber', $chamber_array, $chamber); ?>
@@ -1647,17 +1652,17 @@ if (isset($_POST['go'])) {
 <?php echo "<b>Image 7, Low Temp - [500 skip, 1x10 binning, 320rx640c, Active region, 500s Exposure] - Aim: High Resolution Fe55 Cluster Analysis, CTI, Noise</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
-    <table border="1">
+    <table border="1";">
         <tr>
             <td align="left" style="width: 10%; white-space: nowrap;">Amplifier</td>
             <td align="left" style="width: 5%;">Defects?</td>
-            <td align="left" style="width: 5%;">CTI? - Visual</td>
+            <td align="left" style="width: 10%;">CTI? - Visual</td>
             <td align="left" style="width: 5%;">Energy Peak 1 [keV]</td>
             <td align="left" style="width: 5%;">Energy Peak 2 [keV]</td>
             <td align="left" style="width: 5%;">Sigma - Back Events [pixels]</td>
-            <td align="left" style="width: 5%;">Front Events?</td>
-            <td align="left" style="width: 25%;">Comments</td>
-            <td align="left" style="width: 25%;">Reference Image</td>
+            <td align="left" style="width: 10%;">Front Events?</td>
+            <td align="left" style="width: 15%;">Comments</td>
+            <td align="left" style="width: 15%;">Reference Image</td>
         </tr>
         <?php
         $count = 0;
@@ -1673,7 +1678,7 @@ if (isset($_POST['go'])) {
             <td><input type="text" name="image7_low_sigma_<?php echo $amp; ?>" value="<?php echo ${'image7_low_sigma_' . $amp}; ?>" size="15"></td>
             <td><?php generate_dropdown('image7_low_front_' . $amp, $yes_no_blank_array, ${'image7_low_front_' . $amp}); ?></td>
             <td><input type="text" name="image7_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image7_low_comments_' . $amp}; ?>" size="40"></td>
-            <td><input type="text" name="image7_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image7_low_reference_' . $amp}; ?>" size="50"></td>
+            <td><input type="text" name="image7_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image7_low_reference_' . $amp}; ?>" size="40"></td>
         </tr>
         <?php $count++; $count_plus++; endforeach; ?>
 
@@ -1737,7 +1742,9 @@ if (isset($_POST['go'])) {
 <!-- Image 99 - Single Electron Resolution -->
 <!-- Image 99 - Single Electron Resolution -->
 <!-- Image 99 - Single Electron Resolution -->
-<?php echo "<b>Test Image 99, Low Temp - [? skip, ?x? binning, ?rx?c, Active region, ?s Exposure] - Aim: ?, Defect Map, Sharpness of tracks, CTI, Noise, Fe55 clusters</b>"; ?>
+
+
+<?php /* echo "<b>Test Image 99, Low Temp - [? skip, ?x? binning, ?rx?c, Active region, ?s Exposure] - Aim: ?, Defect Map, Sharpness of tracks, CTI, Noise, Fe55 clusters</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
