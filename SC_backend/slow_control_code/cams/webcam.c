@@ -733,7 +733,7 @@ int main(int argc, char *argv[])
 
     
   // detach current process
-  //daemonize();
+  // daemonize();
   
   // ignore these signals 
   signal(SIGINT, SIG_IGN);

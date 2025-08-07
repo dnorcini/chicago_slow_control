@@ -3,13 +3,13 @@ CC = gcc -Wl,--no-as-needed -O3
 
 CFLAGS = `mariadb_config --cflags` -I../include 
 
-LDFLAGS =  -L../lib -lslow_control -I/usr/local/include -lm
+LDFLAGS =  -L../lib -lslow_control -I/usr/local/include 
 
-PROGS = Raritan_PX3
+PROGS = METH_SENSOR
 
 all: $(PROGS) 
 
-APC3000: $(PROGS).o
+METH_SENSOR: $(PROGS).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $@.o $(LIBS)
 	rm -f $@.o
 

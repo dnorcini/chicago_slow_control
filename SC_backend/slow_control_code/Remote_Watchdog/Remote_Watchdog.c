@@ -156,7 +156,7 @@ int main (int argc, char *argv[])
     }	
 
     // detach current process
-    daemonize(this_inst.name);
+    daemonize (this_inst.name);
 
     my_signal = 0;
     // ignore these signals 
