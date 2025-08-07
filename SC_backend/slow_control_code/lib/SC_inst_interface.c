@@ -16,6 +16,7 @@ int register_inst(struct inst_struct *i_s)
 	fprintf(stderr, "Program is already running. \n");
 	exit(1);	
     }
+    
     i_s->PID = getpid();
     i_s->start_time = time(NULL);
     i_s->last_update_time = time(NULL);

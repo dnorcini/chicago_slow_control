@@ -41,3 +41,10 @@ plug the other side into the common usb-A female port of the computer
 - in username, type `factorydefaults`; then confirm eith `y` on the next prompt
 - the machine should be reset!!!!!! 
 - you can now login with the default credentials (admin/legrand) and continue the setup
+
+# notes for debugging the .c scripts
+- keep an eye on the sql entries and frontend along with the backend file
+(e.g. activate run checkbox in instrument config)
+- everything after daemonize won't be printed on the terminal (therefore comment out that line)
+- for a process w/o daemonize; you can check the pid in another terminal, and SC web can also read it; and of course ctrl+C will kill the pid.
+
