@@ -28,3 +28,8 @@ usually can be fixed by reset the instrument and/or reset the watchdog (from the
 And hopefully this note would help next time it went wrong...
 
 
+# update 7/15/25
+confirmed from manual and with mike that the centerone gauge and our sensor (PTR90) and can't be turned off from the gauge control itself -> put it on sentry pdu outlet 8 for now
+
+# update 7/16/25 changed its name to CenterOne
+if you want to change the name of a instrument, the easiest way is to do it in phpmyadmin (so no need to create a new instrument), then update sensors and files

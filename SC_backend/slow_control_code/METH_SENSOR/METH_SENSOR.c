@@ -16,7 +16,7 @@ modbus-enabled temperature and humidity sensors  */
 
 // This is the default instrument entry, but can be changed on the command line when run manually.
 // When called with the watchdog, a specific instrument is always given even if it is the same as the default. 
-#define INSTNAME "DataNab1" // The default instrument name (used for database entries or configuration)
+#define INSTNAME "METH_SENSOR" // The default instrument name (used for database entries or configuration)
 
 #define SLAVE    1 //0x01 
 #define mod_port 502 // The default port 

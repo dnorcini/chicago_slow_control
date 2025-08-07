@@ -5,11 +5,11 @@ CFLAGS = `mariadb_config --cflags` -I../include
 
 LDFLAGS =  -L../lib -lslow_control -I/usr/local/include 
 
-PROGS = DataNab1
+PROGS = METH_SENSOR
 
 all: $(PROGS) 
 
-DataNab: $(PROGS).o
+METH_SENSOR: $(PROGS).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $@.o $(LIBS)
 	rm -f $@.o
 
