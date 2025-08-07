@@ -1,6 +1,7 @@
 <?php
   // list_entries.php
   // D. Norcini, Hopkins, 2024
+  // Cinyu Zhu, Hopkins, 2025
   
 session_start();
 $req_priv = "basic";
@@ -12,7 +13,7 @@ echo ('<TABLE border="1" cellpadding="2" width=100%>');
 
 $plot_type_array = array(
     "Summary",
-    "MODULE_SURFACEs",
+    "MODULE_UNDERGROUNDs",
 );
 
 if (empty($_SESSION['choose_type'])) {
@@ -35,18 +36,18 @@ echo ('</TABLE>');
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 if ($_SESSION['choose_type'] == "Summary") { 
-    include("list_module_surface_entries_summary.php");
+    include("list_module_underground_entries_summary.php");
 }
-else if ($_SESSION['choose_type'] == "MODULE_SURFACEs") {
-    $temp = $_SESSION['choosen_module_surface'];
+else if ($_SESSION['choose_type'] == "MODULE_UNDERGROUNDs") {
+    $temp = $_SESSION['choosen_module_underground'];
 
     if (isset($_POST['go'])) {
         $_SESSION['req_id'] = $_POST['go'];
-        header("Location: edit_module_surface.php");
+        header("Location: edit_module_underground.php");
     }
 
     echo ('<TR>');
-    echo ('<TH align="left">MODULE_SURFACE ID</TH>');
+    echo ('<TH align="left">MODULE_UNDERGROUND ID</TH>');
     echo ('<TH align="left">Pitch Adaptor ID </TH>');
     echo ('<TH align="left">ACM</TH>');
     echo ('<TH align="left">Test Date</TH>');
@@ -58,14 +59,14 @@ else if ($_SESSION['choose_type'] == "MODULE_SURFACEs") {
     echo ('<TH align="left">Grade</TH>');
     echo ('</TR>');
 
-    $table = "MODULE_SURFACE";
+    $table = "MODULE_UNDERGROUND";
     include("aux/get_last_table_id.php");
 
     for ($i=1; $i <= $last_id; $i++) { 
-        $_SESSION['choosen_module_surface'] = $i;
+        $_SESSION['choosen_module_underground'] = $i;
 
-        // Get selected module_surface values:
-        include("aux/get_module_surface_vals.php");
+        // Get selected module_underground values:
+        include("aux/get_module_underground_vals.php");
 
         // Logic to calculate tallies based on grades
         $tallies = "";
@@ -97,17 +98,17 @@ else if ($_SESSION['choose_type'] == "MODULE_SURFACEs") {
             $bg_color = "background-color: red;";
         }
 
-    // Check if any reviewer grade is empty; if so, set text color to red
-    // checkbox removed, dropdown menu added
+	// Check if any reviewer grade is empty; if so, set text color to red
         $text_color = "";
-        if (empty($channel_A) || empty($channel_B) || empty($channel_C) || empty($channel_D)) {
+        if (empty($channel_A) || empty($channel_B) || empty($channel_C) || empty($channel_D))
+        {
             $text_color = "color: red;";
         }
 	
         echo ('<TR style="'.$text_color.'">'); // Apply red text color if any reviewer grade is unchecked
         echo ('<TD align="left">'); 
         echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
-        echo ('<input type="submit" name="go" value="'.$id.'" title="Goto MODULE_SURFACE ID '.$id.'" style="font-size: 14pt">');
+        echo ('<input type="submit" name="go" value="'.$id.'" title="Goto MODULE_UNDERGROUND ID '.$id.'" style="font-size: 14pt">');
         echo ('</FORM>');
         echo ('</TD>');
 
@@ -123,7 +124,7 @@ else if ($_SESSION['choose_type'] == "MODULE_SURFACEs") {
         echo ('</TR>');
     }
 
-    $_SESSION['choosen_module_surface'] = $temp;
+    $_SESSION['choosen_module_underground'] = $temp;
 
     echo ('</TABLE>');
 }

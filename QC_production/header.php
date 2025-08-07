@@ -6,10 +6,10 @@
 // added scatter plot function
 // D.Norcini, UChicago, 2020
 //
-
-echo('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
-
-////////////////   Check login info
+// Refactor and add underground and fixed tab positions
+// Cinyu Zhu, JHU, 2025
+// xzhu98@jh.edu
+session_start();
 
 if (!(empty($_POST['login'])))
   include("aux/login.php");
@@ -17,100 +17,50 @@ if (!(empty($_POST['login'])))
 if (!(empty($_POST['logout'])))
   include("aux/logout.php"); 
 
-////////////////   If there is nothing found, autologin as guest
 include("aux/guest_login.php");
 
-/////////////////////////////////////////////////////////   Table starts here!
+function nav_link($label, $file, $required_priv) {
+    global $allowed_host_array;
+    if (check_access($_SESSION['privileges'], $required_priv, $allowed_host_array)) {
+        $is_current = strpos($_SERVER['PHP_SELF'], $file) !== false;
+        echo('<TH>');
+        if ($is_current) {
+            echo('<span style="font-weight:bold; color:black; border:1px solid black; padding:2px;">' . $label . '</span>');
+        } else {
+            echo('<A HREF="' . $file . '">' . $label . '</A>');
+        }
+        echo('</TH>');
+    }
+}
+
 echo('<font size="-1">');
 echo('<TABLE border="0" cellpadding="2" width=100%>');
 echo('<TR valign="center">');
 
-///  Make a small form where we can choose the refresh time of the page.
-///  Use refresh_time = -1 to never refresh
+// Refresh button
 echo('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
 echo('<TH align="left" width="25">');
-
 echo('<input type="image" src="pixmaps/reload.png" alt="Refresh" title="Refresh page">');
 echo('</TH>');
 echo('</FORM>');
 
-if (strpos($_SERVER['PHP_SELF'], "plot_entries.php") === false)
-{
-    if (check_access($_SESSION['privileges'], "basic", $allowed_host_array))
-    {
-	echo('<TH>');
-	echo('<A HREF="plot_entries.php">Plots</A>');
-	echo('</TH>'); 
-    }
-}
+// Navigation Links
+nav_link("Plots", "plot_entries.php", "basic");
+// nav_link("Scatter", "scatter_entries.php", "full"); //What is this page for?
+nav_link("DIE", "list_entries.php", "basic");
+nav_link("DIE Details", "edit_die.php", "full");
+nav_link("MODULE SURFACE", "list_module_surface_entries.php", "basic");
+nav_link("MODULE SURFACE Details", "edit_module_surface.php", "full");
+nav_link("MODULE UNDERGROUND", "list_module_underground_entries.php", "basic");  // New page
+nav_link("MODULE UNDERGROUND Details", "edit_module_underground.php", "basic");  // New page
+nav_link("Edit Users", "users.php", "full");
 
-if (strpos($_SERVER['PHP_SELF'], "scatter_entries.php") === false)
-{
-    if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
-    {
-        echo('<TH>');
-     	echo('<A HREF="scatter_entries.php">Scatter</A>');
-	echo('</TH>');
-    }
-}
-
-if (strpos($_SERVER['PHP_SELF'], "list_entries.php") === false)
-{
-    if (check_access($_SESSION['privileges'], "basic", $allowed_host_array))
-    {
-	echo('<TH>');
-	echo('<A HREF="list_entries.php">DIE</A>');
-	echo('</TH>'); 
-    }
-}
-
-if (strpos($_SERVER['PHP_SELF'], "edit_die.php") === false)
-{
-    if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
-    {
-        echo('<TH>');
-        echo('<A HREF="edit_die.php">DIE Details</A>');
-        echo('</TH>');
-    }
-}
-
-if (strpos($_SERVER['PHP_SELF'], "list_module_surface_entries.php") === false)
-{
-    if (check_access($_SESSION['privileges'], "basic", $allowed_host_array))
-    {
-        echo('<TH>');
-        echo('<A HREF="list_module_surface_entries.php">MODULES</A>');
-        echo('</TH>');
-    }
-}
-
-if (strpos($_SERVER['PHP_SELF'], "edit_module_surface.php") === false)
-{
-    if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
-    {
-        echo('<TH>');
-        echo('<A HREF="edit_module_surface.php">MODULE SURFACE Details</A>');
-        echo('</TH>');
-    }
-}
-
-if (strpos($_SERVER['PHP_SELF'], "users.php") === false)
-{
-    if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
-    {
-	echo('<TH>');
-	echo('<A HREF="users.php">Edit Users</A>');
-	echo('</TH>'); 
-    }
-}
-
-
+// Login/Logout
 echo('<TH align="right">');
 echo('You are logged in as '.$_SESSION['user_name']);
 echo(' from '.$_SERVER['REMOTE_ADDR'].'.');
 
-if (strpos($_SESSION['privileges'], "guest") !== false)
-{
+if (strpos($_SESSION['privileges'], "guest") !== false) {
     echo('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
     echo('<input type="hidden" name="login" value="1">');
     echo('<TH width="200">');
@@ -123,9 +73,7 @@ if (strpos($_SESSION['privileges'], "guest") !== false)
     echo('<input type="image" src="pixmaps/login.png" alt="Log in" title="Log in">');
     echo('</TH>');
     echo('</FORM>');
-}
-else
-{
+} else {
     echo('<TH>');
     echo('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
     echo('<input type="hidden" name="logout" value="1">');
@@ -133,21 +81,14 @@ else
     echo('</FORM>');
     echo('</TH>');
 }
-echo('</TH>');
 
+echo('</TH>');
 echo('</TR>');
 echo('</TABLE>');
 echo('</font>');
-//////////////////////////////////////  End  Header
 
-
-//////////////////////////////////////  Check for access levels
-if (!check_access($_SESSION['privileges'], $req_priv, $allowed_host_array))
-{  			      
-    echo('<br>');
-    echo('<br>');
-    echo('You do not have clearance to view this page.');
-    echo('<br>');
+if (!check_access($_SESSION['privileges'], $req_priv, $allowed_host_array)) {
+    echo('<br><br>You do not have clearance to view this page.<br>');
     exit();
 }
 ?>
