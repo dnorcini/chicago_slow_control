@@ -1,16 +1,26 @@
-<!-- 
 <?php
 // edit_module_underground.php
 // D.Norcini, Hopkins, 2024
 // Cinyu Zhu, Hopkins, 2025
 
-
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 
-
 session_start();
+
+
+//to avoil session key conflicts, leading to incorrect file paths
+if (isset($_SESSION['choosen_module_surface'])) {
+    $key = 'file_url_' . $_SESSION['choosen_module_surface'];
+    unset($_SESSION[$key]);
+}
+
+if (isset($_SESSION['choosen_module_surface'])) {
+    $key = 'log_url_' . $_SESSION['choosen_module_surface'];
+    unset($_SESSION[$key]);
+}
+
 
 $req_priv = "full";
 include("db_login.php");
@@ -103,8 +113,10 @@ if (isset($_POST['id'])) {
     unset($_SESSION['file_url_' . $module_underground_id], $_SESSION['upload_dir_' . $module_underground_id], $_SESSION['base_url_' . $module_underground_id], $_SESSION['file_exists_' . $module_underground_id], $_SESSION['log_url_' . $module_underground_id], $_SESSION['log_exists_' . $module_underground_id]);
 
     // Directory to store uploaded images
-    $upload_dir = '/home/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
-    $base_url = '/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id; // Web-accessible URL
+    $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+    $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id; // Web URL
+
+
     $_SESSION['upload_dir_' . $module_underground_id] = $upload_dir;
     $_SESSION['base_url_' . $module_underground_id] = $base_url;
 
@@ -692,10 +704,9 @@ if (isset($_POST['go'])) {
 		$module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
 
 		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';  // This should be the actual server file path
-
+		$upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';  // This should be the actual server file path
 		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id; // Web URL
 
 		// Check if trace_high_file already exists in the directory even if no form is submitted
 		$trace_high_file_name = 'trace_high_file.png';
@@ -802,11 +813,10 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_underground_id
 		$module_underground_id = isset($_SESSION['module_underground_id']) ? $_SESSION['module_underground_id'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';  // This should be the actual server file path
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id. '/'; // Web URL
 
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+
 
 		// Check if image1_high_file already exists in the directory even if no form is submitted
 		$image1_high_file_name = 'image1_high_file.png';
@@ -907,11 +917,8 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_underground_id
 		$module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id. '/'; // Web URL
 
 		// Check if image2_high_file already exists in the directory even if no form is submitted
 		$image2_high_file_name = 'image2_high_file.png';
@@ -1016,11 +1023,10 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_underground_id
 		$module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';  // This should be the actual server file path
 
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id; // Web URL
+
 
 		// Check if image3_high_file already exists in the directory even if no form is submitted
 		$image3_high_file_name = 'image3_high_file.png';
@@ -1134,11 +1140,8 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_underground_id
 		$module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_undergroundmodule_underground_' . $module_underground_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id. '/'; // Web URL
 
 		// Check if image4_high_file already exists in the directory even if no form is submitted
 		$image4_high_file_name = 'image4_high_file.png';
@@ -1241,8 +1244,8 @@ if (isset($_POST['go'])) {
                 <input type="submit" value="Submit">
                 <?php
 		        $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
-                $upload_dir = "/home/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
-                $base_url = "/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id. '/';
 
                 ${'image31_low_file_name'} = "image31_low_file.png";
                 ${'image31_low_file_path'} = $upload_dir . ${'image31_low_file_name'};
@@ -1331,8 +1334,8 @@ if (isset($_POST['go'])) {
                 <input type="submit" value="Submit">
                 <?php
 		        $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
-                $upload_dir = "/home/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
-                $base_url = "/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id. '/';
 
                 ${'image32_low_file_name'} = "image32_low_file.png";
                 ${'image32_low_file_path'} = $upload_dir . ${'image32_low_file_name'};
@@ -1420,8 +1423,8 @@ if (isset($_POST['go'])) {
                 <input type="submit" value="Submit">
                 <?php
 		        $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
-                $upload_dir = "/home/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
-                $base_url = "/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id. '/';
 
                 ${'image4_low_file_name'} = "image4_low_file.png";
                 ${'image4_low_file_path'} = $upload_dir . ${'image4_low_file_name'};
@@ -1509,8 +1512,8 @@ if (isset($_POST['go'])) {
                 <input type="submit" value="Submit">
                 <?php
 		        $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
-                $upload_dir = "/home/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
-                $base_url = "/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id. '/';
 
                 ${'image5_low_file_name'} = "image5_low_file.png";
                 ${'image5_low_file_path'} = $upload_dir . ${'image5_low_file_name'};
@@ -1598,8 +1601,8 @@ if (isset($_POST['go'])) {
                 <input type="submit" value="Submit">
                 <?php
 		        $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
-                $upload_dir = "/home/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
-                $base_url = "/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id. '/';
 
                 ${'image6_low_file_name'} = "image6_low_file.png";
                 ${'image6_low_file_path'} = $upload_dir . ${'image6_low_file_name'};
@@ -1687,8 +1690,8 @@ if (isset($_POST['go'])) {
                 <input type="submit" value="Submit">
                 <?php
 		        $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
-                $upload_dir = "/home/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
-                $base_url = "/uploads/edit_module_underground/module_underground_" . $module_underground_id . "/";
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id. '/';
 
                 ${'image7_low_file_name'} = "image7_low_file.png";
                 ${'image7_low_file_path'} = $upload_dir . ${'image7_low_file_name'};
@@ -1737,113 +1740,3 @@ if (isset($_POST['go'])) {
 <br><br>
 <!-- Insert the code block of next image after this -->
 
-
-
-<!-- Image 99 - Single Electron Resolution -->
-<!-- Image 99 - Single Electron Resolution -->
-<!-- Image 99 - Single Electron Resolution -->
-
-
-<?php /* echo "<b>Test Image 99, Low Temp - [? skip, ?x? binning, ?rx?c, Active region, ?s Exposure] - Aim: ?, Defect Map, Sharpness of tracks, CTI, Noise, Fe55 clusters</b>"; ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="id" value="<?php echo $id; ?>">
-    <table border="1">
-	<tr>
-	    <td align="left" style="width: 10%; white-space: nowrap;">Amplifier</td>
-        <td align="left" style="width: 5%; white-space: nowrap;">Defects?</td>
-        <td align="left" style="width: 5%; white-space: nowrap;">CTI? - Visual</td>
-        <td align="left" style="width: 5%; white-space: nowrap;">Energy Peak 1 [keV]</td>
-        <td align="left" style="width: 5%; white-space: nowrap;">Energy Peak 2 [keV]</td>
-	    <td align="left" style="width: 5%; white-space: nowrap;">Sigma - Back Events [pixels]</td>
-	    <td align="left" style="width: 5%; white-space: nowrap;">Front Events?</td>
-        <td align="left" style="width: 25%; white-space: nowrap;">Comments</td>
-        <td align="left" style="width: 25%; white-space: nowrap;">Reference Image</td>
-        <td align="left" style="white-space: nowrap;">testxxx</td>
-
-
-            
-	</tr>
-	<?php
-
-	$count = 0;
-	$count_plus = 1;
-	foreach ($ccds as $amp):
-	?>
-	    <tr>
-            <td> <?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
-            <td> <?php generate_dropdown('image99_low_defects_' . $amp, $yes_no_blank_array, ${'image99_low_defects_' . $amp}); ?> </td>
-            <td> <?php generate_dropdown('image99_low_cti_visual_' . $amp, $yes_no_blank_array, ${'image99_low_cti_visual_' . $amp}); ?></td>
-		    <td> <input type="text" name="image99_low_peak1_<?php echo $amp; ?>" value="<?php echo ${'image99_low_peak1_' . $amp}; ?>" size="15"></td>
-		    <td> <input type="text" name="image99_low_peak2_<?php echo $amp; ?>" value="<?php echo ${'image99_low_peak2_' . $amp}; ?>" size="15"></td>
-		    <td> <input type="text" name="image99_low_sigma_<?php echo $amp; ?>" value="<?php echo ${'image99_low_sigma_' . $amp}; ?>" size="15"></td>
-            <td> <?php generate_dropdown('image99_low_front_' . $amp, $yes_no_blank_array, ${'image99_low_front_' . $amp}); ?></td>
-		    <td> <input type="text" name="image99_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image99_low_comments_' . $amp}; ?>" size="40"></td>
-		    <td> <input type="text" name="image99_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image99_low_reference_' . $amp}; ?>" size="50"></td>
-            <td> <input type="text" name="image99_low_testxxx_<?php echo $amp; ?>" value="<?php echo ${'image99_low_testxxx_' . $amp}; ?>" size="50">
-</td>
-
-	    </tr>
-
-	<?php
-        $count++;
-	$count_plus++;
-	endforeach;
-	?>
-
-	<tr>
-	    <td align="left" colspan="9" style="border: none; white-space: nowrap;">
-		<input type="submit" value="Submit">
-		&nbsp; &nbsp; &nbsp; &nbsp;
-		<?php
-		$module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
-		$upload_dir = '/home/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
-		$base_url = '/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
-
-		$image99_low_file_name = 'image99_low_file.png';
-		$image99_low_file_path = $upload_dir . $image99_low_file_name;
-        $image99_low_log_name = 'image99_low_log.log';
-        $image99_low_log_path = $upload_dir . $image99_low_log_name;
-
-		if (file_exists($image99_low_file_path) && !isset($_SESSION['file_url_' . $module_underground_id]['image99_low_file'])) {
-		    $_SESSION['file_url_' . $module_underground_id]['image99_low_file'] = $base_url . $image99_low_file_name;
-		}
-
-		if (!empty($image99_low_file_name) && file_exists($image99_low_file_path)) {
-		    $file_exists = true;
-		    $file_url = $_SESSION['file_url_' . $module_underground_id]['image99_low_file'];
-		} else {
-		    $file_exists = false;
-		}
-
-                if (file_exists($image99_low_log_path) && !isset($_SESSION['log_url_' . $module_underground_id]['image99_low_log'])) {
-                    $_SESSION['log_url_' . $module_underground_id]['image99_low_log'] = $base_url . $image99_low_log_name;
-                }
-
-                if (!empty($image99_low_log_name) && file_exists($image99_low_log_path)) {
-                    $log_exists = true;
-                    $log_url = $_SESSION['log_url_' . $module_underground_id]['image99_low_log'];
-                } else {
-                    $log_exists = false;
-		    }
-                ?>
-
-                <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
-			<img src="pixmaps/icon.png" alt="Image99_Low File" style="height: 20px; width: auto;">
-                    </a>
-                <?php endif; ?>
-                <label for="image99_low_file">Image File:</label>
-                <input type="file" name="image99_low_file" accept="image/png, image/jpeg, application/pdf">
-                &nbsp; &nbsp; &nbsp; &nbsp;
-		<?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
-			<img src="pixmaps/icon2.png" alt="Image99_Low Log" style="height: 20px; width: auto;">
-                    </a>
-                <?php endif; ?>
-                <label for="image99_low_log">Log File:</label>
-                <input type="file" name="image99_low_log" accept=".log,text/plain">
-	    </td>
-	</tr>
-    </table>
-</form>
-<br><br>
