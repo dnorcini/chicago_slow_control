@@ -52,7 +52,7 @@ nav_link("DIE Details", "edit_die.php", "full");
 nav_link("MODULE SURFACE", "list_module_surface_entries.php", "basic");
 nav_link("MODULE SURFACE Details", "edit_module_surface.php", "full");
 nav_link("MODULE UNDERGROUND", "list_module_underground_entries.php", "basic");  // New page
-nav_link("MODULE UNDERGROUND Details", "edit_module_underground.php", "basic");  // New page
+nav_link("MODULE UNDERGROUND Details", "edit_module_underground.php", "full");  // New page
 nav_link("Edit Users", "users.php", "full");
 
 // Login/Logout

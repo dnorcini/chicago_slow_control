@@ -4,6 +4,21 @@
 
 session_start();
 
+
+//to avoil session key conflicts leading to incorrect file paths, unset the path before each page
+if (isset($_SESSION['choosen_module_surface'])) {
+    $key = 'file_url_' . $_SESSION['choosen_module_surface'];
+    unset($_SESSION[$key]);
+}
+
+if (isset($_SESSION['choosen_module_surface'])) {
+    $key = 'log_url_' . $_SESSION['choosen_module_surface'];
+    unset($_SESSION[$key]);
+}
+
+
+
+
 $req_priv = "full";
 include("db_login.php");
 include("page_setup.php");
@@ -91,9 +106,8 @@ if (isset($_POST['id'])) {
     // Clear session variables related to file uploads when die_id changes
     unset($_SESSION['file_url_' . $die_id], $_SESSION['upload_dir_' . $die_id], $_SESSION['base_url_' . $die_id], $_SESSION['file_exists_' . $die_id], $_SESSION['log_url_' . $die_id], $_SESSION['log_exists_' . $die_id]);
 
-    // Directory to store uploaded images
-    $upload_dir = '/home/uploads/edit_die/die_' . $die_id . '/';
-    $base_url = '/uploads/edit_die/' . 'die_' . $die_id; // Web-accessible URL
+    $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
+    $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id. '/';
     $_SESSION['upload_dir_' . $die_id] = $upload_dir;
     $_SESSION['base_url_' . $die_id] = $base_url;
 
@@ -560,11 +574,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		// Retrieve the current die_id
 		$die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_die/die_' . $die_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_die/die_' . $die_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
+        $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id. '/';
 
 		// Check if trace_file already exists in the directory even if no form is submitted
 		$trace_file_name = 'trace_file.png';
@@ -669,11 +680,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		// Retrieve the current die_id
 		$die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_die/die_' . $die_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_die/die_' . $die_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
+        $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id. '/';
 
 		// Check if image1_file already exists in the directory even if no form is submitted
 		$image1_file_name = 'image1_file.png';
@@ -786,11 +794,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		// Retrieve the current die_id
 		$die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_die/die_' . $die_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_die/die_' . $die_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
+        $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id. '/';
 
 		// Check if image2_file already exists in the directory even if no form is submitted
 		$image2_file_name = 'image2_file.png';
@@ -903,11 +908,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		// Retrieve the current die_id
 		$die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_die/die_' . $die_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_die/die_' . $die_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
+        $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id. '/';
 
 		// Check if image3_file already exists in the directory even if no form is submitted
 		$image3_file_name = 'image3_file.png';
@@ -1008,11 +1010,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		// Retrieve the current die_id
 		$die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_die/die_' . $die_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_die/die_' . $die_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
+        $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id. '/';
 
 		// Check if image4_file already exists in the directory even if no form is submitted
 		$image4_file_name = 'image4_file.png';
@@ -1111,11 +1110,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		// Retrieve the current die_id
 		$die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_die/die_' . $die_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_die/die_' . $die_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
+        $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id. '/';
 
 		// Check if image5_file already exists in the directory even if no form is submitted
 		$image5_file_name = 'image5_file.png';
@@ -1226,11 +1222,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
 		// Retrieve the current die_id
 		$die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_die/die_' . $die_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_die/die_' . $die_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
+        $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id. '/';
 
 		// Check if image6_file already exists in the directory even if no form is submitted
 		$image6_file_name = 'image6_file.png';

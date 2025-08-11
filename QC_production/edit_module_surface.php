@@ -10,6 +10,18 @@
 
 session_start();
 
+//to avoil session key conflicts, leading to incorrect file paths
+if (isset($_SESSION['choosen_module_surface'])) {
+    $key = 'file_url_' . $_SESSION['choosen_module_surface'];
+    unset($_SESSION[$key]);
+}
+
+if (isset($_SESSION['choosen_module_surface'])) {
+    $key = 'log_url_' . $_SESSION['choosen_module_surface'];
+    unset($_SESSION[$key]);
+}
+
+
 
 $req_priv = "full";
 include("db_login.php");
@@ -100,8 +112,8 @@ if (isset($_POST['id'])) {
     unset($_SESSION['file_url_' . $module_surface_id], $_SESSION['upload_dir_' . $module_surface_id], $_SESSION['base_url_' . $module_surface_id], $_SESSION['file_exists_' . $module_surface_id], $_SESSION['log_url_' . $module_surface_id], $_SESSION['log_exists_' . $module_surface_id]);
 
     // Directory to store uploaded images
-    $upload_dir = '/home/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
-    $base_url = '/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id; // Web-accessible URL
+    $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+    $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
     $_SESSION['upload_dir_' . $module_surface_id] = $upload_dir;
     $_SESSION['base_url_' . $module_surface_id] = $base_url;
 
@@ -684,11 +696,8 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_surface_id
 		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
 
 		// Check if trace_high_file already exists in the directory even if no form is submitted
 		$trace_high_file_name = 'trace_high_file.png';
@@ -795,11 +804,8 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_surface_id
 		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
 
 		// Check if image1_high_file already exists in the directory even if no form is submitted
 		$image1_high_file_name = 'image1_high_file.png';
@@ -900,11 +906,8 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_surface_id
 		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
 
 		// Check if image2_high_file already exists in the directory even if no form is submitted
 		$image2_high_file_name = 'image2_high_file.png';
@@ -1009,11 +1012,8 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_surface_id
 		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
 
 		// Check if image3_high_file already exists in the directory even if no form is submitted
 		$image3_high_file_name = 'image3_high_file.png';
@@ -1127,11 +1127,8 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_surface_id
 		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
 
 		// Check if image4_high_file already exists in the directory even if no form is submitted
 		$image4_high_file_name = 'image4_high_file.png';
@@ -1234,11 +1231,8 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_surface_id
 		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
 
 		// Check if image3_low_file already exists in the directory even if no form is submitted
 		$image3_low_file_name = 'image3_low_file.png';
@@ -1353,11 +1347,8 @@ if (isset($_POST['go'])) {
 		// Retrieve the current module_surface_id
 		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-		// Absolute path on the server's file system
-		$upload_dir = '/home/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';  // This should be the actual server file path
-
-		// Web URL for accessing files via the browser
-		$base_url = '/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
 
 		// Check if image4_low_file already exists in the directory even if no form is submitted
 		$image4_low_file_name = 'image4_low_file.png';
