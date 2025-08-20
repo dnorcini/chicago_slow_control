@@ -27,10 +27,22 @@ $num_msgs_array = array(
 
 // HTML colors
 $html_colours = array(
-    "aqua", "black", "blue",
-    "gray", "green", "lime", "maroon",
-    "navy", "orange", "purple", "red",
-    "silver", "teal", "wheat", "white", "yellow"
+    "aqua",
+    "black",
+    "blue",
+    "gray",
+    "green",
+    "lime",
+    "maroon",
+    "navy",
+    "orange",
+    "purple",
+    "red",
+    "silver",
+    "teal",
+    "wheat",
+    "white",
+    "yellow"
 );
 
 // Privilege arrays dynamically populated from DB
@@ -70,32 +82,75 @@ $feedthru_positions = array(" ", "1", "2", "3", "4");
 $yes_no_blank_array = array(" ", "Yes", "No");
 
 // Amplifier labels (assuming it's a list of amplifiers for L1, L2, U1, U2, etc.)
-$amp_array = array(" ", "L1", "L2", "U1", "U2"); 
+$amp_array = array(" ", "L1", "L2", "U1", "U2");
 $amplifiers = array("L1", "L2", "U1", "U2");
 
 // CCD label
 $ccds = array("A", "B", "C", "D");
 
 // channels
-$channels = array('','ch0', 'ch1', 'ch2', 'ch3');
+$channels = array('', 'ch0', 'ch1', 'ch2', 'ch3');
 
 
 // Define trace fields
 $trace_fields = array(
-    'trace_saturation_', 'trace_comments_', 'trace_reference_'
+    'trace_saturation_',
+    'trace_comments_',
+    'trace_reference_'
 );
 $trace_fields_high = array(
-    'trace_high_saturation_', 'trace_high_comments_', 'trace_high_reference_'
+    'trace_high_saturation_',
+    'trace_high_comments_',
+    'trace_high_reference_'
 );
 
 // Define other image-related fields (for defect maps, tracks, etc.)
 $image_fields = array(
-    'tracks_', 'noise_', 'defects_', 'saturation_', 'sharpness_tracks_', 'cti_code_', 'cti_visual_',
-    'comments_', 'reference_', 'region_defect_', 'noise_overscan_', 'res_', 'gain_', 'dark_current_', 'column_defects_', 'pixel_defects_',
-    'peak1_', 'peak2_', 'sigma_','front_' ,'testxxx_','file_'
+    'tracks_',
+    'noise_',
+    'defects_',
+    'saturation_',
+    'sharpness_tracks_',
+    'cti_code_',
+    'cti_visual_',
+    'comments_',
+    'reference_',
+    'region_defect_',
+    'noise_overscan_',
+    'res_',
+    'gain_',
+    'dark_current_',
+    'column_defects_',
+    'pixel_defects_',
+    'peak1_',
+    'peak2_',
+    'sigma_',
+    'front_',
+    'testxxx_',
+    'file_',
+    'cti_back_left_mean_',
+    'cti_back_left_rms_',
+    'cti_back_left_skewness_',
+    'cti_back_left_integral_',
+    'cti_back_below_mean_',
+    'cti_back_below_rms_',
+    'cti_back_below_skewness_',
+    'cti_back_below_integral_',
+    'cti_front_left_fraction_',
+    'cti_front_right_fraction_',
+    'cti_front_above_fraction_',
+    'cti_front_below_fraction_',
+    'ctix_comments_',
+    'ctiy_comments_',
+    'crosstalk_01_',
+    'crosstalk_02_',
+    'crosstalk_03_',
+    'crosstalk_12_',
+    'crosstalk_13_',
+    'crosstalk_23_',
+    'crosstalk_comments_'
 );
 
-$image_numbers = array("1_", "2_", "3_", "4_", "5_", "6_","98_","99_");
-$image_numbers_low = array("1_low_", "2_low_", "3_low_","31_low_","32_low_", "4_low_", "5_low_", "6_low_","7_low_","98_low_","99_low_");
-$image_numbers_high = array("1_high_", "2_high_", "3_high_", "4_high_", "5_high_", "6_high_","98_high_", "99_high_");
-?>
+$image_numbers = array("1_", "2_", "3_", "4_", "5_", "6_", "7_", "98_", "99_");
+$image_numbers_low = array("1_low_", "2_low_", "3_low_", "31_low_", "32_low_", "4_low_", "5_low_", "6_low_", "7_low_");
+$image_numbers_high = array("1_high_", "2_high_", "3_high_", "31_high_", "32_high_", "4_high_", "5_high_", "6_high_");
