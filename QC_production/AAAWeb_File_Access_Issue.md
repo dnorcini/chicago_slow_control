@@ -25,4 +25,11 @@ We relabeled the upload directory /home/uploads to a web-accessible SELinux cont
 
 `sudo restorecon -Rv /home/uploads`
 
+## set back the rwx permissions:
+### for php code files:
+Set directories to 755 (rwxr-xr-x): `find /var/www/html -type d -exec chmod 755 {} \;`
 
+Set files to 644 (rw-r--r--): `find /var/www/html -type f -exec chmod 644 {} \;`
+
+### for upload folder: 
+`sudo chmod -R 775 <folder path>`

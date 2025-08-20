@@ -6,22 +6,22 @@ echo ('<BR>');
 echo ('<b>CCD grades<b>');
 $types = array(
     'charizard' => array(
-        "query" => "SELECT COUNT(*) AS count FROM MODULE_UNDERGROUND_NEW WHERE (grade_A = 'Science' AND grade_B = 'Science' AND grade_C = 'Science' AND grade_D = 'Science')",
+        "query" => "SELECT COUNT(*) AS count FROM MODULE_UNDERGROUND2 WHERE (grade_A = 'Science' AND grade_B = 'Science' AND grade_C = 'Science' AND grade_D = 'Science')",
         "color" => "red",
         "note" => "4 Science grade CCDs"
     ),
     'charmeleon' => array(
-        "query" => "SELECT COUNT(*) AS count FROM MODULE_UNDERGROUND_NEW WHERE ((grade_A = 'Science') + (grade_B = 'Science') + (grade_C = 'Science') + (grade_D = 'Science')) = 3",
+        "query" => "SELECT COUNT(*) AS count FROM MODULE_UNDERGROUND2 WHERE ((grade_A = 'Science') + (grade_B = 'Science') + (grade_C = 'Science') + (grade_D = 'Science')) = 3",
         "color" => "orange",
         "note" => "3 Science grade CCDs"
     ),
     'charmander' => array(
-        "query" => "SELECT COUNT(*) AS count FROM MODULE_UNDERGROUND_NEW WHERE ((grade_A = 'Science') + (grade_B = 'Science') + (grade_C = 'Science') + (grade_D = 'Science')) BETWEEN 1 AND 2",
+        "query" => "SELECT COUNT(*) AS count FROM MODULE_UNDERGROUND2 WHERE ((grade_A = 'Science') + (grade_B = 'Science') + (grade_C = 'Science') + (grade_D = 'Science')) BETWEEN 1 AND 2",
         "color" => "yellow",
         "note" => "1 or 2 Science grade CCDs"
     ),
     'geodude' => array(
-        "query" => "SELECT COUNT(*) AS count FROM MODULE_UNDERGROUND_NEW WHERE (grade_A != 'Science' AND grade_B != 'Science' AND grade_C != 'Science' AND grade_D != 'Science')",
+        "query" => "SELECT COUNT(*) AS count FROM MODULE_UNDERGROUND2 WHERE (grade_A != 'Science' AND grade_B != 'Science' AND grade_C != 'Science' AND grade_D != 'Science')",
         "color" => "gray",
         "note" => "0 Science grade CCDs"
     )
@@ -62,7 +62,7 @@ echo ('</TR>');
 // Total number of module_undergroundss
 echo ('<TR>');
 echo ('<TH align="left">');  echo ('Number of Total MODULE_UNDERGROUND'); echo ('</TH>');
-$query = "SELECT COUNT(*) FROM MODULE_UNDERGROUND_NEW WHERE ID >= 1";
+$query = "SELECT COUNT(*) FROM MODULE_UNDERGROUND2 WHERE ID >= 1";
 $result = mysql_query($query);
 $row = mysql_fetch_row($result);
 $total_module_undergrounds = $row ? $row[0] : 0;

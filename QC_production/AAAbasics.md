@@ -29,9 +29,11 @@ ALTER TABLE MODULE_SURFACE ENGINE=InnoDB;
 # edits on *.php files
 
 ## 1. Duplicate Files
-cp edit_module_surface.php edit_module_underground.php
-cp list_module_surface_entries.php list_module_underground_entries.php
-cp list_module_surface_entries_summary.php list_module_underground_entries_summary.php
+`cp edit_module_surface.php edit_module_underground.php`
+
+`cp list_module_surface_entries.php list_module_underground_entries.php`
+
+`cp list_module_surface_entries_summary.php list_module_underground_entries_summary.php`
 
 ## 2. Update SQL Table Names
 

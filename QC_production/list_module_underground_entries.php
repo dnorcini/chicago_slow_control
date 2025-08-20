@@ -1,8 +1,8 @@
 <?php
-  // list_entries.php
-  // D. Norcini, Hopkins, 2024
-  // Cinyu Zhu, Hopkins, 2025
-  
+// list_entries.php
+// D. Norcini, Hopkins, 2024
+// Cinyu Zhu, Hopkins, 2025
+
 session_start();
 $req_priv = "basic";
 include("db_login.php");
@@ -26,19 +26,18 @@ if (!(empty($_POST['choose_type']))) {
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 foreach ($plot_type_array as $index) {
-    echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
+    echo ('<FORM action="' . $_SERVER['PHP_SELF'] . '" method="post">');
     echo ('<TH>');
-    echo ('<input type="submit" name="choose_type" value="'.$index.'" 
-               title="'.$index.'" style="font-size: 10pt">');
+    echo ('<input type="submit" name="choose_type" value="' . $index . '" 
+               title="' . $index . '" style="font-size: 10pt">');
     echo ('</TH>');
 }
 echo ('</TABLE>');
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
-if ($_SESSION['choose_type'] == "Summary") { 
+if ($_SESSION['choose_type'] == "Summary") {
     include("list_module_underground_entries_summary.php");
-}
-else if ($_SESSION['choose_type'] == "MODULE_UNDERGROUNDs") {
+} else if ($_SESSION['choose_type'] == "MODULE_UNDERGROUNDs") {
     $temp = $_SESSION['choosen_module_underground'];
 
     if (isset($_POST['go'])) {
@@ -59,10 +58,10 @@ else if ($_SESSION['choose_type'] == "MODULE_UNDERGROUNDs") {
     echo ('<TH align="left">Grade</TH>');
     echo ('</TR>');
 
-    $table = "MODULE_UNDERGROUND";
+    $table = "MODULE_UNDERGROUND2";
     include("aux/get_last_table_id.php");
 
-    for ($i=1; $i <= $last_id; $i++) { 
+    for ($i = 1; $i <= $last_id; $i++) {
         $_SESSION['choosen_module_underground'] = $i;
 
         // Get selected module_underground values:
@@ -74,14 +73,11 @@ else if ($_SESSION['choose_type'] == "MODULE_UNDERGROUNDs") {
         if (!empty($grade_A) && !empty($grade_B) && !empty($grade_C) && !empty($grade_D)) {
             if ($grade_A == "Science" && $grade_B == "Science" && $grade_C == "Science" && $grade_D == "Science") {
                 $tallies = "Charizard";
-            }
-            elseif (($grade_A == "Science" && $grade_B == "Science") || ($grade_C == "Science" && $grade_D == "Science")) {
+            } elseif (($grade_A == "Science" && $grade_B == "Science") || ($grade_C == "Science" && $grade_D == "Science")) {
                 $tallies = "Charmeleon";
-            }
-            elseif ($grade_A == "Science" || $grade_B == "Science" || $grade_C == "Science" || $grade_D == "Science") {
+            } elseif ($grade_A == "Science" || $grade_B == "Science" || $grade_C == "Science" || $grade_D == "Science") {
                 $tallies = "Charmander";
-            }
-            else {
+            } else {
                 $tallies = "Geodude";
             }
         }
@@ -98,29 +94,28 @@ else if ($_SESSION['choose_type'] == "MODULE_UNDERGROUNDs") {
             $bg_color = "background-color: red;";
         }
 
-	// Check if any reviewer grade is empty; if so, set text color to red
+        // Check if any reviewer grade is empty; if so, set text color to red
         $text_color = "";
-        if (empty($channel_A) || empty($channel_B) || empty($channel_C) || empty($channel_D))
-        {
+        if (empty($channel_A) || empty($channel_B) || empty($channel_C) || empty($channel_D)) {
             $text_color = "color: red;";
         }
-	
-        echo ('<TR style="'.$text_color.'">'); // Apply red text color if any reviewer grade is unchecked
-        echo ('<TD align="left">'); 
-        echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
-        echo ('<input type="submit" name="go" value="'.$id.'" title="Goto MODULE_UNDERGROUND ID '.$id.'" style="font-size: 14pt">');
+
+        echo ('<TR style="' . $text_color . '">'); // Apply red text color if any reviewer grade is unchecked
+        echo ('<TD align="left">');
+        echo ('<FORM action="' . $_SERVER['PHP_SELF'] . '" method="post">');
+        echo ('<input type="submit" name="go" value="' . $id . '" title="Goto MODULE_UNDERGROUND ID ' . $id . '" style="font-size: 14pt">');
         echo ('</FORM>');
         echo ('</TD>');
 
         echo ('<TD align="left">' . htmlspecialchars($pitch_adaptor_id) . '</TD>');
-        echo ('<TD align="left">' . htmlspecialchars($ACM) . '</TD>');    
+        echo ('<TD align="left">' . htmlspecialchars($ACM) . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($test_date) . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($name) . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($grade_A) . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($grade_B) . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($grade_C) . '</TD>');
-	echo ('<TD align="left">' . htmlspecialchars($grade_D) . '</TD>');
-        echo ('<TD align="left" style="'.$bg_color.'">' . htmlspecialchars($tallies) . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($grade_D) . '</TD>');
+        echo ('<TD align="left" style="' . $bg_color . '">' . htmlspecialchars($tallies) . '</TD>');
         echo ('</TR>');
     }
 
@@ -130,6 +125,6 @@ else if ($_SESSION['choose_type'] == "MODULE_UNDERGROUNDs") {
 }
 
 mysql_close($connection);
-echo(' </body>');
+echo (' </body>');
 echo ('</HTML>');
 ?>
