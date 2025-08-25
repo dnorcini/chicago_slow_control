@@ -254,7 +254,53 @@ if (isset($_POST['id'])) {
     // ======================
 
     // Include all relevant form fields to update
-    $fields = array('name', 'status', 'pitch_adaptor_id', 'humidity', 'radon', 'activation', 'die_A', 'die_B', 'die_C', 'die_D', 'amp_A', 'amp_B', 'amp_C', 'amp_D', 'tester', 'test_date', 'test_time', 'chamber', 'temp_low', 'temp_high', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_A', 'grade_B', 'grade_C', 'grade_D', 'defects_A', 'defects_B', 'defects_C', 'defects_D', 'notes', 'notes_A', 'notes_B', 'notes_C', 'notes_D', 'reviewer', 'channel_A', 'channel_B', 'channel_C', 'channel_D');
+    $fields = array(
+        'name',
+        'status',
+        'pitch_adaptor_id',
+        'humidity',
+        'radon',
+        'activation',
+        'die_A',
+        'die_B',
+        'die_C',
+        'die_D',
+        'amp_A',
+        'amp_B',
+        'amp_C',
+        'amp_D',
+        'tester',
+        'test_date',
+        'test_time',
+        'chamber',
+        'temp_low_B',
+        'temp_high_B',
+        'temp_low_C',
+        'temp_high_C',
+        'feedthru_position',
+        'ACM',
+        'script',
+        'image_high_dir',
+        'image_low_dir',
+        'grade_A',
+        'grade_B',
+        'grade_C',
+        'grade_D',
+        'defects_A',
+        'defects_B',
+        'defects_C',
+        'defects_D',
+        'notes',
+        'notes_A',
+        'notes_B',
+        'notes_C',
+        'notes_D',
+        'reviewer',
+        'channel_A',
+        'channel_B',
+        'channel_C',
+        'channel_D'
+    );
     $checkboxes = ['check_A', 'check_B', 'check_C', 'check_D'];
     $fields = array_merge($fields, $checkboxes);
     $fields = array_merge($fields, $trace_fields_high);
@@ -633,19 +679,23 @@ if (isset($_POST['go'])) {
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1" cellpadding="2" width="100%">
         <tr>
-            <td>Tester: <input type="text" name="tester" value="<?php echo $tester; ?>" size="10"></td>
-            <td>
+            <td width="50"> Tester: <input type="text" name="tester" value="<?php echo $tester; ?>" size="15"></td>
+            <td width="50">
                 Test Date: <input type="date" name="test_date" value="<?php echo $test_date; ?>">
+            </td>
+            <td width="50">
                 Test Time [CET]: <input type="time" name="test_time" value="<?php echo $test_time; ?>">
             </td>
-            <td>
+            <td width="50">
                 Chamber: <?php generate_dropdown('chamber', $chamber_array, $chamber); ?>
             </td>
         </tr>
         <tr>
-            <td>
-                Low TempC [K]: <input type="text" name="temp_low" value="<?php echo $temp_low; ?>" size="10">
-                High TempC [K]: <input type="text" name="temp_high" value="<?php echo $temp_high; ?>" size="10">
+            <td colspan="2">
+                Low Temp B [K]: <input type="text" name="temp_low_B" value="<?php echo $temp_low_B; ?>" size="8">
+                High Temp B [K]: <input type="text" name="temp_high_B" value="<?php echo $temp_high_B; ?>" size="8">
+                Low Temp C [K]: <input type="text" name="temp_low_C" value="<?php echo $temp_low_C; ?>" size="8">
+                High Temp C [K]: <input type="text" name="temp_high_C" value="<?php echo $temp_high_C; ?>" size="8">
             </td>
             <td>
                 Feedthru Position: <?php generate_dropdown('feedthru_position', $feedthru_positions, $feedthru_position); ?>
@@ -655,18 +705,19 @@ if (isset($_POST['go'])) {
             </td>
         </tr>
         <tr>
-            <td colspan="3">
+            <td colspan="4">
                 Scripts Directory: <input type="text" name="script" value="<?php echo $script; ?>" size="50">
             </td>
         </tr>
         <tr>
-            <td colspan="3">
-                Image Directory: <input type="text" name="image_dir" value="<?php echo $image_dir; ?>" size="50">
+            <td colspan="4">
+                Image High Directory: <input type="text" name="image_high_dir" value="<?php echo $image_high_dir; ?>" size="60">
+                Image Low Directory: <input type="text" name="image_low_dir" value="<?php echo $image_low_dir; ?>" size="60">
             </td>
         </tr>
 
         <tr>
-            <td align="center" style="white-space: nowrap;">
+            <td colspan="4" align="center" style="white-space: nowrap;">
                 <?php
                 // Retrieve the current module_underground_id
                 $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
@@ -751,7 +802,7 @@ if (isset($_POST['go'])) {
 
         </tr>
         <tr>
-            <td align="center" style="white-space: nowrap;">
+            <td colspan="4" align="center" style="white-space: nowrap;">
                 <?php if ($file_exists3): ?>
                     <a href="<?php echo htmlspecialchars($file_url3); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="seq_low_file" style="height: 20px; width: auto;">
@@ -774,7 +825,7 @@ if (isset($_POST['go'])) {
         </tr>
 
         <tr>
-            <td colspan="3" style="text-align: center;">
+            <td colspan="4" style="text-align: center;">
                 <input type="submit" value="Submit">
             </td>
         </tr>
@@ -836,7 +887,7 @@ if (isset($_POST['go'])) {
                             <img src="pixmaps/icon.png" alt="PSD File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
-                    <input type="file" name="psd_high_file_<?php echo htmlspecialchars($amp); ?>" accept="image/png, image/jpeg, application/pdf">
+                    <input type="file" name="psd_high_file_<?php echo htmlspecialchars($amp); ?>" accept="image/png">
                     &nbsp; &nbsp; &nbsp; &nbsp;
                 </td>
             </tr>
@@ -903,7 +954,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="trace_high_file">Image File:</label>
-                <input type="file" name="trace_high_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="trace_high_file" accept="image/png">
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
@@ -1011,7 +1062,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image1_high_file">Image File:</label>
-                <input type="file" name="image1_high_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image1_high_file" accept="image/png">
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
@@ -1113,7 +1164,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image2_high_file">Image File:</label>
-                <input type="file" name="image2_high_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image2_high_file" accept="image/png">
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
@@ -1138,8 +1189,9 @@ if (isset($_POST['go'])) {
     <table border="1">
         <tr>
             <td align="center" style="width: 10%; white-space: nowrap;">Amplifier</td>
-            <td align="center" style="width: 15%; white-space: nowrap;">Resolution [ADU]</td>
-            <td align="center" style="width: 15%; white-space: nowrap;">Gain [ADU/e]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Resolution [ADU]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Resolution [e-]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Gain [ADU/e]</td>
             <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
             <td align="center" style="width: 25%; white-space: nowrap;">Comments</td>
             <td align="center" style="width: 20%; white-space: nowrap;">Reference Image</td>
@@ -1153,6 +1205,9 @@ if (isset($_POST['go'])) {
             <tr>
                 <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image31_high_res_<?php echo $amp; ?>" value="<?php echo ${'image31_high_res_' . $amp}; ?>"></td>
+                <td align="center">
+                    <?php echo htmlspecialchars(${'image31_high_res_e_' . $amp}); ?>
+                </td>
                 <td align="center"><input type="text" style="width: 90%;" name="image31_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image31_high_gain_' . $amp}; ?>"></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image31_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image31_high_dark_current_' . $amp}; ?>"></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image31_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image31_high_comments_' . $amp}; ?>"></td>
@@ -1217,7 +1272,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image31_high_file">Image File:</label>
-                <input type="file" name="image31_high_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image31_high_file" accept="image/png">
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
@@ -1240,8 +1295,9 @@ if (isset($_POST['go'])) {
     <table border="1">
         <tr>
             <td align="center" style="width: 10%; white-space: nowrap;">Amplifier</td>
-            <td align="center" style="width: 15%; white-space: nowrap;">Resolution [ADU]</td>
-            <td align="center" style="width: 15%; white-space: nowrap;">Gain [ADU/e]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Resolution [ADU]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Resolution [e-]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Gain [ADU/e]</td>
             <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
             <td align="center" style="width: 25%; white-space: nowrap;">Comments</td>
             <td align="center" style="width: 20%; white-space: nowrap;">Reference Image</td>
@@ -1255,6 +1311,9 @@ if (isset($_POST['go'])) {
             <tr>
                 <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image32_high_res_<?php echo $amp; ?>" value="<?php echo ${'image32_high_res_' . $amp}; ?>"></td>
+                <td align="center">
+                    <?php echo htmlspecialchars(${'image32_high_res_e_' . $amp}); ?>
+                </td>
                 <td align="center"><input type="text" style="width: 90%;" name="image32_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image32_high_gain_' . $amp}; ?>"></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image32_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image32_high_dark_current_' . $amp}; ?>"></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image32_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image32_high_comments_' . $amp}; ?>"></td>
@@ -1322,7 +1381,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image32_high_file">Image File:</label>
-                <input type="file" name="image32_high_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image32_high_file" accept="image/png">
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
@@ -1346,12 +1405,12 @@ if (isset($_POST['go'])) {
     <table border="1">
         <tr>
             <td align="center" style="width: 10%; white-space: nowrap;">Amplifier</td>
-            <td align="center" style="width: 10%; white-space: nowrap;">Pixel Defects</td>
-            <td align="center" style="width: 10%; white-space: nowrap;">Column Defects</td>
-            <td align="center" style="width: 10%; white-space: nowrap;">Defect Region</td>
+            <td align="center" style="width: 8%; white-space: nowrap;">Pixel Defects</td>
+            <td align="center" style="width: 8%; white-space: nowrap;">Column Defects</td>
+            <td align="center" style="width: 8%; white-space: nowrap;">Defect Region</td>
             <td align="center" style="width: 5%; white-space: nowrap;"> Noise [ADU]</td>
             <td align="center" style="width: 10%; white-space: nowrap;">CTI-Code</td>
-            <td align="center" style="width: 5%; white-space: nowrap;">CTI</td>
+            <td align="center" style="width: 7%; white-space: nowrap;">CTI</td>
             <td align="center" style="width: 10%; white-space: nowrap;">SharpTrack</td>
             <td align="center" style="width: 15%; white-space: nowrap;">Comments</td>
             <td align="center" style="width: 10%; white-space: nowrap;">Reference Image</td>
@@ -1362,20 +1421,20 @@ if (isset($_POST['go'])) {
         foreach ($ccds as $amp):
         ?>
             <tr>
-                <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
-                <td align="center"><input type="text" name="image4_high_pixel_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_pixel_defects_' . $amp}; ?>"></td>
-                <td align="center"><input type="text" name="image4_high_column_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_column_defects_' . $amp}; ?>"></td>
-                <td align="center"><input type="text" name="image4_high_region_defect_<?php echo $amp; ?>" value="<?php echo ${'image4_high_region_defect_' . $amp}; ?>"></td>
-                <td align="center"><input type="text" name="image4_high_noise_overscan_<?php echo $amp; ?>" value="<?php echo ${'image4_high_noise_overscan_' . $amp}; ?>"></td>
-                <td align="center"><input type="text" name="image4_high_cti_code_<?php echo $amp; ?>" value="<?php echo ${'image4_high_cti_code_' . $amp}; ?>"></td>
+                <td align="center" style="width: 10%"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
+                <td align="center"><input type="text" style="width: 90%" name="image4_high_pixel_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_pixel_defects_' . $amp}; ?>"></td>
+                <td align="center"><input type="text" style="width: 90%" name="image4_high_column_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_column_defects_' . $amp}; ?>"></td>
+                <td align="center"><input type="text" style="width: 90%" name="image4_high_region_defect_<?php echo $amp; ?>" value="<?php echo ${'image4_high_region_defect_' . $amp}; ?>"></td>
+                <td align="center"><input type="text" style="width: 90%" name="image4_high_noise_overscan_<?php echo $amp; ?>" value="<?php echo ${'image4_high_noise_overscan_' . $amp}; ?>"></td>
+                <td align="center"><input type="text" style="width: 90%" name="image4_high_cti_code_<?php echo $amp; ?>" value="<?php echo ${'image4_high_cti_code_' . $amp}; ?>"></td>
                 <td align="center">
                     <?php generate_dropdown('image4_high_cti_visual_' . $amp, $yes_no_blank_array, ${'image4_high_cti_visual_' . $amp}); ?>
                 </td>
                 <td align="center">
                     <?php generate_dropdown('image4_high_sharpness_tracks_' . $amp, $yes_no_blank_array, ${'image4_high_sharpness_tracks_' . $amp}); ?>
                 </td>
-                <td align="center"><input type="text" name="image4_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image4_high_comments_' . $amp}; ?>"></td>
-                <td align="center"><input type="text" name="image4_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image4_high_reference_' . $amp}; ?>"></td>
+                <td align="center"><input type="text" style="width: 90%" name="image4_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image4_high_comments_' . $amp}; ?>"></td>
+                <td align="center"><input type="text" style="width: 90%" name="image4_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image4_high_reference_' . $amp}; ?>"></td>
             </tr>
         <?php
             $count++;
@@ -1438,7 +1497,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image4_high_file">Image File:</label>
-                <input type="file" name="image4_high_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image4_high_file" accept="image/png">
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
@@ -1461,8 +1520,9 @@ if (isset($_POST['go'])) {
     <table border="1">
         <tr>
             <td align="center" style="width: 10%; white-space: nowrap;">Amplifier</td>
-            <td align="center" style="width: 15%; white-space: nowrap;">Resolution [ADU]</td>
-            <td align="center" style="width: 15%; white-space: nowrap;">Gain [ADU/e]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Resolution [ADU]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Resolution [e-]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Gain [ADU/e]</td>
             <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
             <td align="center" style="width: 25%; white-space: nowrap;">Comments</td>
             <td align="center" style="width: 20%; white-space: nowrap;">Reference Image</td>
@@ -1476,6 +1536,9 @@ if (isset($_POST['go'])) {
             <tr>
                 <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image31_low_res_<?php echo $amp; ?>" value="<?php echo ${'image31_low_res_' . $amp}; ?>"></td>
+                <td align="center">
+                    <?php echo htmlspecialchars(${'image31_low_res_e_' . $amp}); ?>
+                </td>
                 <td align="center"><input type="text" style="width: 90%;" name="image31_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image31_low_gain_' . $amp}; ?>"></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image31_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image31_low_dark_current_' . $amp}; ?>"></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image31_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image31_low_comments_' . $amp}; ?>"></td>
@@ -1541,7 +1604,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image31_low_file">Image File:</label>
-                <input type="file" name="image31_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image31_low_file" accept="image/png">
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
@@ -1565,8 +1628,9 @@ if (isset($_POST['go'])) {
     <table border="1">
         <tr>
             <td align="center" style="width: 10%; white-space: nowrap;">Amplifier</td>
-            <td align="center" style="width: 15%; white-space: nowrap;">Resolution [ADU]</td>
-            <td align="center" style="width: 15%; white-space: nowrap;">Gain [ADU/e]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Resolution [ADU]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Resolution [e-]</td>
+            <td align="center" style="width: 10%; white-space: nowrap;">Gain [ADU/e]</td>
             <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
             <td align="center" style="width: 25%; white-space: nowrap;">Comments</td>
             <td align="center" style="width: 20%; white-space: nowrap;">Reference Image</td>
@@ -1580,6 +1644,9 @@ if (isset($_POST['go'])) {
             <tr>
                 <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image32_low_res_<?php echo $amp; ?>" value="<?php echo ${'image32_low_res_' . $amp}; ?>"></td>
+                <td align="center">
+                    <?php echo htmlspecialchars(${'image32_low_res_e_' . $amp}); ?>
+                </td>
                 <td align="center"><input type="text" style="width: 90%;" name="image32_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image32_low_gain_' . $amp}; ?>"></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image32_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image32_low_dark_current_' . $amp}; ?>"></td>
                 <td align="center"><input type="text" style="width: 90%;" name="image32_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image32_low_comments_' . $amp}; ?>"></td>
@@ -1644,7 +1711,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image32_low_file">Image File:</label>
-                <input type="file" name="image32_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image32_low_file" accept="image/png">
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
@@ -1665,7 +1732,6 @@ if (isset($_POST['go'])) {
 
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
-
     <table border="1">
         <tr>
             <td align="center" style="width: 10%; white-space: nowrap;">Amplifier</td>
@@ -1683,7 +1749,7 @@ if (isset($_POST['go'])) {
         foreach ($ccds as $amp):
         ?>
             <tr>
-                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
+                <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"> <?php generate_dropdown('image4_low_defects_' . $amp, $yes_no_blank_array, ${'image4_low_defects_' . $amp}); ?> </td>
                 <td align="center"> <?php generate_dropdown('image4_low_cti_visual_' . $amp, $yes_no_blank_array, ${'image4_low_cti_visual_' . $amp}); ?> </td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image4_low_peak1_<?php echo $amp; ?>" value="<?php echo ${'image4_low_peak1_' . $amp}; ?>"></td>
@@ -1728,7 +1794,7 @@ if (isset($_POST['go'])) {
                 }
                 if (!empty(${'image42_low_file_name'}) && file_exists(${'image42_low_file_path'})) {
                     $file_exists2 = true;
-                    $file_url = $_SESSION['file_url_' . $module_underground_id]['image42_low_file'];
+                    $file_url2 = $_SESSION['file_url_' . $module_underground_id]['image42_low_file'];
                 } else {
                     $file_exists2 = false;
                 }
@@ -1740,15 +1806,15 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image41_low_file"> Composite Images:</label>
-                <input type="file" name="image41_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image41_low_file" accept="image/png">
 
                 <?php if ($file_exists2): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url2); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image 42_Low File" style="height: 20px;">
                     </a>
                 <?php endif; ?>
                 <label for="image42_low_file">Energy_Peaks:</label>
-                <input type="file" name="image42_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image42_low_file" accept="image/png">
             </td>
         </tr>
     </table>
@@ -1774,7 +1840,7 @@ if (isset($_POST['go'])) {
         foreach ($ccds as $amp):
         ?>
             <tr>
-                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
+                <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image4_low_cti_front_left_fraction_<?php echo $amp; ?>" value="<?php echo ${'image4_low_cti_front_left_fraction_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image4_low_cti_front_right_fraction_<?php echo $amp; ?>" value="<?php echo ${'image4_low_cti_front_right_fraction_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image4_low_ctix_comments_<?php echo $amp; ?>" value="<?php echo ${'image4_low_ctix_comments_' . $amp}; ?>"></td>
@@ -1818,7 +1884,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image43_low_file"> Frontside Images:</label>
-                <input type="file" name="image43_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image43_low_file" accept="image/png">
             </td>
         </tr>
     </table>
@@ -1847,7 +1913,7 @@ if (isset($_POST['go'])) {
         foreach ($ccds as $amp):
         ?>
             <tr>
-                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
+                <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image4_low_cti_back_left_mean_<?php echo $amp; ?>" value="<?php echo ${'image4_low_cti_back_left_mean_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image4_low_cti_back_left_rms_<?php echo $amp; ?>" value="<?php echo ${'image4_low_cti_back_left_rms_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image4_low_cti_back_left_skewness_<?php echo $amp; ?>" value="<?php echo ${'image4_low_cti_back_left_skewness_' . $amp}; ?>"></td>
@@ -1912,7 +1978,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image44_low_file"> Backside Images:</label>
-                <input type="file" name="image44_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image44_low_file" accept="image/png">
 
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
@@ -1950,7 +2016,7 @@ if (isset($_POST['go'])) {
         foreach ($ccds as $amp):
         ?>
             <tr>
-                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
+                <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_peak1_<?php echo $amp; ?>" value="<?php echo ${'image5_low_peak1_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_peak2_<?php echo $amp; ?>" value="<?php echo ${'image5_low_peak2_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image5_low_comments_' . $amp}; ?>"></td>
@@ -2010,7 +2076,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image52_low_file">Energy_Peaks:</label>
-                <input type="file" name="image52_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image52_low_file" accept="image/png">
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image5_Low Log" style="height: 20px; width: auto; width: auto;">
@@ -2041,7 +2107,7 @@ if (isset($_POST['go'])) {
         foreach ($ccds as $amp):
         ?>
             <tr>
-                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
+                <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_front_right_fraction_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_front_right_fraction_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_ctix_comments_<?php echo $amp; ?>" value="<?php echo ${'image5_low_ctix_comments_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_front_above_fraction_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_front_above_fraction_' . $amp}; ?>"></td>
@@ -2082,7 +2148,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image53_low_file"> Frontside Images:</label>
-                <input type="file" name="image53_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image53_low_file" accept="image/png">
             </td>
         </tr>
     </table>
@@ -2111,15 +2177,15 @@ if (isset($_POST['go'])) {
         foreach ($ccds as $amp):
         ?>
             <tr>
-                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
+                <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_left_mean_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_left_mean_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_left_rms_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_left_rms_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_left_skewness_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_left_skewness_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_left_integral_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_left_integral_' . $amp}; ?>"></td>
-                <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_below_mean_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_left_mean_' . $amp}; ?>"></td>
-                <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_below_rms_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_left_rms_' . $amp}; ?>"></td>
-                <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_below_skewness_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_left_skewness_' . $amp}; ?>"></td>
-                <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_below_integral_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_left_integral_' . $amp}; ?>"></td>
+                <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_below_mean_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_below_mean_' . $amp}; ?>"></td>
+                <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_below_rms_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_below_rms_' . $amp}; ?>"></td>
+                <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_below_skewness_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_below_skewness_' . $amp}; ?>"></td>
+                <td align="center"> <input type="text" style="width: 90%;" name="image5_low_cti_back_below_integral_<?php echo $amp; ?>" value="<?php echo ${'image5_low_cti_back_below_integral_' . $amp}; ?>"></td>
 
             </tr>
         <?php
@@ -2159,7 +2225,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image54_low_file"> Backside Images:</label>
-                <input type="file" name="image54_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image54_low_file" accept="image/png">
 
             </td>
         </tr>
@@ -2230,7 +2296,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image55_low_file"> Crosstalk Images:</label>
-                <input type="file" name="image55_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image55_low_file" accept="image/png">
 
             </td>
         </tr>
@@ -2318,7 +2384,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image62_low_file">Energy_Peaks:</label>
-                <input type="file" name="image62_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image62_low_file" accept="image/png">
 
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
@@ -2371,14 +2437,14 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image63_low_file"> Frontside Images:</label>
-                <input type="file" name="image63_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image63_low_file" accept="image/png">
                 <?php if ($file_exists2): ?>
                     <a href="<?php echo htmlspecialchars($file_url2); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image 64_Low File" style="height: 20px;">
                     </a>
                 <?php endif; ?>
                 <label for="image64_low_file"> Backside Images:</label>
-                <input type="file" name="image63_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image63_low_file" accept="image/png">
             </td>
         </tr>
     </table>
@@ -2407,7 +2473,7 @@ if (isset($_POST['go'])) {
         foreach ($ccds as $amp):
         ?>
             <tr>
-                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
+                <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image7_low_peak1_<?php echo $amp; ?>" value="<?php echo ${'image7_low_peak1_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image7_low_peak2_<?php echo $amp; ?>" value="<?php echo ${'image7_low_peak2_' . $amp}; ?>"></td>
                 <td align="center"> <input type="text" style="width: 90%;" name="image7_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image7_low_comments_' . $amp}; ?>"></td>
@@ -2466,7 +2532,7 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image72_low_file">Energy_Peaks:</label>
-                <input type="file" name="image72_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image72_low_file" accept="image/png">
 
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
@@ -2519,14 +2585,14 @@ if (isset($_POST['go'])) {
                     </a>
                 <?php endif; ?>
                 <label for="image73_low_file"> Frontside Images:</label>
-                <input type="file" name="image73_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image73_low_file" accept="image/png">
                 <?php if ($file_exists2): ?>
                     <a href="<?php echo htmlspecialchars($file_url2); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image 64_Low File" style="height: 20px;">
                     </a>
                 <?php endif; ?>
                 <label for="image74_low_file"> Backside Images:</label>
-                <input type="file" name="image73_low_file" accept="image/png, image/jpeg, application/pdf">
+                <input type="file" name="image73_low_file" accept="image/png">
             </td>
         </tr>
     </table>
