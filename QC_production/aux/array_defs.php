@@ -118,6 +118,7 @@ $image_fields = array(
     'region_defect_',
     'noise_overscan_',
     'res_',
+    'res_e_',
     'gain_',
     'dark_current_',
     'column_defects_',
@@ -142,15 +143,18 @@ $image_fields = array(
     'cti_front_below_fraction_',
     'ctix_comments_',
     'ctiy_comments_',
-    'crosstalk_01_',
-    'crosstalk_02_',
-    'crosstalk_03_',
-    'crosstalk_12_',
-    'crosstalk_13_',
-    'crosstalk_23_',
-    'crosstalk_comments_'
+    'crosstalk_A',
+    'crosstalk_B',
+    'crosstalk_C',
+    'crosstalk_D',
 );
 
 $image_numbers = array("1_", "2_", "3_", "4_", "5_", "6_", "7_", "98_", "99_");
 $image_numbers_low = array("1_low_", "2_low_", "3_low_", "31_low_", "32_low_", "4_low_", "5_low_", "6_low_", "7_low_");
 $image_numbers_high = array("1_high_", "2_high_", "3_high_", "31_high_", "32_high_", "4_high_", "5_high_", "6_high_");
+
+//for comparison page
+$typeMap = [
+    'sur_' => 'surface',
+    'udg_' => 'underground'
+];
