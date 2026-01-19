@@ -94,6 +94,7 @@ foreach ($image_numbers_low as $img) {
         ${'image' . $img . 'column_defects_' . $amp} = isset($row['Image' . $capitalized_img . 'Column_Defects_' . $amp]) ? $row['Image' . $capitalized_img . 'Column_Defects_' . $amp] : "";
         ${'image' . $img . 'res_' . $amp} = isset($row['Image' . $capitalized_img . 'Res_' . $amp]) ? $row['Image' . $capitalized_img . 'Res_' . $amp] : "";
         ${'image' . $img . 'gain_' . $amp} = isset($row['Image' . $capitalized_img . 'Gain_' . $amp]) ? $row['Image' . $capitalized_img . 'Gain_' . $amp] : "";
+        ${'image' . $img . 'res_e_' . $amp} = (is_numeric(${'image' . $img . 'res_' . $amp}) && is_numeric(${'image' . $img . 'gain_' . $amp}) && ${'image' . $img . 'gain_' . $amp} != 0) ? round(${'image' . $img . 'res_' . $amp} / ${'image' . $img . 'gain_' . $amp}, 3) : "";
         ${'image' . $img . 'dark_current_' . $amp} = isset($row['Image' . $capitalized_img . 'Dark_Current_' . $amp]) ? $row['Image' . $capitalized_img . 'Dark_Current_' . $amp] : "";
         ${'image' . $img . 'peak1_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak1_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak1_' . $amp] : "";
         ${'image' . $img . 'peak2_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak2_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak2_' . $amp] : "";
@@ -124,6 +125,7 @@ foreach ($image_numbers_high as $img) {
         ${'image' . $img . 'column_defects_' . $amp} = isset($row['Image' . $capitalized_img . 'Column_Defects_' . $amp]) ? $row['Image' . $capitalized_img . 'Column_Defects_' . $amp] : "";
         ${'image' . $img . 'res_' . $amp} = isset($row['Image' . $capitalized_img . 'Res_' . $amp]) ? $row['Image' . $capitalized_img . 'Res_' . $amp] : "";
         ${'image' . $img . 'gain_' . $amp} = isset($row['Image' . $capitalized_img . 'Gain_' . $amp]) ? $row['Image' . $capitalized_img . 'Gain_' . $amp] : "";
+        ${'image' . $img . 'res_e_' . $amp} = (is_numeric(${'image' . $img . 'res_' . $amp}) && is_numeric(${'image' . $img . 'gain_' . $amp}) && ${'image' . $img . 'gain_' . $amp} != 0) ? round(${'image' . $img . 'res_' . $amp} / ${'image' . $img . 'gain_' . $amp}, 3) : "";
         ${'image' . $img . 'dark_current_' . $amp} = isset($row['Image' . $capitalized_img . 'Dark_Current_' . $amp]) ? $row['Image' . $capitalized_img . 'Dark_Current_' . $amp] : "";
         ${'image' . $img . 'peak1_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak1_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak1_' . $amp] : "";
         ${'image' . $img . 'peak2_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak2_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak2_' . $amp] : "";
