@@ -214,3 +214,6 @@ conn.close()
 Note that here the sql order if executed one column after another.
 
 It will stuck if sending out the commands of all columns (~600 columns) together
+
+## the row size too big problem:
+fixed (permanently?) by changing the table Storage Engine from InnoDB to MyISAM	
