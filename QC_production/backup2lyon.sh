@@ -6,12 +6,12 @@ set -euo pipefail
 # === Config ===
 DB_NAME="die_qc"
 DB_USER="root"
-DB_PASS=<enter database password>             
+DB_PASS="MyLife4Aiur"                
 LOCAL_SQL="/var/www/html/QC_production/tmp/sql_backup.sql"
 LOCAL_UPLOADS="/var/www/html/QC_production/uploads/"
-REMOTE_USER=<enter user name>
-REMOTE_HOST=<enter host name>
-REMOTE_DIR=<enter remote directory name>
+REMOTE_USER="czhu"
+REMOTE_HOST="cca.in2p3.fr"
+REMOTE_DIR="/pbs/home/c/czhu/ccdqc_backup"
 
 # Optional: log file
 LOG_FILE="/var/www/html/QC_production/tmp/ccdqc_backup.log"
