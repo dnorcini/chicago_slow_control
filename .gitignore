@@ -57,3 +57,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+QC_Production/backup2lyon.sh
+*.csv
+
+# uploads
+*.png
+*.log
+*.seq
+*.bcf

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Changelog</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 20px;
+    }
+
+    h2 {
+      margin-top: 1.5rem;
+      font-size: 16px;
+    }
+
+    ul {
+      margin: 0.5rem 0 0 1.2rem;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      background: #f6f8fa;
+      /* light gray background */
+      color: #c95913;
+      /* magenta/pink text */
+      padding: 0.15em 0.3em;
+      border-radius: 4px;
+      font-size: 90%;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>CCDQC Changelog</h1>
+
+  <h2>2025-08-16 - cinyu </h2>
+  <ul>
+    <li>Backed up <code>die_qc.sql</code> and <code>/var/www/html/QC_production/uploads</code> folder to lyon cluster:
+
+      <br><code>rsync -avz folderpath czhu@cca.in2p3.fr:/pbs/home/c/czhu/ccdqc_backup</code>
+    </li>
+    <li> Added this page for change log</li>
+  </ul>
+
+</body>
+
+</html>

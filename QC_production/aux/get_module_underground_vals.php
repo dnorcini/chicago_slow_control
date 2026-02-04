@@ -10,7 +10,7 @@ if (empty($_SESSION['choosen_module_underground'])) {
 $id = (int)$_SESSION['choosen_module_underground'];
 
 // Query to fetch data from the MODULE_UNDERGROUND table
-$query = "SELECT * FROM `MODULE_UNDERGROUND_NEW` WHERE `ID` = " . $id;
+$query = "SELECT * FROM `MODULE_UNDERGROUND2` WHERE `ID` = " . $id;
 $result = mysql_query($query);
 if (!$result) {
     die("Could not query the database <br />" . mysql_error());
@@ -44,7 +44,7 @@ $grade_D = isset($row['Grade_D']) ? $row['Grade_D'] : "";
 $defects_A = isset($row['Defects_A']) ? $row['Defects_A'] : "";
 $defects_B = isset($row['Defects_B']) ? $row['Defects_B'] : "";
 $defects_C = isset($row['Defects_C']) ? $row['Defects_C'] : "";
-$defects_D = isset($row['Defects_D']) ? $row['Defects_D'] : ""; 
+$defects_D = isset($row['Defects_D']) ? $row['Defects_D'] : "";
 $notes_A = isset($row['Notes_A']) ? $row['Notes_A'] : "";
 $notes_B = isset($row['Notes_B']) ? $row['Notes_B'] : "";
 $notes_C = isset($row['Notes_C']) ? $row['Notes_C'] : "";
@@ -59,12 +59,16 @@ $tester = isset($row['Tester']) ? $row['Tester'] : "";
 $test_date = isset($row['Test_Date']) ? $row['Test_Date'] : "";
 $test_time = isset($row['Test_Time']) ? $row['Test_Time'] : "";
 $chamber = isset($row['Chamber']) ? $row['Chamber'] : "";
-$temp_low = isset($row['Temp_Low']) ? $row['Temp_Low'] : "";
-$temp_high = isset($row['Temp_High']) ? $row['Temp_High'] : "";
+$temp_low_B = isset($row['Temp_Low_B']) ? $row['Temp_Low_B'] : "";
+$temp_high_B = isset($row['Temp_High_B']) ? $row['Temp_High_B'] : "";
+$temp_low_C = isset($row['Temp_Low_C']) ? $row['Temp_Low_C'] : "";
+$temp_high_C = isset($row['Temp_High_C']) ? $row['Temp_High_C'] : "";
+
 $feedthru_position = isset($row['Feedthru_Position']) ? $row['Feedthru_Position'] : "";
 $ACM = isset($row['ACM']) ? $row['ACM'] : "";
 $script = isset($row['Script']) ? $row['Script'] : "";
-$image_dir = isset($row['Image_Dir']) ? $row['Image_Dir'] : "";
+$image_high_dir = isset($row['Image_High_Dir']) ? $row['Image_High_Dir'] : "";
+$image_low_dir = isset($row['Image_Low_Dir']) ? $row['Image_Low_Dir'] : "";
 
 // Trace fields
 foreach ($ccds as $amp) {
@@ -74,17 +78,30 @@ foreach ($ccds as $amp) {
 }
 //$trace_file = isset($row['Trace_File']) ? $row['Trace_File'] : "";
 //$trace_log = isset($row['Trace_Log']) ? $row['Trace_Log'] : "";
+$image5_low_crosstalk_AB = isset($row['Image5_Low_Crosstalk_AB']) ? $row['Image5_Low_Crosstalk_AB'] : "";
+$image5_low_crosstalk_AC = isset($row['Image5_Low_Crosstalk_AC']) ? $row['Image5_Low_Crosstalk_AC'] : "";
+$image5_low_crosstalk_AD = isset($row['Image5_Low_Crosstalk_AD']) ? $row['Image5_Low_Crosstalk_AD'] : "";
+$image5_low_crosstalk_BA = isset($row['Image5_Low_Crosstalk_BA']) ? $row['Image5_Low_Crosstalk_BA'] : "";
+$image5_low_crosstalk_BC = isset($row['Image5_Low_Crosstalk_BC']) ? $row['Image5_Low_Crosstalk_BC'] : "";
+$image5_low_crosstalk_BD = isset($row['Image5_Low_Crosstalk_BD']) ? $row['Image5_Low_Crosstalk_BD'] : "";
+$image5_low_crosstalk_CA = isset($row['Image5_Low_Crosstalk_CA']) ? $row['Image5_Low_Crosstalk_CA'] : "";
+$image5_low_crosstalk_CB = isset($row['Image5_Low_Crosstalk_CB']) ? $row['Image5_Low_Crosstalk_CB'] : "";
+$image5_low_crosstalk_CD = isset($row['Image5_Low_Crosstalk_CD']) ? $row['Image5_Low_Crosstalk_CD'] : "";
+$image5_low_crosstalk_DA = isset($row['Image5_Low_Crosstalk_DA']) ? $row['Image5_Low_Crosstalk_DA'] : "";
+$image5_low_crosstalk_DB = isset($row['Image5_Low_Crosstalk_DB']) ? $row['Image5_Low_Crosstalk_DB'] : "";
+$image5_low_crosstalk_DC = isset($row['Image5_Low_Crosstalk_DC']) ? $row['Image5_Low_Crosstalk_DC'] : "";
+$image5_low_crosstalk_comments = isset($row['Image5_Low_Crosstalk_comments']) ? $row['Image5_Low_Crosstalk_comments'] : "";
+
 
 // Image fields
 foreach ($image_numbers_low as $img) {
     foreach ($ccds as $amp) {
         // Capitalize "low_" to "Low_" in $img to match database structure
         $capitalized_img = str_replace("low_", "Low_", $img);
-
         ${'image' . $img . 'tracks_' . $amp} = isset($row['Image' . $capitalized_img . 'Tracks_' . $amp]) ? $row['Image' . $capitalized_img . 'Tracks_' . $amp] : "";
         ${'image' . $img . 'defects_' . $amp} = isset($row['Image' . $capitalized_img . 'Defects_' . $amp]) ? $row['Image' . $capitalized_img . 'Defects_' . $amp] : "";
         ${'image' . $img . 'noise_' . $amp} = isset($row['Image' . $capitalized_img . 'Noise_' . $amp]) ? $row['Image' . $capitalized_img . 'Noise_' . $amp] : "";
-	    ${'image' . $img . 'sharpness_tracks_' . $amp} = isset($row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp]) ? $row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp] : "";
+        ${'image' . $img . 'sharpness_tracks_' . $amp} = isset($row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp]) ? $row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp] : "";
         ${'image' . $img . 'cti_code_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Code_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Code_' . $amp] : "";
         ${'image' . $img . 'cti_visual_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Visual_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Visual_' . $amp] : "";
         ${'image' . $img . 'comments_' . $amp} = isset($row['Image' . $capitalized_img . 'Comments_' . $amp]) ? $row['Image' . $capitalized_img . 'Comments_' . $amp] : "";
@@ -95,15 +112,26 @@ foreach ($image_numbers_low as $img) {
         ${'image' . $img . 'column_defects_' . $amp} = isset($row['Image' . $capitalized_img . 'Column_Defects_' . $amp]) ? $row['Image' . $capitalized_img . 'Column_Defects_' . $amp] : "";
         ${'image' . $img . 'res_' . $amp} = isset($row['Image' . $capitalized_img . 'Res_' . $amp]) ? $row['Image' . $capitalized_img . 'Res_' . $amp] : "";
         ${'image' . $img . 'gain_' . $amp} = isset($row['Image' . $capitalized_img . 'Gain_' . $amp]) ? $row['Image' . $capitalized_img . 'Gain_' . $amp] : "";
+        ${'image' . $img . 'res_e_' . $amp} = (is_numeric(${'image' . $img . 'res_' . $amp}) && is_numeric(${'image' . $img . 'gain_' . $amp}) && ${'image' . $img . 'gain_' . $amp} != 0) ? round(${'image' . $img . 'res_' . $amp} / ${'image' . $img . 'gain_' . $amp}, 4) : "";
         ${'image' . $img . 'dark_current_' . $amp} = isset($row['Image' . $capitalized_img . 'Dark_Current_' . $amp]) ? $row['Image' . $capitalized_img . 'Dark_Current_' . $amp] : "";
-       ${'image' . $img . 'peak1_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak1_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak1_' . $amp] : "";
-       ${'image' . $img . 'peak2_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak2_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak2_' . $amp] : "";
-       ${'image' . $img . 'sigma_' . $amp} = isset($row['Image' . $capitalized_img . 'Sigma_' . $amp]) ? $row['Image' . $capitalized_img . 'Sigma_' . $amp] : "";
-       ${'image' . $img . 'front_' . $amp} = isset($row['Image' . $capitalized_img . 'Front_' . $amp]) ? $row['Image' . $capitalized_img . 'Front_' . $amp] : "";
-       ${'image' . $img . 'testxxx_' . $amp} = isset($row['Image' . $capitalized_img . 'testxxx_' . $amp]) ? $row['Image' . $capitalized_img . 'testxxx_' . $amp] : "";
-
-
-       
+        ${'image' . $img . 'peak1_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak1_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak1_' . $amp] : "";
+        ${'image' . $img . 'peak2_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak2_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak2_' . $amp] : "";
+        ${'image' . $img . 'sigma_' . $amp} = isset($row['Image' . $capitalized_img . 'Sigma_' . $amp]) ? $row['Image' . $capitalized_img . 'Sigma_' . $amp] : "";
+        ${'image' . $img . 'front_' . $amp} = isset($row['Image' . $capitalized_img . 'Front_' . $amp]) ? $row['Image' . $capitalized_img . 'Front_' . $amp] : "";
+        ${'image' . $img . 'cti_back_left_mean_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Back_Left_Mean_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Back_Left_Mean_' . $amp] : "";
+        ${'image' . $img . 'cti_back_left_rms_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Back_Left_RMS_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Back_Left_RMS_' . $amp] : "";
+        ${'image' . $img . 'cti_back_left_skewness_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Back_Left_Skewness_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Back_Left_Skewness_' . $amp] : "";
+        ${'image' . $img . 'cti_back_left_integral_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Back_Left_Integral_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Back_Left_Integral_' . $amp] : "";
+        ${'image' . $img . 'cti_back_below_mean_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Back_Below_Mean_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Back_Below_Mean_' . $amp] : "";
+        ${'image' . $img . 'cti_back_below_rms_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Back_Below_RMS_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Back_Below_RMS_' . $amp] : "";
+        ${'image' . $img . 'cti_back_below_skewness_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Back_Below_Skewness_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Back_Below_Skewness_' . $amp] : "";
+        ${'image' . $img . 'cti_back_below_integral_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Back_Below_Integral_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Back_Below_Integral_' . $amp] : "";
+        ${'image' . $img . 'cti_front_left_fraction_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Front_Left_Fraction_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Front_Left_Fraction_' . $amp] : "";
+        ${'image' . $img . 'cti_front_right_fraction_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Front_Right_Fraction_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Front_Right_Fraction_' . $amp] : "";
+        ${'image' . $img . 'cti_front_above_fraction_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Front_Above_Fraction_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Front_Above_Fraction_' . $amp] : "";
+        ${'image' . $img . 'cti_front_below_fraction_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Front_Below_Fraction_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Front_Below_Fraction_' . $amp] : "";
+        ${'image' . $img . 'ctix_comments_' . $amp} = isset($row['Image' . $capitalized_img . 'CTIx_Comments_' . $amp]) ? $row['Image' . $capitalized_img . 'CTIx_Comments_' . $amp] : "";
+        ${'image' . $img . 'ctiy_comments_' . $amp} = isset($row['Image' . $capitalized_img . 'CTIy_Comments_' . $amp]) ? $row['Image' . $capitalized_img . 'CTIy_Comments_' . $amp] : "";
     }
 
     // Handling file field separately if needed
@@ -114,11 +142,10 @@ foreach ($image_numbers_high as $img) {
     foreach ($ccds as $amp) {
         // Capitalize "high_" to "High_" in $img to match database structure
         $capitalized_img = str_replace("high_", "High_", $img);
-
         ${'image' . $img . 'tracks_' . $amp} = isset($row['Image' . $capitalized_img . 'Tracks_' . $amp]) ? $row['Image' . $capitalized_img . 'Tracks_' . $amp] : "";
         ${'image' . $img . 'defects_' . $amp} = isset($row['Image' . $capitalized_img . 'Defects_' . $amp]) ? $row['Image' . $capitalized_img . 'Defects_' . $amp] : "";
-	    ${'image' . $img . 'noise_' . $amp} = isset($row['Image' . $capitalized_img . 'Noise_' . $amp]) ? $row['Image' . $capitalized_img . 'Noise_' . $amp] : "";
-	    ${'image' . $img . 'sharpness_tracks_' . $amp} = isset($row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp]) ? $row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp] : "";
+        ${'image' . $img . 'noise_' . $amp} = isset($row['Image' . $capitalized_img . 'Noise_' . $amp]) ? $row['Image' . $capitalized_img . 'Noise_' . $amp] : "";
+        ${'image' . $img . 'sharpness_tracks_' . $amp} = isset($row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp]) ? $row['Image' . $capitalized_img . 'Sharpness_Tracks_' . $amp] : "";
         ${'image' . $img . 'cti_code_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Code_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Code_' . $amp] : "";
         ${'image' . $img . 'cti_visual_' . $amp} = isset($row['Image' . $capitalized_img . 'CTI_Visual_' . $amp]) ? $row['Image' . $capitalized_img . 'CTI_Visual_' . $amp] : "";
         ${'image' . $img . 'comments_' . $amp} = isset($row['Image' . $capitalized_img . 'Comments_' . $amp]) ? $row['Image' . $capitalized_img . 'Comments_' . $amp] : "";
@@ -129,12 +156,13 @@ foreach ($image_numbers_high as $img) {
         ${'image' . $img . 'column_defects_' . $amp} = isset($row['Image' . $capitalized_img . 'Column_Defects_' . $amp]) ? $row['Image' . $capitalized_img . 'Column_Defects_' . $amp] : "";
         ${'image' . $img . 'res_' . $amp} = isset($row['Image' . $capitalized_img . 'Res_' . $amp]) ? $row['Image' . $capitalized_img . 'Res_' . $amp] : "";
         ${'image' . $img . 'gain_' . $amp} = isset($row['Image' . $capitalized_img . 'Gain_' . $amp]) ? $row['Image' . $capitalized_img . 'Gain_' . $amp] : "";
+        ${'image' . $img . 'res_e_' . $amp} = (is_numeric(${'image' . $img . 'res_' . $amp}) && is_numeric(${'image' . $img . 'gain_' . $amp}) && ${'image' . $img . 'gain_' . $amp} != 0) ? round(${'image' . $img . 'res_' . $amp} / ${'image' . $img . 'gain_' . $amp}, 4) : "";
         ${'image' . $img . 'dark_current_' . $amp} = isset($row['Image' . $capitalized_img . 'Dark_Current_' . $amp]) ? $row['Image' . $capitalized_img . 'Dark_Current_' . $amp] : "";
-       ${'image' . $img . 'peak1_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak1_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak1_' . $amp] : "";
-       ${'image' . $img . 'peak2_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak2_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak2_' . $amp] : "";
-       ${'image' . $img . 'sigma_' . $amp} = isset($row['Image' . $capitalized_img . 'Sigma_' . $amp]) ? $row['Image' . $capitalized_img . 'Sigma_' . $amp] : "";
-       ${'image' . $img . 'front_' . $amp} = isset($row['Image' . $capitalized_img . 'Front_' . $amp]) ? $row['Image' . $capitalized_img . 'Front_' . $amp] : "";
-       }
+        ${'image' . $img . 'peak1_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak1_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak1_' . $amp] : "";
+        ${'image' . $img . 'peak2_' . $amp} = isset($row['Image' . $capitalized_img . 'Peak2_' . $amp]) ? $row['Image' . $capitalized_img . 'Peak2_' . $amp] : "";
+        ${'image' . $img . 'sigma_' . $amp} = isset($row['Image' . $capitalized_img . 'Sigma_' . $amp]) ? $row['Image' . $capitalized_img . 'Sigma_' . $amp] : "";
+        ${'image' . $img . 'front_' . $amp} = isset($row['Image' . $capitalized_img . 'Front_' . $amp]) ? $row['Image' . $capitalized_img . 'Front_' . $amp] : "";
+    }
 
     // Handling file field separately if needed
     ${'image' . $img . '_file'} = isset($row['Image' . $capitalized_img . '_File']) ? $row['Image' . $capitalized_img . '_File'] : "";
@@ -145,5 +173,3 @@ if (isset($row['Last_Update'])) {
 } else {
     $last_update = 0;
 }
-
-?>

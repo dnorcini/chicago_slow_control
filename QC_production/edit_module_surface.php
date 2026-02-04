@@ -10,7 +10,7 @@
 
 session_start();
 
-//to avoil session key conflicts, leading to incorrect file paths
+//to avoil session key conflicts leading to incorrect file paths
 if (isset($_SESSION['choosen_module_surface'])) {
     $key = 'file_url_' . $_SESSION['choosen_module_surface'];
     unset($_SESSION[$key]);
@@ -32,7 +32,7 @@ $table = "MODULE_SURFACE";
 
 // Clear session variables when module_surface_id changes to prevent data from other module_surfaces interfering
 if (isset($_POST['choosen']) && $_POST['choosen'] !== $_SESSION['choosen_module_surface']) {
-    unset($_SESSION['log_url'],$_SESSION['file_url'], $_SESSION['upload_dir'], $_SESSION['base_url'], $_SESSION['log_exists'], $_SESSION['file_exists']);
+    unset($_SESSION['log_url'], $_SESSION['file_url'], $_SESSION['upload_dir'], $_SESSION['base_url'], $_SESSION['log_exists'], $_SESSION['file_exists']);
 }
 
 // Set the chosen module_surface based on session or POST data
@@ -102,7 +102,7 @@ include("aux/get_module_surface_vals.php");
 // Update module_surface details if form is submitted
 if (isset($_POST['id'])) {
     $module_surface_id = (int)$_POST['id'];
-    
+
     // Clear session variables when switching module_surfaces
     if (!isset($_SESSION['choosen_module_surface']) || $_SESSION['choosen_module_surface'] !== $module_surface_id) {
         unset($_SESSION['file_url_' . $module_surface_id], $_SESSION['file_exists_' . $module_surface_id], $_SESSION['log_url_' . $module_surface_id], $_SESSION['log_exists_' . $module_surface_id]);
@@ -113,7 +113,7 @@ if (isset($_POST['id'])) {
 
     // Directory to store uploaded images
     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
-    $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
+    $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
     $_SESSION['upload_dir_' . $module_surface_id] = $upload_dir;
     $_SESSION['base_url_' . $module_surface_id] = $base_url;
 
@@ -241,7 +241,7 @@ if (isset($_POST['id'])) {
     // ======================
     // Handle Form Fields and Amplifiers
     // ======================
-    
+
     // Include all relevant form fields to update
     $fields = array('name', 'status', 'pitch_adaptor_id', 'humidity', 'radon', 'activation', 'die_A', 'die_B', 'die_C', 'die_D', 'amp_A', 'amp_B', 'amp_C', 'amp_D', 'tester', 'test_date', 'test_time', 'chamber', 'temp_low', 'temp_high', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_A', 'grade_B', 'grade_C', 'grade_D', 'defects_A', 'defects_B', 'defects_C', 'defects_D', 'notes', 'notes_A', 'notes_B', 'notes_C', 'notes_D', 'reviewer', 'channel_A', 'channel_B', 'channel_C', 'channel_D');
     $checkboxes = ['check_A', 'check_B', 'check_C', 'check_D'];
@@ -251,7 +251,7 @@ if (isset($_POST['id'])) {
 
     // Iterate over each checkbox to set them to 0 if not set in POST
     foreach ($checkboxes as $checkbox) {
-    	    $_POST[$checkbox] = isset($_POST[$checkbox]) ? $_POST[$checkbox] : 0;
+        $_POST[$checkbox] = isset($_POST[$checkbox]) ? $_POST[$checkbox] : 0;
     }
 
     // Initialize an array to hold the parts of the query
@@ -259,17 +259,17 @@ if (isset($_POST['id'])) {
 
     // Loop through regular form fields and construct query parts
     foreach ($fields as $field) {
-    	    // Special handling for checkboxes
-    	    if (in_array($field, $checkboxes)) {
-               // Include the checkbox even if its value is 0
-               $query_parts[] = "`$field` = '" . mysql_real_escape_string($_POST[$field]) . "'";
-    	    } else {
-              // For other fields, keep the existing condition to avoid empty values
-              if (array_key_exists($field, $_POST) && !empty($_POST[$field])) {
-              	 $query_parts[] = "`$field` = '" . mysql_real_escape_string($_POST[$field]) . "'";
-              }
-    	   }
-     }
+        // Special handling for checkboxes
+        if (in_array($field, $checkboxes)) {
+            // Include the checkbox even if its value is 0
+            $query_parts[] = "`$field` = '" . mysql_real_escape_string($_POST[$field]) . "'";
+        } else {
+            // For other fields, keep the existing condition to avoid empty values
+            if (array_key_exists($field, $_POST) && !empty($_POST[$field])) {
+                $query_parts[] = "`$field` = '" . mysql_real_escape_string($_POST[$field]) . "'";
+            }
+        }
+    }
 
     // Handle dynamic fields for amplifiers
     foreach ($ccds as $amp) {
@@ -289,14 +289,15 @@ if (isset($_POST['id'])) {
                 if (!empty($dynamic_fields[$field_name])) {
                     $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
                 }
-	    }
+            }
         }
-       foreach ($image_numbers_high as $number_field) {
+        foreach ($image_numbers_high as $number_field) {
             foreach ($image_fields as $base_field) {
-		$field_name = 'image' . $number_field . $base_field . $amp; // E.g., image1_tracks_A
+                $field_name = 'image' . $number_field . $base_field . $amp; // E.g., image1_tracks_A
                 $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
                 if (!empty($dynamic_fields[$field_name])) {
-                    $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";}
+                    $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
+                }
             }
         }
     }
@@ -317,21 +318,23 @@ include("aux/get_module_surface_vals.php");
 mysql_close($connection);
 
 // Function to generate a dropdown menu from an array
-function generate_dropdown($name, $options, $selected_value) {
-    echo '<select name="'.$name.'">';
+function generate_dropdown($name, $options, $selected_value)
+{
+    echo '<select name="' . $name . '">';
     foreach ($options as $value) {
-        echo '<option value="'.$value.'"'.($value == $selected_value ? ' selected' : '').'>'.$value.'</option>';
+        echo '<option value="' . $value . '"' . ($value == $selected_value ? ' selected' : '') . '>' . $value . '</option>';
     }
     echo '</select>';
 }
 
 // File existence check
-function check_and_update_file_session($file_field, $upload_dir, $base_url, $module_surface_id) {
+function check_and_update_file_session($file_field, $upload_dir, $base_url, $module_surface_id)
+{
     $upload_dir = isset($_SESSION['upload_dir']) ? $_SESSION['upload_dir'] : '';
     $base_url = isset($_SESSION['base_url']) ? $_SESSION['base_url'] : '';
 
     // Construct the file name based on the file field
-    $file_name = $file_field . '.png'; 
+    $file_name = $file_field . '.png';
     $file_path = $upload_dir . $file_name;
 
     // Check if the file exists on the server
@@ -347,12 +350,13 @@ function check_and_update_file_session($file_field, $upload_dir, $base_url, $mod
 }
 
 // Log existence check
-function check_and_update_log_session($log_field, $upload_dir, $base_url, $module_surface_id) {
+function check_and_update_log_session($log_field, $upload_dir, $base_url, $module_surface_id)
+{
     $upload_dir = isset($_SESSION['upload_dir']) ? $_SESSION['upload_dir'] : '';
     $base_url = isset($_SESSION['base_url']) ? $_SESSION['base_url'] : '';
 
     // Construct the log name based on the log field
-    $log_name = $log_field . '.log'; 
+    $log_name = $log_field . '.log';
     $log_path = $upload_dir . $log_name;
 
     // Check if the log exists on the server
@@ -419,16 +423,16 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 UW Activation [days]: <input type="text" name="activation" value="<?php echo $activation; ?>" size="10">
             </td>
         </tr>
-	<tr>
-	    <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
+        <tr>
+            <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
                 Packaging humidity [%]: <input type="text" name="humidity" value="<?php echo $humidity; ?>" size="10">
             </td>
             <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
                 Packaging radon [Bq/m^3]: <input type="text" name="radon" value="<?php echo $radon; ?>" size="10">
             </td>
         </tr>
-   </table>
-   <input type="submit" id="hiddenSubmit" style="display: none;">
+    </table>
+    <input type="submit" id="hiddenSubmit" style="display: none;">
 </form>
 <br><br>
 
@@ -441,16 +445,16 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
             <td>
                 <?php if (!empty($die_A)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-		    	DIE ID
-		    	<input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A); ?>">
+                        DIE ID
+                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A); ?>">
                         <input type="submit" value="A" style="font-size: 14pt;">
                     </form>
                 <?php else: ?>
                     DIE ID A
                 <?php endif; ?>
                 <input type="text" name="die_A" value="<?php echo htmlspecialchars($die_A); ?>" size="10">
-                    &nbsp&nbsp&nbsp&nbsp; Amp A<?php generate_dropdown('amp_A', $amp_array, $amp_A); ?>
-	   </td>
+                &nbsp&nbsp&nbsp&nbsp; Amp A<?php generate_dropdown('amp_A', $amp_array, $amp_A); ?>
+            </td>
             <td>
                 <?php if (!empty($die_B)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
@@ -462,8 +466,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     DIE ID B
                 <?php endif; ?>
                 <input type="text" name="die_B" value="<?php echo htmlspecialchars($die_B); ?>" size="10">
-                    &nbsp&nbsp&nbsp&nbsp; Amp B<?php generate_dropdown('amp_B', $amp_array, $amp_B); ?>
-           </td>
+                &nbsp&nbsp&nbsp&nbsp; Amp B<?php generate_dropdown('amp_B', $amp_array, $amp_B); ?>
+            </td>
             <td>
                 <?php if (!empty($die_C)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
@@ -475,8 +479,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     DIE ID C
                 <?php endif; ?>
                 <input type="text" name="die_C" value="<?php echo htmlspecialchars($die_C); ?>" size="10">
-                    &nbsp&nbsp&nbsp&nbsp; Amp C<?php generate_dropdown('amp_C', $amp_array, $amp_C); ?>
-           </td>
+                &nbsp&nbsp&nbsp&nbsp; Amp C<?php generate_dropdown('amp_C', $amp_array, $amp_C); ?>
+            </td>
             <td>
                 <?php if (!empty($die_D)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
@@ -488,8 +492,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     DIE ID D
                 <?php endif; ?>
                 <input type="text" name="die_D" value="<?php echo htmlspecialchars($die_D); ?>" size="10">
-               	    &nbsp&nbsp&nbsp&nbsp; Amp D<?php generate_dropdown('amp_D', $amp_array, $amp_D); ?>
-	   </td>
+                &nbsp&nbsp&nbsp&nbsp; Amp D<?php generate_dropdown('amp_D', $amp_array, $amp_D); ?>
+            </td>
         </tr>
         <tr>
             <td colspan="12" style="text-align: center;">
@@ -513,15 +517,15 @@ if (isset($_POST['go'])) {
 <br><br>
 
 <!-- Preliminary Grade Assessment -->
-<?php echo "<b>Preliminary Grade Assessment</b>";?>
+<?php echo "<b>Preliminary Grade Assessment</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-      <input type="hidden" name="id" value="<?php echo $id; ?>">
-      <table border="1" cellpadding="2" width="100%">
-	<tr>
+    <input type="hidden" name="id" value="<?php echo $id; ?>">
+    <table border="1" cellpadding="2" width="100%">
+        <tr>
             <td><?php echo "A"; ?></td>
             <td style="width: 10%;">
-		<?php generate_dropdown('grade_A', $grade_array, $grade_A); ?>
-		<!-- <?php echo "Matched?"; ?> -->
+                <?php generate_dropdown('grade_A', $grade_array, $grade_A); ?>
+                <!-- <?php echo "Matched?"; ?> -->
                 <!-- <?php generate_dropdown('defects_A', $yes_no_blank_array, $defects_A); ?> -->
                 <!-- <?php echo "Matched?"; ?> -->
                 <!-- <?php generate_dropdown('defects_A', $yes_no_blank_array, $defects_A); ?> -->
@@ -535,8 +539,8 @@ if (isset($_POST['go'])) {
 
             <td><?php echo "B"; ?></td>
             <td style="width: 10%;">
-		<?php generate_dropdown('grade_B', $grade_array, $grade_B); ?>
-		<!-- <?php echo "Matched?"; ?> -->
+                <?php generate_dropdown('grade_B', $grade_array, $grade_B); ?>
+                <!-- <?php echo "Matched?"; ?> -->
                 <!-- <?php generate_dropdown('defects_B', $yes_no_blank_array, $defects_B); ?> -->
                 <!-- <?php echo "Matched?"; ?> -->
                 <!-- <?php generate_dropdown('defects_B', $yes_no_blank_array, $defects_B); ?> -->
@@ -550,8 +554,8 @@ if (isset($_POST['go'])) {
 
             <td><?php echo "C"; ?></td>
             <td style="width: 10%;">
-		<?php generate_dropdown('grade_C', $grade_array, $grade_C); ?>
-		<!-- <?php echo "Matched?"; ?> -->
+                <?php generate_dropdown('grade_C', $grade_array, $grade_C); ?>
+                <!-- <?php echo "Matched?"; ?> -->
                 <!-- <?php generate_dropdown('defects_C', $yes_no_blank_array, $defects_C); ?> -->
                 <!-- <?php echo "Matched?"; ?> -->
                 <!-- <?php generate_dropdown('defects_C', $yes_no_blank_array, $defects_C); ?> -->
@@ -565,8 +569,8 @@ if (isset($_POST['go'])) {
 
             <td><?php echo "D"; ?></td>
             <td style="width: 10%;">
-		<?php generate_dropdown('grade_D', $grade_array, $grade_D); ?>
-		<!-- <?php echo "Matched?"; ?> -->
+                <?php generate_dropdown('grade_D', $grade_array, $grade_D); ?>
+                <!-- <?php echo "Matched?"; ?> -->
                 <!-- <?php generate_dropdown('defects_D', $yes_no_blank_array, $defects_D); ?> -->
                 <!-- <?php echo "Matched?"; ?> -->
                 <!-- <?php generate_dropdown('defects_D', $yes_no_blank_array, $defects_D); ?> -->
@@ -577,29 +581,29 @@ if (isset($_POST['go'])) {
                 <?php echo "ch"; ?>
                 <?php generate_dropdown('channel_D', $channels, $channel_D); ?>
             </td>
-	</tr>
-	<tr>
-	    <td colspan="3">
+        </tr>
+        <tr>
+            <td colspan="3">
                 <textarea name="notes_A" rows="2" style="width: 100%;"><?php echo $notes_A; ?></textarea>
             </td>
-	    <td colspan="3">
+            <td colspan="3">
                 <textarea name="notes_B" rows="2" style="width: 100%;"><?php echo $notes_B; ?></textarea>
             </td>
-	    <td colspan="3">
+            <td colspan="3">
                 <textarea name="notes_C" rows="2" style="width: 100%;"><?php echo $notes_C; ?></textarea>
-            </td> 
+            </td>
             <td colspan="3">
                 <textarea name="notes_D" rows="2" style="width: 100%;"><?php echo $notes_D; ?></textarea>
             </td>
-	    <tr>
-	    </tr>
-	    <td colspan="2">
-		Reviewer: <input type="text" name="reviewer" rows="1" value="<?php echo $reviewer; ?>" size="20">
-	    </td>
+        <tr>
+        </tr>
+        <td colspan="2">
+            Reviewer: <input type="text" name="reviewer" rows="1" value="<?php echo $reviewer; ?>" size="20">
+        </td>
 
-            <td colspan="10">
-                Notes: <textarea name="notes" rows="1" style="width: 90%;"><?php echo $notes; ?></textarea>
-            </td>
+        <td colspan="10">
+            Notes: <textarea name="notes" rows="1" style="width: 90%;"><?php echo $notes; ?></textarea>
+        </td>
         </tr>
         <tr>
             <td colspan="12" style="text-align: center;">
@@ -611,7 +615,7 @@ if (isset($_POST['go'])) {
 <br><br>
 
 <!-- Testing Section -->
-<?php echo "<b>Testing</b>";?>
+<?php echo "<b>Testing</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1" cellpadding="2" width="100%">
@@ -627,10 +631,10 @@ if (isset($_POST['go'])) {
         </tr>
         <tr>
             <td>
-		Low TempC [K]: <input type="text" name="temp_low" value="<?php echo $temp_low; ?>" size="10">
+                Low TempC [K]: <input type="text" name="temp_low" value="<?php echo $temp_low; ?>" size="10">
                 High TempC [K]: <input type="text" name="temp_high" value="<?php echo $temp_high; ?>" size="10">
-	    </td>
-	    <td>
+            </td>
+            <td>
                 Feedthru Position: <?php generate_dropdown('feedthru_position', $feedthru_positions, $feedthru_position); ?>
             </td>
             <td>
@@ -662,99 +666,99 @@ if (isset($_POST['go'])) {
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
-	<tr>
+        <tr>
             <td align="left" colspan="1" style="width: 5%; white-space: nowrap;">Amplifier</td>
             <td align="left" colspan="1" style="width: 15%; white-space: nowrap;">Saturation/Low? [~80000 ADU]</td>
             <td align="left" colspan="1" style="width: 35%; white-space: nowrap;">Comments</td>
             <td align="left" colspan="1" style="width: 35%; white-space: nowrap;">Reference Image</td>
-	</tr>
-	<?php
+        </tr>
+        <?php
 
-	$count = 0;
-	$count_plus = 1;
-	foreach ($ccds as $amp):
-	?>
-	    <tr>
-		<td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
-		<td>
-		    <?php generate_dropdown('trace_high_saturation_' . $amp, $yes_no_blank_array, ${'trace_high_saturation_' . $amp}); ?>
-		</td>
-		<td><input type="text" name="trace_high_comments_<?php echo $amp; ?>" value="<?php echo ${'trace_high_comments_' . $amp}; ?>" size="40"></td>
-		<td><input type="text" name="trace_high_reference_<?php echo $amp; ?>" value="<?php echo ${'trace_high_reference_' . $amp}; ?>" size="50"></td>
-	    </tr>
-	<?php
-	$count++;
-	$count_plus++;
-	endforeach;
-	?>
+        $count = 0;
+        $count_plus = 1;
+        foreach ($ccds as $amp):
+        ?>
+            <tr>
+                <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
+                <td>
+                    <?php generate_dropdown('trace_high_saturation_' . $amp, $yes_no_blank_array, ${'trace_high_saturation_' . $amp}); ?>
+                </td>
+                <td><input type="text" name="trace_high_comments_<?php echo $amp; ?>" value="<?php echo ${'trace_high_comments_' . $amp}; ?>" size="40"></td>
+                <td><input type="text" name="trace_high_reference_<?php echo $amp; ?>" value="<?php echo ${'trace_high_reference_' . $amp}; ?>" size="50"></td>
+            </tr>
+        <?php
+            $count++;
+            $count_plus++;
+        endforeach;
+        ?>
 
-	<tr>
-	    <td align="left" colspan="9" style="border: none; white-space: nowrap;">
-		<input type="submit" value="Submit">
-		&nbsp &nbsp &nbsp &nbsp;
-		<?php
-		// Retrieve the current module_surface_id
-		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+        <tr>
+            <td align="left" colspan="9" style="border: none; white-space: nowrap;">
+                <input type="submit" value="Submit">
+                &nbsp &nbsp &nbsp &nbsp;
+                <?php
+                // Retrieve the current module_surface_id
+                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
-        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
 
-		// Check if trace_high_file already exists in the directory even if no form is submitted
-		$trace_high_file_name = 'trace_high_file.png';
-		$trace_high_file_path = $upload_dir . $trace_high_file_name;  // Use the absolute server path for file_exists()
-		$trace_high_log_name = 'trace_high_log.log';
-		$trace_high_log_path = $upload_dir . $trace_high_log_name;  // Use the absolute server path for file_exists()
-		
-		// If trace_high_file exists in the directory but no session is set, initialize the session
-		if (file_exists($trace_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['trace_high_file'])) {
-		    $_SESSION['file_url_' . $module_surface_id]['trace_high_file'] = $base_url . $trace_high_file_name;  // Use base_url for the web link
-		}
+                // Check if trace_high_file already exists in the directory even if no form is submitted
+                $trace_high_file_name = 'trace_high_file.png';
+                $trace_high_file_path = $upload_dir . $trace_high_file_name;  // Use the absolute server path for file_exists()
+                $trace_high_log_name = 'trace_high_log.log';
+                $trace_high_log_path = $upload_dir . $trace_high_log_name;  // Use the absolute server path for file_exists()
 
-		// Check if the file exists on the server (file system path)
-		if (!empty($trace_high_file_name) && file_exists($trace_high_file_path)) {
-		    // File exists, keep the session variables and show the icon
-		    $file_exists = true;
-		    $file_url = $_SESSION['file_url_' . $module_surface_id]['trace_high_file'];
-		} else {
-		    // File does not exist, clear the session variables and remove the icon
-		    $file_exists = false;
-		}
+                // If trace_high_file exists in the directory but no session is set, initialize the session
+                if (file_exists($trace_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['trace_high_file'])) {
+                    $_SESSION['file_url_' . $module_surface_id]['trace_high_file'] = $base_url . $trace_high_file_name;  // Use base_url for the web link
+                }
+
+                // Check if the file exists on the server (file system path)
+                if (!empty($trace_high_file_name) && file_exists($trace_high_file_path)) {
+                    // File exists, keep the session variables and show the icon
+                    $file_exists = true;
+                    $file_url = $_SESSION['file_url_' . $module_surface_id]['trace_high_file'];
+                } else {
+                    // File does not exist, clear the session variables and remove the icon
+                    $file_exists = false;
+                }
 
                 // If trace_high_log exists in the directory but no session is set, initialize the session
                 if (file_exists($trace_high_log_path) && !isset($_SESSION['log_url_' . $module_surface_id]['trace_high_log'])) {
                     $_SESSION['log_url_' . $module_surface_id]['trace_high_log'] = $base_url . $trace_high_log_name;  // Use base_url for the web link
                 }
 
-               // Check if the log exists on the server (log system path)
+                // Check if the log exists on the server (log system path)
                 if (!empty($trace_high_log_name) && file_exists($trace_high_log_path)) {
                     // Log exists, keep the session variables and show the icon
                     $log_exists = true;
-		    $log_url = $_SESSION['log_url_' . $module_surface_id]['trace_high_log'];
+                    $log_url = $_SESSION['log_url_' . $module_surface_id]['trace_high_log'];
                 } else {
                     // Log does not exist, clear the session variables and remove the icon
                     $log_exists = false;
                 }
 
-		?>
+                ?>
 
-		<?php if ($file_exists): ?>
-    		      <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
-        	      <img src="pixmaps/icon.png" alt="Trace File" style="height: 20px; width: auto;">
-    		      </a>
-		<?php endif; ?>
-		      <label for="trace_high_file">Image File:</label>
-		      <input type="file" name="trace_high_file" accept="image/png, image/jpeg, application/pdf">
-		      &nbsp; &nbsp; &nbsp; &nbsp;
+                <?php if ($file_exists): ?>
+                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <img src="pixmaps/icon.png" alt="Trace File" style="height: 20px; width: auto;">
+                    </a>
+                <?php endif; ?>
+                <label for="trace_high_file">Image File:</label>
+                <input type="file" name="trace_high_file" accept="image/png, image/jpeg, application/pdf">
+                &nbsp; &nbsp; &nbsp; &nbsp;
 
-		<?php if ($log_exists): ?>
-    		      <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
-        	      <img src="pixmaps/icon2.png" alt="Trace Log" style="height: 20px; width: auto;">
-    		      </a>
-		<?php endif; ?>
-		      <label for="trace_high_log">Log File:</label>
-		      <input type="file" name="trace_high_log" accept=".log,text/plain">
- 	    </td>
-	</tr>
+                <?php if ($log_exists): ?>
+                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                        <img src="pixmaps/icon2.png" alt="Trace Log" style="height: 20px; width: auto;">
+                    </a>
+                <?php endif; ?>
+                <label for="trace_high_log">Log File:</label>
+                <input type="file" name="trace_high_log" accept=".log,text/plain">
+            </td>
+        </tr>
     </table>
 </form>
 <br><br>
@@ -764,76 +768,76 @@ if (isset($_POST['go'])) {
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
-	<tr>
+        <tr>
             <td align="left" style="width: 6%; white-space: nowrap;">Amplifier</td>
             <td align="left" style="width: 5%; white-space: nowrap;">Tracks?</td>
             <td align="left" style="width: 5%; white-space: nowrap;">Defects?</td>
-            <td align="left" style="width: 12%; white-space: nowrap;">Noise [ADU]</td>	
+            <td align="left" style="width: 12%; white-space: nowrap;">Noise [ADU]</td>
             <td align="left" style="width: 28%; white-space: nowrap;">Comments</td>
             <td align="left" style="width: 43%; white-space: nowrap;">Reference Image</td>
-	</tr>
-	<?php
+        </tr>
+        <?php
 
-	$count = 0;
-	$count_plus = 1;
-	foreach ($ccds as $amp):
-	?>
-	    <tr>
+        $count = 0;
+        $count_plus = 1;
+        foreach ($ccds as $amp):
+        ?>
+            <tr>
                 <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
-		<td>
-		    <?php generate_dropdown('image1_high_tracks_' . $amp, $yes_no_blank_array, ${'image1_high_tracks_' . $amp}); ?>
-		</td>
-		<td>
-		    <?php generate_dropdown('image1_high_defects_' . $amp, $yes_no_blank_array, ${'image1_high_defects_' . $amp}); ?>
-		</td>
-		<td><input type="text" name="image1_high_noise_<?php echo $amp; ?>" value="<?php echo ${'image1_high_noise_' . $amp}; ?>"></td>
-		<td><input type="text" name="image1_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image1_high_comments_' . $amp}; ?>" size="40"></td>
-		<td><input type="text" name="image1_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image1_high_reference_' . $amp}; ?>" size="50"></td>
-	    </tr>
-	<?php
-        $count++;
-	$count_plus++;
-	endforeach;
-	?>
+                <td>
+                    <?php generate_dropdown('image1_high_tracks_' . $amp, $yes_no_blank_array, ${'image1_high_tracks_' . $amp}); ?>
+                </td>
+                <td>
+                    <?php generate_dropdown('image1_high_defects_' . $amp, $yes_no_blank_array, ${'image1_high_defects_' . $amp}); ?>
+                </td>
+                <td><input type="text" name="image1_high_noise_<?php echo $amp; ?>" value="<?php echo ${'image1_high_noise_' . $amp}; ?>"></td>
+                <td><input type="text" name="image1_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image1_high_comments_' . $amp}; ?>" size="40"></td>
+                <td><input type="text" name="image1_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image1_high_reference_' . $amp}; ?>" size="50"></td>
+            </tr>
+        <?php
+            $count++;
+            $count_plus++;
+        endforeach;
+        ?>
 
-	<tr>
-	    <td align="left" colspan="9" style="border: none; white-space: nowrap;">
-		<input type="submit" value="Submit">
-		&nbsp &nbsp &nbsp &nbsp;
-		<?php
-		// Retrieve the current module_surface_id
-		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+        <tr>
+            <td align="left" colspan="9" style="border: none; white-space: nowrap;">
+                <input type="submit" value="Submit">
+                &nbsp &nbsp &nbsp &nbsp;
+                <?php
+                // Retrieve the current module_surface_id
+                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
-        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
 
-		// Check if image1_high_file already exists in the directory even if no form is submitted
-		$image1_high_file_name = 'image1_high_file.png';
-		$image1_high_file_path = $upload_dir . $image1_high_file_name;  // Use the absolute server path for file_exists()
+                // Check if image1_high_file already exists in the directory even if no form is submitted
+                $image1_high_file_name = 'image1_high_file.png';
+                $image1_high_file_path = $upload_dir . $image1_high_file_name;  // Use the absolute server path for file_exists()
                 $image1_high_log_name = 'image1_high_log.log';
                 $image1_high_log_path = $upload_dir . $image1_high_log_name;  // Use the absolute server path for file_exists()
-		
-		// If image1_high_file exists in the directory but no session is set, initialize the session
-		if (file_exists($image1_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image1_high_file'])) {
-		    $_SESSION['file_url_' . $module_surface_id]['image1_high_file'] = $base_url . $image1_high_file_name;  // Use base_url for the web link
-		}
 
-		// Check if the file exists on the server (file system path)
-		if (!empty($image1_high_file_name) && file_exists($image1_high_file_path)) {
-		    // File exists, keep the session variables and show the icon
-		    $file_exists = true;
-		    $file_url = $_SESSION['file_url_' . $module_surface_id]['image1_high_file'];
-		} else {
-		    // File does not exist, clear the session variables and remove the icon
-		    $file_exists = false;
-		}
+                // If image1_high_file exists in the directory but no session is set, initialize the session
+                if (file_exists($image1_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image1_high_file'])) {
+                    $_SESSION['file_url_' . $module_surface_id]['image1_high_file'] = $base_url . $image1_high_file_name;  // Use base_url for the web link
+                }
+
+                // Check if the file exists on the server (file system path)
+                if (!empty($image1_high_file_name) && file_exists($image1_high_file_path)) {
+                    // File exists, keep the session variables and show the icon
+                    $file_exists = true;
+                    $file_url = $_SESSION['file_url_' . $module_surface_id]['image1_high_file'];
+                } else {
+                    // File does not exist, clear the session variables and remove the icon
+                    $file_exists = false;
+                }
 
                 // If image1_high_log exists in the directory but no session is set, initialize the session
                 if (file_exists($image1_high_log_path) && !isset($_SESSION['log_url_' . $module_surface_id]['image1_high_log'])) {
                     $_SESSION['log_url_' . $module_surface_id]['image1_high_log'] = $base_url . $image1_high_log_name;  // Use base_url for the web link
                 }
 
-		// Check if the log exists on the server (log system path)
+                // Check if the log exists on the server (log system path)
                 if (!empty($image1_high_log_name) && file_exists($image1_high_log_path)) {
                     // Log exists, keep the session variables and show the icon
                     $log_exists = true;
@@ -847,7 +851,7 @@ if (isset($_POST['go'])) {
 
                 <?php if ($file_exists): ?>
                     <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
-			<img src="pixmaps/icon.png" alt="Image1_High File" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon.png" alt="Image1_High File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image1_high_file">Image File:</label>
@@ -856,13 +860,13 @@ if (isset($_POST['go'])) {
 
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
-			<img src="pixmaps/icon2.png" alt="Image1_High Log" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon2.png" alt="Image1_High Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image1_high_log">Log File:</label>
                 <input type="file" name="image1_high_log" accept=".log,text/plain">
-	    </td>
-	</tr>
+            </td>
+        </tr>
     </table>
 </form>
 <br><br>
@@ -872,70 +876,70 @@ if (isset($_POST['go'])) {
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
-	<tr>
+        <tr>
             <td align="left" style="width: 6%; white-space: nowrap;">Amplifier</td>
             <td align="left" style="width: 15%; white-space: nowrap;">Number Column Defects</td>
             <td align="left" style="width: 15%; white-space: nowrap;">Noise [ADU]</td>
             <td align="left" style="width: 35%; white-space: nowrap;">Comments</td>
             <td align="left" style="width: 45%; white-space: nowrap;">Reference Image</td>
-	</tr>
-	<?php
+        </tr>
+        <?php
 
-	$count = 0;
-	$count_plus = 1;
-	foreach ($ccds as $amp):
-	?>
-	    <tr>
+        $count = 0;
+        $count_plus = 1;
+        foreach ($ccds as $amp):
+        ?>
+            <tr>
                 <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
-		<td><input type="text" name="image2_high_column_defects_<?php echo $amp; ?>" value="<?php echo ${'image2_high_column_defects_' . $amp}; ?>"></td>
-		<td><input type="text" name="image2_high_noise_<?php echo $amp; ?>" value="<?php echo ${'image2_high_noise_' . $amp}; ?>"></td>
-		<td><input type="text" name="image2_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image2_high_comments_' . $amp}; ?>" size="40"></td>
-		<td><input type="text" name="image2_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image2_high_reference_' . $amp}; ?>" size="20"></td>
-	    </tr>
-	<?php
-        $count++;
-	$count_plus++;
-	endforeach;
-	?>
+                <td><input type="text" name="image2_high_column_defects_<?php echo $amp; ?>" value="<?php echo ${'image2_high_column_defects_' . $amp}; ?>"></td>
+                <td><input type="text" name="image2_high_noise_<?php echo $amp; ?>" value="<?php echo ${'image2_high_noise_' . $amp}; ?>"></td>
+                <td><input type="text" name="image2_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image2_high_comments_' . $amp}; ?>" size="40"></td>
+                <td><input type="text" name="image2_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image2_high_reference_' . $amp}; ?>" size="20"></td>
+            </tr>
+        <?php
+            $count++;
+            $count_plus++;
+        endforeach;
+        ?>
 
-	<tr>
-	    <td align="left" colspan="9" style="border: none; white-space: nowrap;">
-		<input type="submit" value="Submit">
-		&nbsp &nbsp &nbsp &nbsp;
-		<?php
-		// Retrieve the current module_surface_id
-		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+        <tr>
+            <td align="left" colspan="9" style="border: none; white-space: nowrap;">
+                <input type="submit" value="Submit">
+                &nbsp &nbsp &nbsp &nbsp;
+                <?php
+                // Retrieve the current module_surface_id
+                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
-        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
 
-		// Check if image2_high_file already exists in the directory even if no form is submitted
-		$image2_high_file_name = 'image2_high_file.png';
-		$image2_high_file_path = $upload_dir . $image2_high_file_name;  // Use the absolute server path for file_exists()
+                // Check if image2_high_file already exists in the directory even if no form is submitted
+                $image2_high_file_name = 'image2_high_file.png';
+                $image2_high_file_path = $upload_dir . $image2_high_file_name;  // Use the absolute server path for file_exists()
                 $image2_high_log_name = 'image2_high_log.log';
                 $image2_high_log_path = $upload_dir . $image2_high_log_name;  // Use the absolute server path for file_exists()
 
-		// If image2_high_file exists in the directory but no session is set, initialize the session
-		if (file_exists($image2_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image2_high_file'])) {
-		    $_SESSION['file_url_' . $module_surface_id]['image2_high_file'] = $base_url . $image2_high_file_name;  // Use base_url for the web link
-		}
+                // If image2_high_file exists in the directory but no session is set, initialize the session
+                if (file_exists($image2_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image2_high_file'])) {
+                    $_SESSION['file_url_' . $module_surface_id]['image2_high_file'] = $base_url . $image2_high_file_name;  // Use base_url for the web link
+                }
 
-		// Check if the file exists on the server (file system path)
-		if (!empty($image2_high_file_name) && file_exists($image2_high_file_path)) {
-		    // File exists, keep the session variables and show the icon
-		    $file_exists = true;
-		    $file_url = $_SESSION['file_url_' . $module_surface_id]['image2_high_file'];
-		} else {
-		    // File does not exist, clear the session variables and remove the icon
-		    $file_exists = false;
-		}
+                // Check if the file exists on the server (file system path)
+                if (!empty($image2_high_file_name) && file_exists($image2_high_file_path)) {
+                    // File exists, keep the session variables and show the icon
+                    $file_exists = true;
+                    $file_url = $_SESSION['file_url_' . $module_surface_id]['image2_high_file'];
+                } else {
+                    // File does not exist, clear the session variables and remove the icon
+                    $file_exists = false;
+                }
 
                 // If image2_high_log exists in the directory but no session is set, initialize the session
                 if (file_exists($image2_high_log_path) && !isset($_SESSION['log_url_' . $module_surface_id]['image2_high_log'])) {
                     $_SESSION['log_url_' . $module_surface_id]['image2_high_log'] = $base_url . $image2_high_log_name;  // Use base_url for the web link
                 }
 
-		// Check if the log exists on the server (log system path)
+                // Check if the log exists on the server (log system path)
                 if (!empty($image2_high_log_name) && file_exists($image2_high_log_path)) {
                     // Log exists, keep the session variables and show the icon
                     $log_exists = true;
@@ -949,7 +953,7 @@ if (isset($_POST['go'])) {
 
                 <?php if ($file_exists): ?>
                     <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
-			<img src="pixmaps/icon.png" alt="Image2_High File" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon.png" alt="Image2_High File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image2_high_file">Image File:</label>
@@ -958,13 +962,13 @@ if (isset($_POST['go'])) {
 
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
-			<img src="pixmaps/icon2.png" alt="Image2_High Log" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon2.png" alt="Image2_High Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image2_high_log">Log File:</label>
                 <input type="file" name="image2_high_log" accept=".log,text/plain">
-	    </td>
-	</tr>
+            </td>
+        </tr>
     </table>
 </form>
 <br><br>
@@ -976,72 +980,75 @@ if (isset($_POST['go'])) {
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
-	<tr>
+        <tr>
             <td align="left" style="width: 7%; white-space: nowrap;">Amplifier</td>
             <td align="left" style="width: 15%; white-space: nowrap;">Resolution [ADU]</td>
+            <td align="left" style="width: 15%; white-space: nowrap;">Resolution [e-]</td>
             <td align="left" style="width: 15%; white-space: nowrap;">Gain [ADU/e]</td>
             <td align="left" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
             <td align="left" style="width: 35%; white-space: nowrap;">Comments</td>
             <td align="left" style="width: 45%; white-space: nowrap;">Reference Image</td>
-	</tr>
-	<?php
+        </tr>
+        <?php
 
-	$count = 0;
-	$count_plus = 1;
-	foreach ($ccds as $amp):
-	?>
-	    <tr>
+        $count = 0;
+        $count_plus = 1;
+        foreach ($ccds as $amp):
+        ?>
+            <tr>
                 <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
-		<td><input type="text" name="image3_high_res_<?php echo $amp; ?>" value="<?php echo ${'image3_high_res_' . $amp}; ?>"></td>
-		<td><input type="text" name="image3_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image3_high_gain_' . $amp}; ?>"></td>
-		<td><input type="text" name="image3_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image3_high_dark_current_' . $amp}; ?>"></td>
-		<td><input type="text" name="image3_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image3_high_comments_' . $amp}; ?>" size="30"></td>
-		<td><input type="text" name="image3_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image3_high_reference_' . $amp}; ?>" size="50"></td>
-	    </tr>
-	<?php
-        $count++;
-	$count_plus++;
-	endforeach;
-	?>
+                <td><input type="text" name="image3_high_res_<?php echo $amp; ?>" value="<?php echo ${'image3_high_res_' . $amp}; ?>"></td>
+                <td align="center">
+                    <?php echo htmlspecialchars(${'image3_high_res_e_' . $amp}); ?>
+                </td>
+                <td><input type="text" name="image3_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image3_high_gain_' . $amp}; ?>"></td>
+                <td><input type="text" name="image3_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image3_high_dark_current_' . $amp}; ?>"></td>
+                <td><input type="text" name="image3_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image3_high_comments_' . $amp}; ?>" size="30"></td>
+                <td><input type="text" name="image3_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image3_high_reference_' . $amp}; ?>" size="50"></td>
+            </tr>
+        <?php
+            $count++;
+            $count_plus++;
+        endforeach;
+        ?>
 
-	<tr>
-	    <td align="left" colspan="9" style="border: none; white-space: nowrap;">
-		<input type="submit" value="Submit">
-		&nbsp &nbsp &nbsp &nbsp;
-		<?php
-		// Retrieve the current module_surface_id
-		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+        <tr>
+            <td align="left" colspan="9" style="border: none; white-space: nowrap;">
+                <input type="submit" value="Submit">
+                &nbsp &nbsp &nbsp &nbsp;
+                <?php
+                // Retrieve the current module_surface_id
+                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
-        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
-
-		// Check if image3_high_file already exists in the directory even if no form is submitted
-		$image3_high_file_name = 'image3_high_file.png';
-		$image3_high_file_path = $upload_dir . $image3_high_file_name;  // Use the absolute server path for file_exists()
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
+                // Check if image3_high_file already exists in the directory even if no form is submitted
+                $image3_high_file_name = 'image3_high_file.png';
+                $image3_high_file_path = $upload_dir . $image3_high_file_name;  // Use the absolute server path for file_exists()
                 $image3_high_log_name = 'image3_high_log.log';
                 $image3_high_log_path = $upload_dir . $image3_high_log_name;  // Use the absolute server path for file_exists()
 
-		// If image3_high_file exists in the directory but no session is set, initialize the session
-		if (file_exists($image3_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image3_high_file'])) {
-		    $_SESSION['file_url_' . $module_surface_id]['image3_high_file'] = $base_url . $image3_high_file_name;  // Use base_url for the web link
-		}
+                // If image3_high_file exists in the directory but no session is set, initialize the session
+                if (file_exists($image3_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image3_high_file'])) {
+                    $_SESSION['file_url_' . $module_surface_id]['image3_high_file'] = $base_url . $image3_high_file_name;  // Use base_url for the web link
+                }
 
-		// Check if the file exists on the server (file system path)
-		if (!empty($image3_high_file_name) && file_exists($image3_high_file_path)) {
-		    // File exists, keep the session variables and show the icon
-		    $file_exists = true;
-		    $file_url = $_SESSION['file_url_' . $module_surface_id]['image3_high_file'];
-		} else {
-		    // File does not exist, clear the session variables and remove the icon
-		    $file_exists = false;
-		}
+                // Check if the file exists on the server (file system path)
+                if (!empty($image3_high_file_name) && file_exists($image3_high_file_path)) {
+                    // File exists, keep the session variables and show the icon
+                    $file_exists = true;
+                    $file_url = $_SESSION['file_url_' . $module_surface_id]['image3_high_file'];
+                } else {
+                    // File does not exist, clear the session variables and remove the icon
+                    $file_exists = false;
+                }
 
                 // If image3_high_log exists in the directory but no session is set, initialize the session
                 if (file_exists($image3_high_log_path) && !isset($_SESSION['log_url_' . $module_surface_id]['image3_high_log'])) {
                     $_SESSION['log_url_' . $module_surface_id]['image3_high_log'] = $base_url . $image3_high_log_name;  // Use base_url for the web link
                 }
 
-		// Check if the log exists on the server (log system path)
+                // Check if the log exists on the server (log system path)
                 if (!empty($image3_high_log_name) && file_exists($image3_high_log_path)) {
                     // Log exists, keep the session variables and show the icon
                     $log_exists = true;
@@ -1055,7 +1062,7 @@ if (isset($_POST['go'])) {
 
                 <?php if ($file_exists): ?>
                     <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
-			<img src="pixmaps/icon.png" alt="Image3_High File" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon.png" alt="Image3_High File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image3_high_file">Image File:</label>
@@ -1064,13 +1071,13 @@ if (isset($_POST['go'])) {
 
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
-			<img src="pixmaps/icon2.png" alt="Image3_High Log" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon2.png" alt="Image3_High Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image3_high_log">Log File:</label>
                 <input type="file" name="image3_high_log" accept=".log,text/plain">
-	    </td>
-	</tr>
+            </td>
+        </tr>
     </table>
 </form>
 <br><br>
@@ -1080,83 +1087,83 @@ if (isset($_POST['go'])) {
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
-	<tr>
+        <tr>
             <td align="left" style="width: 30%; white-space: nowrap;">Amplifier</td>
             <td align="left" style="width: 5%; white-space: nowrap;">Number Pixel Defects</td>
             <td align="left" style="width: 5%; white-space: nowrap;">Number Column Defects</td>
-	    <td align="left" style="width: 5%; white-space: nowrap;">Defect Region</td>
+            <td align="left" style="width: 5%; white-space: nowrap;">Defect Region</td>
             <td align="left" style="width: 5%; white-space: nowrap;">Overscan Noise [ADU]</td>
             <td align="left" style="width: 5%; white-space: nowrap;">CTI? - Code</td>
             <td align="left" style="width: 5%; white-space: nowrap;">CTI? - Visual</td>
             <td align="left" style="width: 5%; white-space: nowrap;">Sharp Tracks?</td>
             <td align="left" style="width: 20%; white-space: nowrap;">Comments</td>
             <td align="left" style="width: 15%; white-space: nowrap;">Reference Image</td>
-	</tr>
-	<?php
+        </tr>
+        <?php
         $count = 0;
-	$count_plus = 1;
-	foreach ($ccds as $amp):
-	?>
-	    <tr>
+        $count_plus = 1;
+        foreach ($ccds as $amp):
+        ?>
+            <tr>
                 <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
-		<td><input type="text" name="image4_high_pixel_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_pixel_defects_' . $amp}; ?>"></td>
-		<td><input type="text" name="image4_high_column_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_column_defects_' . $amp}; ?>"></td>
-		<td><input type="text" name="image4_high_region_defect_<?php echo $amp; ?>" value="<?php echo ${'image4_high_region_defect_' . $amp}; ?>" size="10"></td>
-		<td><input type="text" name="image4_high_noise_overscan_<?php echo $amp; ?>" value="<?php echo ${'image4_high_noise_overscan_' . $amp}; ?>"></td>
-		<td><input type="text" name="image4_high_cti_code_<?php echo $amp; ?>" value="<?php echo ${'image4_high_cti_code_' . $amp}; ?>" size="10"></td>
-		<td>
-		    <?php generate_dropdown('image4_high_cti_visual_' . $amp, $yes_no_blank_array, ${'image4_high_cti_visual_' . $amp}); ?>
-		</td>
-		<td>
-		    <?php generate_dropdown('image4_high_sharpness_tracks_' . $amp, $yes_no_blank_array, ${'image4_high_sharpness_tracks_' . $amp}); ?>
-		</td>
-		<td><input type="text" name="image4_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image4_high_comments_' . $amp}; ?>" size="40"></td>
-		<td><input type="text" name="image4_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image4_high_reference_' . $amp}; ?>" size="50"></td>
-	    </tr>
-	<?php
-        $count++;
-	$count_plus++;
-	endforeach;
-	?>
+                <td><input type="text" name="image4_high_pixel_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_pixel_defects_' . $amp}; ?>"></td>
+                <td><input type="text" name="image4_high_column_defects_<?php echo $amp; ?>" value="<?php echo ${'image4_high_column_defects_' . $amp}; ?>"></td>
+                <td><input type="text" name="image4_high_region_defect_<?php echo $amp; ?>" value="<?php echo ${'image4_high_region_defect_' . $amp}; ?>" size="10"></td>
+                <td><input type="text" name="image4_high_noise_overscan_<?php echo $amp; ?>" value="<?php echo ${'image4_high_noise_overscan_' . $amp}; ?>"></td>
+                <td><input type="text" name="image4_high_cti_code_<?php echo $amp; ?>" value="<?php echo ${'image4_high_cti_code_' . $amp}; ?>" size="10"></td>
+                <td>
+                    <?php generate_dropdown('image4_high_cti_visual_' . $amp, $yes_no_blank_array, ${'image4_high_cti_visual_' . $amp}); ?>
+                </td>
+                <td>
+                    <?php generate_dropdown('image4_high_sharpness_tracks_' . $amp, $yes_no_blank_array, ${'image4_high_sharpness_tracks_' . $amp}); ?>
+                </td>
+                <td><input type="text" name="image4_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image4_high_comments_' . $amp}; ?>" size="40"></td>
+                <td><input type="text" name="image4_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image4_high_reference_' . $amp}; ?>" size="50"></td>
+            </tr>
+        <?php
+            $count++;
+            $count_plus++;
+        endforeach;
+        ?>
 
-	<tr>
-	    <td align="left" colspan="9" style="border: none; white-space: nowrap;">
-		<input type="submit" value="Submit">
-		&nbsp &nbsp &nbsp &nbsp;
-		<?php
-		// Retrieve the current module_surface_id
-		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+        <tr>
+            <td align="left" colspan="9" style="border: none; white-space: nowrap;">
+                <input type="submit" value="Submit">
+                &nbsp &nbsp &nbsp &nbsp;
+                <?php
+                // Retrieve the current module_surface_id
+                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
-        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
 
-		// Check if image4_high_file already exists in the directory even if no form is submitted
-		$image4_high_file_name = 'image4_high_file.png';
-		$image4_high_file_path = $upload_dir . $image4_high_file_name;  // Use the absolute server path for file_exists()
+                // Check if image4_high_file already exists in the directory even if no form is submitted
+                $image4_high_file_name = 'image4_high_file.png';
+                $image4_high_file_path = $upload_dir . $image4_high_file_name;  // Use the absolute server path for file_exists()
                 $image4_high_log_name = 'image4_high_log.log';
                 $image4_high_log_path = $upload_dir . $image4_high_log_name;  // Use the absolute server path for file_exists()
 
-		// If image4_high_file exists in the directory but no session is set, initialize the session
-		if (file_exists($image4_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image4_high_file'])) {
-		    $_SESSION['file_url_' . $module_surface_id]['image4_high_file'] = $base_url . $image4_high_file_name;  // Use base_url for the web link
-		}
+                // If image4_high_file exists in the directory but no session is set, initialize the session
+                if (file_exists($image4_high_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image4_high_file'])) {
+                    $_SESSION['file_url_' . $module_surface_id]['image4_high_file'] = $base_url . $image4_high_file_name;  // Use base_url for the web link
+                }
 
-		// Check if the file exists on the server (file system path)
-		if (!empty($image4_high_file_name) && file_exists($image4_high_file_path)) {
-		    // File exists, keep the session variables and show the icon
-		    $file_exists = true;
-		    $file_url = $_SESSION['file_url_' . $module_surface_id]['image4_high_file'];
-		} else {
-		    // File does not exist, clear the session variables and remove the icon
-		    $file_exists = false;
-		}
+                // Check if the file exists on the server (file system path)
+                if (!empty($image4_high_file_name) && file_exists($image4_high_file_path)) {
+                    // File exists, keep the session variables and show the icon
+                    $file_exists = true;
+                    $file_url = $_SESSION['file_url_' . $module_surface_id]['image4_high_file'];
+                } else {
+                    // File does not exist, clear the session variables and remove the icon
+                    $file_exists = false;
+                }
 
                 // If image4_high_log exists in the directory but no session is set, initialize the session
                 if (file_exists($image4_high_log_path) && !isset($_SESSION['log_url_' . $module_surface_id]['image4_high_log'])) {
                     $_SESSION['log_url_' . $module_surface_id]['image4_high_log'] = $base_url . $image4_high_log_name;  // Use base_url for the web link
                 }
 
-               // Check if the log exists on the server (log system path)
+                // Check if the log exists on the server (log system path)
                 if (!empty($image4_high_log_name) && file_exists($image4_high_log_path)) {
                     // Log exists, keep the session variables and show the icon
                     $log_exists = true;
@@ -1169,23 +1176,23 @@ if (isset($_POST['go'])) {
                 ?>
 
                 <?php if ($file_exists): ?>
-                      <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
-                      <img src="pixmaps/icon.png" alt="Image4_High File" style="height: 20px; width: auto;">
-                      </a>
+                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <img src="pixmaps/icon.png" alt="Image4_High File" style="height: 20px; width: auto;">
+                    </a>
                 <?php endif; ?>
-                      <label for="image4_high_file">Image File:</label>
-                      <input type="file" name="image4_high_file" accept="image/png, image/jpeg, application/pdf">
-                      &nbsp; &nbsp; &nbsp; &nbsp;
+                <label for="image4_high_file">Image File:</label>
+                <input type="file" name="image4_high_file" accept="image/png, image/jpeg, application/pdf">
+                &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                      <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
-                      <img src="pixmaps/icon2.png" alt="Image4_High Log" style="height: 20px; width: auto;">
-                      </a>
+                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                        <img src="pixmaps/icon2.png" alt="Image4_High Log" style="height: 20px; width: auto;">
+                    </a>
                 <?php endif; ?>
-                      <label for="image4_high_log">Log File:</label>
-                      <input type="file" name="image4_high_log" accept=".log,text/plain">
-	   </td>
-	</tr>
+                <label for="image4_high_log">Log File:</label>
+                <input type="file" name="image4_high_log" accept=".log,text/plain">
+            </td>
+        </tr>
     </table>
 </form>
 <br><br>
@@ -1196,71 +1203,75 @@ if (isset($_POST['go'])) {
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
-	<tr>
+        <tr>
             <td align="left" style="width: 7%; white-space: nowrap;">Amplifier</td>
-            <td align="left" style="width: 15%; white-space: nowrap;">Resolution [ADU]</td>
-            <td align="left" style="width: 15%; white-space: nowrap;">Gain [ADU/e]</td>
+            <td align="left" style="width: 10%; white-space: nowrap;">Resolution [ADU]</td>
+            <td align="left" style="width: 10%; white-space: nowrap;">Resolution [e-]</td>
+            <td align="left" style="width: 10%; white-space: nowrap;">Gain [ADU/e]</td>
             <td align="left" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img] </td>
             <td align="left" style="width: 35%; white-space: nowrap;">Comments</td>
             <td align="left" style="width: 45%; white-space: nowrap;">Reference Image</td>
-	</tr>
-	<?php
-	$count = 0;
-	$count_plus = 1;
-	foreach ($ccds as $amp):
-	?>
-	    <tr>
+        </tr>
+        <?php
+        $count = 0;
+        $count_plus = 1;
+        foreach ($ccds as $amp):
+        ?>
+            <tr>
                 <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
-		<td><input type="text" name="image3_low_res_<?php echo $amp; ?>" value="<?php echo ${'image3_low_res_' . $amp}; ?>"></td>
-		<td><input type="text" name="image3_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image3_low_gain_' . $amp}; ?>"></td>
-		<td><input type="text" name="image3_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image3_low_dark_current_' . $amp}; ?>"></td>
-		<td><input type="text" name="image3_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image3_low_comments_' . $amp}; ?>" size="30"></td>
-		<td><input type="text" name="image3_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image3_low_reference_' . $amp}; ?>" size="50"></td>
-	    </tr>
-	<?php
-        $count++;
-	$count_plus++;
-	endforeach;
-	?>
+                <td><input type="text" name="image3_low_res_<?php echo $amp; ?>" value="<?php echo ${'image3_low_res_' . $amp}; ?>"></td>
+                <td align="center">
+                    <?php echo htmlspecialchars(${'image3_low_res_e_' . $amp}); ?>
+                </td>
+                <td><input type="text" name="image3_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image3_low_gain_' . $amp}; ?>"></td>
+                <td><input type="text" name="image3_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image3_low_dark_current_' . $amp}; ?>"></td>
+                <td><input type="text" name="image3_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image3_low_comments_' . $amp}; ?>" size="30"></td>
+                <td><input type="text" name="image3_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image3_low_reference_' . $amp}; ?>" size="50"></td>
+            </tr>
+        <?php
+            $count++;
+            $count_plus++;
+        endforeach;
+        ?>
 
-	<tr>
-	    <td align="left" colspan="9" style="border: none; white-space: nowrap;">
-		<input type="submit" value="Submit">
-		&nbsp &nbsp &nbsp &nbsp;
-		<?php
-		// Retrieve the current module_surface_id
-		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+        <tr>
+            <td align="left" colspan="9" style="border: none; white-space: nowrap;">
+                <input type="submit" value="Submit">
+                &nbsp &nbsp &nbsp &nbsp;
+                <?php
+                // Retrieve the current module_surface_id
+                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
-        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
 
-		// Check if image3_low_file already exists in the directory even if no form is submitted
-		$image3_low_file_name = 'image3_low_file.png';
-		$image3_low_file_path = $upload_dir . $image3_low_file_name;  // Use the absolute server path for file_exists()
+                // Check if image3_low_file already exists in the directory even if no form is submitted
+                $image3_low_file_name = 'image3_low_file.png';
+                $image3_low_file_path = $upload_dir . $image3_low_file_name;  // Use the absolute server path for file_exists()
                 $image3_low_log_name = 'image3_low_log.log';
                 $image3_low_log_path = $upload_dir . $image3_low_log_name;  // Use the absolute server path for file_exists()
 
-		// If image3_low_file exists in the directory but no session is set, initialize the session
-		if (file_exists($image3_low_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image3_low_file'])) {
-		    $_SESSION['file_url_' . $module_surface_id]['image3_low_file'] = $base_url . $image3_low_file_name;  // Use base_url for the web link
-		}
+                // If image3_low_file exists in the directory but no session is set, initialize the session
+                if (file_exists($image3_low_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image3_low_file'])) {
+                    $_SESSION['file_url_' . $module_surface_id]['image3_low_file'] = $base_url . $image3_low_file_name;  // Use base_url for the web link
+                }
 
-		// Check if the file exists on the server (file system path)
-		if (!empty($image3_low_file_name) && file_exists($image3_low_file_path)) {
-		    // File exists, keep the session variables and show the icon
-		    $file_exists = true;
-		    $file_url = $_SESSION['file_url_' . $module_surface_id]['image3_low_file'];
-		} else {
-		    // File does not exist, clear the session variables and remove the icon
-		    $file_exists = false;
-		}
+                // Check if the file exists on the server (file system path)
+                if (!empty($image3_low_file_name) && file_exists($image3_low_file_path)) {
+                    // File exists, keep the session variables and show the icon
+                    $file_exists = true;
+                    $file_url = $_SESSION['file_url_' . $module_surface_id]['image3_low_file'];
+                } else {
+                    // File does not exist, clear the session variables and remove the icon
+                    $file_exists = false;
+                }
 
                 // If image3_low_log exists in the directory but no session is set, initialize the session
                 if (file_exists($image3_low_log_path) && !isset($_SESSION['log_url_' . $module_surface_id]['image3_low_log'])) {
                     $_SESSION['log_url_' . $module_surface_id]['image3_low_log'] = $base_url . $image3_low_log_name;  // Use base_url for the web link
                 }
 
-		// Check if the log exists on the server (log system path)
+                // Check if the log exists on the server (log system path)
                 if (!empty($image3_low_log_name) && file_exists($image3_low_log_path)) {
                     // Log exists, keep the session variables and show the icon
                     $log_exists = true;
@@ -1274,7 +1285,7 @@ if (isset($_POST['go'])) {
 
                 <?php if ($file_exists): ?>
                     <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
-			<img src="pixmaps/icon.png" alt="Image3_Low File" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon.png" alt="Image3_Low File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image3_low_file">Image File:</label>
@@ -1283,13 +1294,13 @@ if (isset($_POST['go'])) {
 
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
-			<img src="pixmaps/icon2.png" alt="Image3_Low Log" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon2.png" alt="Image3_Low Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image3_low_log">Log File:</label>
                 <input type="file" name="image3_low_log" accept=".log,text/plain">
-	    </td>
-	</tr>
+            </td>
+        </tr>
     </table>
 </form>
 <br><br>
@@ -1299,24 +1310,24 @@ if (isset($_POST['go'])) {
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1">
-	<tr>
-	    <td align="left" style="width: 10%; white-space: nowrap;">Amplifier</td>
+        <tr>
+            <td align="left" style="width: 10%; white-space: nowrap;">Amplifier</td>
             <td align="left" style="width: 5%; white-space: nowrap;">Defects?</td>
             <td align="left" style="width: 5%; white-space: nowrap;">CTI? - Visual</td>
             <td align="left" style="width: 5%; white-space: nowrap;">Energy Peak 1 [keV]</td>
             <td align="left" style="width: 5%; white-space: nowrap;">Energy Peak 2 [keV]</td>
-	    <td align="left" style="width: 5%; white-space: nowrap;">Sigma - Back Events [pixels]</td>
-	    <td align="left" style="width: 5%; white-space: nowrap;">Front Events?</td>
+            <td align="left" style="width: 5%; white-space: nowrap;">Sigma - Back Events [pixels]</td>
+            <td align="left" style="width: 5%; white-space: nowrap;">Front Events?</td>
             <td align="left" style="width: 25%; white-space: nowrap;">Comments</td>
             <td align="left" style="width: 35%; white-space: nowrap;">Reference Image</td>
-	</tr>
-	<?php
+        </tr>
+        <?php
 
-	$count = 0;
-	$count_plus = 1;
-	foreach ($ccds as $amp):
-	?>
-	    <tr>
+        $count = 0;
+        $count_plus = 1;
+        foreach ($ccds as $amp):
+        ?>
+            <tr>
                 <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td>
                     <?php generate_dropdown('image4_low_defects_' . $amp, $yes_no_blank_array, ${'image4_low_defects_' . $amp}); ?>
@@ -1324,59 +1335,59 @@ if (isset($_POST['go'])) {
                 <td>
                     <?php generate_dropdown('image4_low_cti_visual_' . $amp, $yes_no_blank_array, ${'image4_low_cti_visual_' . $amp}); ?>
                 </td>
-		<td><input type="text" name="image4_low_peak1_<?php echo $amp; ?>" value="<?php echo ${'image4_low_peak1_' . $amp}; ?>" size="15"></td>
-		<td><input type="text" name="image4_low_peak2_<?php echo $amp; ?>" value="<?php echo ${'image4_low_peak2_' . $amp}; ?>" size="15"></td>
-		<td><input type="text" name="image4_low_sigma_<?php echo $amp; ?>" value="<?php echo ${'image4_low_sigma_' . $amp}; ?>" size="15"></td>
+                <td><input type="text" name="image4_low_peak1_<?php echo $amp; ?>" value="<?php echo ${'image4_low_peak1_' . $amp}; ?>" size="15"></td>
+                <td><input type="text" name="image4_low_peak2_<?php echo $amp; ?>" value="<?php echo ${'image4_low_peak2_' . $amp}; ?>" size="15"></td>
+                <td><input type="text" name="image4_low_sigma_<?php echo $amp; ?>" value="<?php echo ${'image4_low_sigma_' . $amp}; ?>" size="15"></td>
                 <td>
                     <?php generate_dropdown('image4_low_front_' . $amp, $yes_no_blank_array, ${'image4_low_front_' . $amp}); ?>
                 </td>
-		<td><input type="text" name="image4_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image4_low_comments_' . $amp}; ?>" size="40"></td>
-		<td><input type="text" name="image4_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image4_low_reference_' . $amp}; ?>" size="50"></td>
-	    </tr>
-	<?php
-        $count++;
-	$count_plus++;
-	endforeach;
-	?>
+                <td><input type="text" name="image4_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image4_low_comments_' . $amp}; ?>" size="40"></td>
+                <td><input type="text" name="image4_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image4_low_reference_' . $amp}; ?>" size="50"></td>
+            </tr>
+        <?php
+            $count++;
+            $count_plus++;
+        endforeach;
+        ?>
 
-	<tr>
-	    <td align="left" colspan="9" style="border: none; white-space: nowrap;">
-		<input type="submit" value="Submit">
-		&nbsp &nbsp &nbsp &nbsp;
-		<?php
-		// Retrieve the current module_surface_id
-		$module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+        <tr>
+            <td align="left" colspan="9" style="border: none; white-space: nowrap;">
+                <input type="submit" value="Submit">
+                &nbsp &nbsp &nbsp &nbsp;
+                <?php
+                // Retrieve the current module_surface_id
+                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
 
-        $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
-        $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id. '/';
+                $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
+                $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
 
-		// Check if image4_low_file already exists in the directory even if no form is submitted
-		$image4_low_file_name = 'image4_low_file.png';
-		$image4_low_file_path = $upload_dir . $image4_low_file_name;  // Use the absolute server path for file_exists()
+                // Check if image4_low_file already exists in the directory even if no form is submitted
+                $image4_low_file_name = 'image4_low_file.png';
+                $image4_low_file_path = $upload_dir . $image4_low_file_name;  // Use the absolute server path for file_exists()
                 $image4_low_log_name = 'image4_low_log.log';
                 $image4_low_log_path = $upload_dir . $image4_low_log_name;  // Use the absolute server path for file_exists()
 
-		// If image4_low_file exists in the directory but no session is set, initialize the session
-		if (file_exists($image4_low_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image4_low_file'])) {
-		    $_SESSION['file_url_' . $module_surface_id]['image4_low_file'] = $base_url . $image4_low_file_name;  // Use base_url for the web link
-		}
+                // If image4_low_file exists in the directory but no session is set, initialize the session
+                if (file_exists($image4_low_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image4_low_file'])) {
+                    $_SESSION['file_url_' . $module_surface_id]['image4_low_file'] = $base_url . $image4_low_file_name;  // Use base_url for the web link
+                }
 
-		// Check if the file exists on the server (file system path)
-		if (!empty($image4_low_file_name) && file_exists($image4_low_file_path)) {
-		    // File exists, keep the session variables and show the icon
-		    $file_exists = true;
-		    $file_url = $_SESSION['file_url_' . $module_surface_id]['image4_low_file'];
-		} else {
-		    // File does not exist, clear the session variables and remove the icon
-		    $file_exists = false;
-		}
+                // Check if the file exists on the server (file system path)
+                if (!empty($image4_low_file_name) && file_exists($image4_low_file_path)) {
+                    // File exists, keep the session variables and show the icon
+                    $file_exists = true;
+                    $file_url = $_SESSION['file_url_' . $module_surface_id]['image4_low_file'];
+                } else {
+                    // File does not exist, clear the session variables and remove the icon
+                    $file_exists = false;
+                }
 
                 // If image4_low_log exists in the directory but no session is set, initialize the session
                 if (file_exists($image4_low_log_path) && !isset($_SESSION['log_url_' . $module_surface_id]['image4_low_log'])) {
                     $_SESSION['log_url_' . $module_surface_id]['image4_low_log'] = $base_url . $image4_low_log_name;  // Use base_url for the web link
                 }
 
-		// Check if the log exists on the server (log system path)
+                // Check if the log exists on the server (log system path)
                 if (!empty($image4_low_log_name) && file_exists($image4_low_log_path)) {
                     // Log exists, keep the session variables and show the icon
                     $log_exists = true;
@@ -1384,34 +1395,34 @@ if (isset($_POST['go'])) {
                 } else {
                     // Log does not exist, clear the session variables and remove the icon
                     $log_exists = false;
-		    }
+                }
 
-		// Check if image5_low_file already exists in the directory even if no form is submitted
-		$image5_low_file_name = 'image5_low_file.png';
-		$image5_low_file_path = $upload_dir . $image5_low_file_name;  // Use the absolute server path for file_exists()
+                // Check if image5_low_file already exists in the directory even if no form is submitted
+                $image5_low_file_name = 'image5_low_file.png';
+                $image5_low_file_path = $upload_dir . $image5_low_file_name;  // Use the absolute server path for file_exists()
                 $image5_low_log_name = 'image5_low_log.log';
                 $image5_low_log_path = $upload_dir . $image5_low_log_name;  // Use the absolute server path for file_exists()
 
-		// If image5_low_file exists in the directory but no session is set, initialize the session
-		if (file_exists($image5_low_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image5_low_file'])) {
-		    $_SESSION['file_url_' . $module_surface_id]['image5_low_file'] = $base_url . $image5_low_file_name;  // Use base_url for the web link
-		}
+                // If image5_low_file exists in the directory but no session is set, initialize the session
+                if (file_exists($image5_low_file_path) && !isset($_SESSION['file_url_' . $module_surface_id]['image5_low_file'])) {
+                    $_SESSION['file_url_' . $module_surface_id]['image5_low_file'] = $base_url . $image5_low_file_name;  // Use base_url for the web link
+                }
 
-		// Check if the file exists on the server (file system path)
-		if (!empty($image5_low_file_name) && file_exists($image5_low_file_path)) {
-		    // File exists, keep the session variables and show the icon
-		    $file2_exists = true;
-		    $file2_url = $_SESSION['file_url_' . $module_surface_id]['image5_low_file'];
-		} else {
-		    // File does not exist, clear the session variables and remove the icon
-		    $file2_exists = false;
-		}
+                // Check if the file exists on the server (file system path)
+                if (!empty($image5_low_file_name) && file_exists($image5_low_file_path)) {
+                    // File exists, keep the session variables and show the icon
+                    $file2_exists = true;
+                    $file2_url = $_SESSION['file_url_' . $module_surface_id]['image5_low_file'];
+                } else {
+                    // File does not exist, clear the session variables and remove the icon
+                    $file2_exists = false;
+                }
 
                 ?>
 
                 <?php if ($file_exists): ?>
                     <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
-			<img src="pixmaps/icon.png" alt="Image4_Low File" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon.png" alt="Image4_Low File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image4_low_file">Image File:</label>
@@ -1419,24 +1430,25 @@ if (isset($_POST['go'])) {
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($file2_exists): ?>
-                      <a href="<?php echo htmlspecialchars($file2_url); ?>" target="_blank">
-                      <img src="pixmaps/icon.png" alt="Image5_Low File" style="height: 20px; width: auto;">
-                      </a>
+                    <a href="<?php echo htmlspecialchars($file2_url); ?>" target="_blank">
+                        <img src="pixmaps/icon.png" alt="Image5_Low File" style="height: 20px; width: auto;">
+                    </a>
                 <?php endif; ?>
-                      <label for="image5_low_file">Image File:</label>
-                      <input type="file" name="image5_low_file" accept="image/png, image/jpeg, application/pdf">
-                      &nbsp; &nbsp; &nbsp; &nbsp;
-		      
+                <label for="image5_low_file">Image File:</label>
+                <input type="file" name="image5_low_file" accept="image/png, image/jpeg, application/pdf">
+                &nbsp; &nbsp; &nbsp; &nbsp;
+
                 <?php if ($log_exists): ?>
                     <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
-			<img src="pixmaps/icon2.png" alt="Image4_Low Log" style="height: 20px; width: auto;">
+                        <img src="pixmaps/icon2.png" alt="Image4_Low Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
                 <label for="image4_low_log">Log File:</label>
                 <input type="file" name="image4_low_log" accept=".log,text/plain">
-	    </td>
-	</tr>
+            </td>
+        </tr>
     </table>
 </form>
 <br><br>
 
+<?php include("aux/table_navigation.php");
