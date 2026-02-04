@@ -1095,6 +1095,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <td align="center" style="width: 10%; white-space: nowrap;">Resolution [e-]</td>
                 <td align="center" style="width: 10%; white-space: nowrap;">Gain [ADU/e]</td>
                 <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
+                <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [e-/pix/day]</td>
                 <td align="center" style="width: 25%; white-space: nowrap;">Comments</td>
                 <td align="center" style="width: 20%; white-space: nowrap;">Reference Image</td>
             </tr>
@@ -1110,6 +1111,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <td align="center"><?php echo htmlspecialchars(${'image31_high_res_e_' . $amp}); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image31_high_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image31_high_dark_current_' . $amp}; ?>"></td>
+                    <td align="center"><?php echo number_format(${'image31_high_dark_current_' . $amp} / ${'image31_high_gain_' . $amp} * 86400 / 341, 2); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image31_high_comments_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image31_high_reference_' . $amp}; ?>"></td>
                 </tr>
@@ -1174,6 +1176,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <td align="center" style="width: 10%; white-space: nowrap;">Resolution [e-]</td>
                 <td align="center" style="width: 10%; white-space: nowrap;">Gain [ADU/e]</td>
                 <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
+                <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [e-/pix/day]</td>
                 <td align="center" style="width: 25%; white-space: nowrap;">Comments</td>
                 <td align="center" style="width: 20%; white-space: nowrap;">Reference Image</td>
             </tr>
@@ -1186,11 +1189,10 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <tr>
                     <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_res_<?php echo $amp; ?>" value="<?php echo ${'image32_high_res_' . $amp}; ?>"></td>
-                    <td align="center">
-                        <?php echo htmlspecialchars(${'image32_high_res_e_' . $amp}); ?>
-                    </td>
+                    <td align="center"><?php echo htmlspecialchars(${'image32_high_res_e_' . $amp}); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image32_high_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image32_high_dark_current_' . $amp}; ?>"></td>
+                    <td align="center"><?php echo number_format(${'image32_high_dark_current_' . $amp} / ${'image32_high_gain_' . $amp} * 86400 / 654, 2); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image32_high_comments_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image32_high_reference_' . $amp}; ?>"></td>
                 </tr>
@@ -1364,7 +1366,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
 
 <div class="section-block" data-section="image31low" data-label="Image3-1 Low">
     <!-- Image 3-1 - Single Electron Resolution -->
-    <?php echo "$name <b>Image 3-1, Low Temp - [500 skip, 1x1 binning, 30rx640c, Serial Register, 0s Exposure] - Aim: Single Electron Resolution</b>"; ?>
+    <?php echo "$name <b>Image 3-1, Low Temp - [500 skip, 1x10 binning, 30rx640c, Serial Register, 0s Exposure] - Aim: Single Electron Resolution</b>"; ?>
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>#image31low" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<?php echo $id; ?>">
         <table border="1">
@@ -1374,6 +1376,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <td align="center" style="width: 10%; white-space: nowrap;">Resolution [e-]</td>
                 <td align="center" style="width: 10%; white-space: nowrap;">Gain [ADU/e]</td>
                 <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
+                <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [e-/pix/day]</td>
                 <td align="center" style="width: 25%; white-space: nowrap;">Comments</td>
                 <td align="center" style="width: 20%; white-space: nowrap;">Reference Image</td>
             </tr>
@@ -1389,6 +1392,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <td align="center"><?php echo htmlspecialchars(${'image31_low_res_e_' . $amp}); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image31_low_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image31_low_dark_current_' . $amp}; ?>"></td>
+                    <td align="center"><?php echo number_format(${'image31_low_dark_current_' . $amp} / ${'image31_low_gain_' . $amp} * 86400 / 371 / 10, 2); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image31_low_comments_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image31_low_reference_' . $amp}; ?>"></td>
                 </tr>
@@ -1445,7 +1449,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
 
 <div class="section-block" data-section="image32low" data-label="Image3-2 Low">
     <!-- Image 3-2 - Single Electron Resolution -->
-    <?php echo "$name <b>Image 3-2, Low Temp - [1000 skip, 1x1 binning, 30rx640c, Serial Register, 0s Exposure] - Aim: Single Electron Resolution</b>"; ?>
+    <?php echo "$name <b>Image 3-2, Low Temp - [1000 skip, 1x10 binning, 30rx640c, Serial Register, 0s Exposure] - Aim: Single Electron Resolution</b>"; ?>
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>#image32low" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<?php echo $id; ?>">
         <table border="1">
@@ -1455,6 +1459,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <td align="center" style="width: 10%; white-space: nowrap;">Resolution [e-]</td>
                 <td align="center" style="width: 10%; white-space: nowrap;">Gain [ADU/e]</td>
                 <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [ADU/bin/img]</td>
+                <td align="center" style="width: 15%; white-space: nowrap;">Dark Current [e-/pix/day]</td>
                 <td align="center" style="width: 25%; white-space: nowrap;">Comments</td>
                 <td align="center" style="width: 20%; white-space: nowrap;">Reference Image</td>
             </tr>
@@ -1467,11 +1472,10 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <tr>
                     <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_res_<?php echo $amp; ?>" value="<?php echo ${'image32_low_res_' . $amp}; ?>"></td>
-                    <td align="center">
-                        <?php echo htmlspecialchars(${'image32_low_res_e_' . $amp}); ?>
-                    </td>
+                    <td align="center"><?php echo htmlspecialchars(${'image32_low_res_e_' . $amp}); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image32_low_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image32_low_dark_current_' . $amp}; ?>"></td>
+                    <td align="center"><?php echo number_format(${'image32_low_dark_current_' . $amp} / ${'image32_low_gain_' . $amp} * 86400 / 684 / 10, 2); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image32_low_comments_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image32_low_reference_' . $amp}; ?>"></td>
                 </tr>
