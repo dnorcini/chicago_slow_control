@@ -25,6 +25,14 @@ $num_msgs_array = array(
     "First 100" => -100,
     );
 
+// Per-page options for system log pagination (messages per page)
+$per_page_array = array(
+    "10 per page"  => 10,
+    "25 per page"  => 25,
+    "50 per page"  => 50,
+    "100 per page" => 100,
+    );
+
 $html_colours = array(
     "aqua", "black", "blue", 
     "gray", "green", "lime", "maroon", 
