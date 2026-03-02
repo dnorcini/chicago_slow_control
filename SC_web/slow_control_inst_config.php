@@ -259,6 +259,7 @@ foreach ($_SESSION['choose_subsys'] as $unique_inst_subsys)
 	    echo ('<TR>');                 /////  row 1
 	    echo ('<TH align="left" colspan = 2>');
 	    echo ($inst_name .':  ');
+	    echo (' <A HREF="slow_control_stderr.php?inst=' . urlencode($inst_name) . '">logs</A>');
 	    echo ('</TH>');   
 	    
 	    echo ('<TD align="center" colspan = 1>');
@@ -386,7 +387,7 @@ foreach ($_SESSION['choose_subsys'] as $unique_inst_subsys)
 	    echo ('</TD>');
 	    echo ('</FORM>');
 	    echo ('</TR>');   
-      
+
 	    echo ('<TR>');  
 	    echo ('<TD align="right" colspan=4>'); 
 	    echo ('<FORM action="slow_control_del_inst.php" method="post">');
