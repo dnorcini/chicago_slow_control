@@ -6,6 +6,8 @@
 //
 session_start();
 $req_priv = "full";
+$never_ref = 1;
+
 include("db_login.php");
 include("slow_control_page_setup.php");
 
@@ -29,27 +31,47 @@ if (!(empty($_POST['search_string'])))
     $type_q_string = "(".$type_q_string.") AND (`msgs` LIKE '%".$_POST['search_string']."%')";
 }
 
-if (!isset($_SESSION['num_msgs']))
-    $_SESSION['num_msgs'] = 10;
+if (!isset($_SESSION['per_page']))
+    $_SESSION['per_page'] = 10;
+if (!isset($_SESSION['log_page']))
+    $_SESSION['log_page'] = 1;
+if (!isset($_SESSION['use_plot_times']))
+    $_SESSION['use_plot_times'] = 0;
 
 if (!isset($_SESSION['go_msg_time']))
-  $_SESSION['go_msg_time'] = -1;
+    $_SESSION['go_msg_time'] = -1;
 
-if (isset($_POST['num_msgs']))
-    $_SESSION['num_msgs'] = $_POST['num_msgs'];
+if (isset($_POST['per_page'])) {
+    $_SESSION['per_page'] = (int)$_POST['per_page'];
+    $_SESSION['log_page'] = 1;
+    $_SESSION['use_plot_times'] = (!empty($_POST['use_plot_times'])) ? 1 : 0;
+}
+if (isset($_POST['log_page']))
+    $_SESSION['log_page'] = max(1, (int)$_POST['log_page']);
 
-if ($_SESSION['num_msgs'] == -1)
-    $query = "SELECT * FROM `msg_log` WHERE (".$type_q_string.") ORDER BY `time` DESC";
+$per_page = (int)$_SESSION['per_page'];
+if ($per_page < 1) $per_page = 10;
 
-else if ($_SESSION['num_msgs'] == -2)
-    $query = "SELECT * FROM `msg_log`  WHERE ((".$type_q_string.") AND  `time` BETWEEN ".$_SESSION['t_min_p']." AND ".$_SESSION['t_max_p'].") ORDER BY `time` DESC";
+$where = "(".$type_q_string.")";
+if (!empty($_SESSION['use_plot_times']) && isset($_SESSION['t_min_p']) && isset($_SESSION['t_max_p']))
+    $where .= " AND `time` BETWEEN ".(int)$_SESSION['t_min_p']." AND ".(int)$_SESSION['t_max_p'];
 
-else if ($_SESSION['num_msgs'] < -5)
-    $query = "SELECT * FROM `msg_log`  WHERE (".$type_q_string.") ORDER BY `time` ASC LIMIT ". abs($_SESSION['num_msgs']);
+$count_query = "SELECT COUNT(*) AS total FROM `msg_log` WHERE ".$where;
+$count_result = mysql_query($count_query);
+if (!$count_result)
+    die ("Could not query the database <br />" . mysql_error());
+$total_msgs = (int)mysql_result($count_result, 0, 'total');
+$total_pages = $total_msgs > 0 ? (int)ceil($total_msgs / $per_page) : 1;
 
-else
-    $query = "SELECT * FROM `msg_log`  WHERE (".$type_q_string.") ORDER BY `time` DESC LIMIT ". $_SESSION['num_msgs'];
+$page = (int)$_SESSION['log_page'];
+if ($page > $total_pages)
+    $page = $total_pages;
+if ($page < 1)
+    $page = 1;
+$_SESSION['log_page'] = $page;
 
+$offset = ($page - 1) * $per_page;
+$query = "SELECT * FROM `msg_log` WHERE ".$where." ORDER BY `time` DESC LIMIT ".$offset.", ".$per_page;
 
 $result = mysql_query($query);
 if (!$result)	
@@ -68,7 +90,7 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
 } 
 mysql_close($connection);
 
-
+echo ('<div style="max-width:1200px;margin:0 auto;">');
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 
 echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
@@ -89,19 +111,23 @@ echo ('</FORM>');
 
 echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
 echo ('<TD  align=center>');
-echo ('Number of messages to show: <select name="num_msgs"> ');
-foreach ($num_msgs_array as $st_s => $st_v)
+echo ('Messages per page: <select name="per_page"> ');
+foreach ($per_page_array as $st_s => $st_v)
 {
     echo('<option ');
-    if ($st_v == $_SESSION['num_msgs'])
+    if ($st_v == $_SESSION['per_page'])
     {
 	echo ('selected="selected"');
     }
     echo(' value="'.$st_v.'" >'.$st_s.'</option> ');
 }
 echo ('</select>');
+echo (' &#160 ');
+echo ('<label><input type="checkbox" name="use_plot_times" value="1" ');
+if (!empty($_SESSION['use_plot_times'])) echo ('checked="checked"');
+echo (' /> Limit to plot time range</label>');
 
-echo ('<input type="image" src="pixmaps/reload.png" value="Change" alt="Refresh" title="Refresh page with new number of messages">');
+echo ('<input type="image" src="pixmaps/reload.png" value="Change" alt="Refresh" title="Refresh with new per-page and filters">');
 echo ('</TD>');
 echo ('</FORM>');
 
@@ -123,6 +149,34 @@ echo ('</TD>');
 echo ('</FORM>');
 echo ('</TABLE>');
 
+// Pagination bar: Page X of Y, First / Previous / Next / Last
+echo ('<TABLE border="0" cellpadding="4" cellspacing="2"><TR><TD align="center">');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post" style="display:inline;">');
+echo ('<input type="hidden" name="log_page" value="1" />');
+echo ('<input type="submit" value="First" ');
+if ($total_pages <= 1 || $page <= 1) echo ('disabled="disabled" ');
+echo ('/>');
+echo ('</FORM> ');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post" style="display:inline;">');
+echo ('<input type="hidden" name="log_page" value="'.($page > 1 ? $page - 1 : 1).'" />');
+echo ('<input type="submit" value="Previous" ');
+if ($total_pages <= 1 || $page <= 1) echo ('disabled="disabled" ');
+echo ('/>');
+echo ('</FORM> ');
+echo (' &#160 <strong>Page '.$page.' of '.$total_pages.'</strong> ('.$total_msgs.' messages) &#160 ');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post" style="display:inline;">');
+echo ('<input type="hidden" name="log_page" value="'.($page < $total_pages ? $page + 1 : $total_pages).'" />');
+echo ('<input type="submit" value="Next" ');
+if ($total_pages <= 1 || $page >= $total_pages) echo ('disabled="disabled" ');
+echo ('/>');
+echo ('</FORM> ');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post" style="display:inline;">');
+echo ('<input type="hidden" name="log_page" value="'.$total_pages.'" />');
+echo ('<input type="submit" value="Last" ');
+if ($total_pages <= 1 || $page >= $total_pages) echo ('disabled="disabled" ');
+echo ('/>');
+echo ('</FORM>');
+echo ('</TD></TR></TABLE>');
 
 $n_msgs = count($time);
 
@@ -184,6 +238,37 @@ for ($i = 0; $i < $n_msgs; $i++)
 echo ('</TABLE>');
 
 echo ('</FORM>');
+
+// Pagination bar below table
+echo ('<TABLE border="0" cellpadding="4" cellspacing="2"><TR><TD align="center">');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post" style="display:inline;">');
+echo ('<input type="hidden" name="log_page" value="1" />');
+echo ('<input type="submit" value="First" ');
+if ($total_pages <= 1 || $page <= 1) echo ('disabled="disabled" ');
+echo ('/>');
+echo ('</FORM> ');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post" style="display:inline;">');
+echo ('<input type="hidden" name="log_page" value="'.($page > 1 ? $page - 1 : 1).'" />');
+echo ('<input type="submit" value="Previous" ');
+if ($total_pages <= 1 || $page <= 1) echo ('disabled="disabled" ');
+echo ('/>');
+echo ('</FORM> ');
+echo (' &#160 <strong>Page '.$page.' of '.$total_pages.'</strong> &#160 ');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post" style="display:inline;">');
+echo ('<input type="hidden" name="log_page" value="'.($page < $total_pages ? $page + 1 : $total_pages).'" />');
+echo ('<input type="submit" value="Next" ');
+if ($total_pages <= 1 || $page >= $total_pages) echo ('disabled="disabled" ');
+echo ('/>');
+echo ('</FORM> ');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post" style="display:inline;">');
+echo ('<input type="hidden" name="log_page" value="'.$total_pages.'" />');
+echo ('<input type="submit" value="Last" ');
+if ($total_pages <= 1 || $page >= $total_pages) echo ('disabled="disabled" ');
+echo ('/>');
+echo ('</FORM>');
+echo ('</TD></TR></TABLE>');
+
+echo ('</div>');
 
 echo(' </body>');
 echo ('</HTML>');
