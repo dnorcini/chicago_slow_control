@@ -28,6 +28,13 @@ if ((empty($_SESSION['t_min_p'])) || (empty($_SESSION['t_max_p'])))
 ///  Now make a form where we can choose the time window from which to plot the data.
 ///  This creates/sets session variables, t_min_p and t_max_p used below. 
 include("aux/choose_times.php");
+if (!empty($GLOBALS['SC_LONG_QUERY_CONFIRM_REQUIRED']))
+{
+    mysql_close($connection);
+    echo(' </body>');
+    echo ('</HTML>');
+    exit;
+}
 
 
 ///////  Find which sensors we want to plot
