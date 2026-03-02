@@ -494,4 +494,8 @@ function any_in_array($needle_array, $haystack_array)
     if (in_array($needle, $haystack_array))
       return(true);
 }
+
+function h($s) {
+    return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+}
 ?>
