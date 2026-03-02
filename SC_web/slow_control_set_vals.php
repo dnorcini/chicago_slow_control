@@ -87,7 +87,7 @@ foreach ($my_sensor_names as $sensor_name)
 	      foreach ($all_vals as $av_v => $av_s)
 		{
 		  echo ('<TD  align="center">');
-		  echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
+		  echo ('<FORM action="slow_control_confirm.php" method="post">');
 		  echo ('<input type="submit" name="dummy" value="'.$av_s.'" title="Set to '.$av_s.'">  ');
 		  echo ('<input type="hidden" name="new_set_val" value="'.$av_v.'">');
 		  echo ('<input type="hidden" name="set_sens_name" value="'.$sensor_name.'">');
@@ -98,7 +98,7 @@ foreach ($my_sensor_names as $sensor_name)
 	  else                                   // use pull down for more possibilities
 	    {
 	      echo ('<TD align="center" colspan="4">');
-	      echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
+	      echo ('<FORM action="slow_control_confirm.php" method="post">');
 	      echo ('<input type="submit" name="dummy" value="Change" title="Set to: ">  ');
 	      echo ('<select name="new_set_val">');
 	      foreach ($all_vals as $av_v => $av_s)
@@ -130,7 +130,7 @@ foreach ($my_sensor_names as $sensor_name)
 	  echo ('</TR>');
 		    
 	  echo ('<TR>');
-	  echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
+	  echo ('<FORM action="slow_control_confirm.php" method="post">');
 	  echo ('<TD align="center">');
 	  echo ('New Value: <input type="text" name="new_set_val" value="'.format_num2($sensor_values[$sensor_name], $sensor_num_format[$sensor_name]).'" size = 9>');
 	  echo ('<input type="hidden" name="set_sens_name" value="'.$sensor_name.'">');
