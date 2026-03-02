@@ -100,6 +100,13 @@ $num_plot_points = (int)($_SESSION['single_view_x_size']/2);
 ///  t_min and t_max.  We then initialize the plotting limits, t_min_p and t_max_p
 include("aux/get_time_max_min.php"); 
 include("aux/choose_times.php");
+if (!empty($GLOBALS['SC_LONG_QUERY_CONFIRM_REQUIRED']))
+{
+    mysql_close($connection);
+    echo(' </body>');
+    echo ('</HTML>');
+    exit;
+}
 
 if (!empty($_POST['choosen_sensor']))
 {

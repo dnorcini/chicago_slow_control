@@ -89,6 +89,13 @@ $num_plot_points = (int)($_SESSION['plot_view_x_size']/2);
 ///  Now make a form where we can choose the time window from which to plot the data.
 ///  This creates/sets session variables, t_min_p and t_max_p used below. 
 include("aux/choose_times.php");
+if (!empty($GLOBALS['SC_LONG_QUERY_CONFIRM_REQUIRED']))
+{
+    mysql_close($connection);
+    echo(' </body>');
+    echo ('</HTML>');
+    exit;
+}
 
 ///   Here we get the actual data from the database and make plots which are kept in a 
 ///   cache directory.  After this loop is another that actually makes an html table with
