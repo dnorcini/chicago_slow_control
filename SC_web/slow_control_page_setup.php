@@ -4,6 +4,7 @@
 // James Nikkel, Yale University, 2009, 2011
 // james.nikkel@yale.edu
 //
+
 echo('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">');
 echo('<HTML>');
 echo('<head>');
@@ -62,3 +63,19 @@ if (!(empty($_POST['show_sens_name'])))
 	$_SESSION['show_sens_name'] = 1;
 }
 ?>
+
+
+<script>
+    // Save scroll position before unload
+    window.addEventListener("beforeunload", function() {
+        localStorage.setItem("scrollY", window.scrollY);
+    });
+
+    // Restore scroll position after load
+    window.addEventListener("load", function() {
+        const y = localStorage.getItem("scrollY");
+        if (y !== null) {
+            window.scrollTo(0, parseInt(y, 10));
+        }
+    });
+</script>
