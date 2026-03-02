@@ -13,9 +13,10 @@ include("aux/get_users.php");
 
 mysql_close($connection);
 
+echo ('<div style="width:100%; margin:0 auto;">');
 echo ('<br>');
 
-echo ('<TABLE border="1" cellpadding="4" cellspacing="2">');
+echo ('<TABLE border="1" cellpadding="4" cellspacing="2" style="margin:0 auto;">');
 echo ('<TR>');
 
 echo ('<TH align=left>');
@@ -138,11 +139,15 @@ echo ('</TABLE>');
 if (strpos($_SESSION['privileges'], "admin") !== false)
 {
     echo ('<br>');
+    echo ('<div style="text-align:center;">');
     echo ('<FORM action="slow_control_edit_user.php" method="post">');
     echo ('Add new user: <input type="text" name="new_user_name" size = 32>');
     echo ('<BUTTON type="submit"> New </BUTTON>');
     echo ('</FORM>');
+    echo ('</div>');
 }
+
+echo ('</div>');
 
 echo(' </body>');
 echo ('</HTML>');

@@ -157,9 +157,9 @@ include("slow_control_page_setup.php");
 mysql_close($connection);
 
 /////////////   start HTML here:
+echo ('<div style="width:100%; margin:0 auto;">');
 echo ('<br>');
 echo ('<br>');
-
 
 echo ('<TABLE border="0" cellpadding="4" width=100%>');
 echo ('<TR>');
@@ -231,13 +231,13 @@ echo ('</TABLE>');
 
 echo ('<br>');
 echo ('<hr>');
-
-echo ('<TABLE border="0" cellpadding="0">');   // set up columns for tables:
+echo ('<div style="text-align:center;">');
+echo ('<TABLE border="0" cellpadding="0" style="margin:0 auto;">');   // set up columns for tables:
 echo ('<TR>');  // new row
 
 ///////////////////////////////////////  privilege table 
 echo ('<TD>');  // new cell
-echo ('<TABLE border="2" cellpadding="1">'); 
+echo ('<TABLE border="2" cellpadding="1" style="margin:0 auto;">'); 
 echo ('<TR>');
 echo ('<TH>');
 echo ('Privilege Names');
@@ -386,6 +386,8 @@ echo ('</TD>');
 
 echo ('</TR>');
 echo ('</TABLE>');
+echo ('</div>');  // end center wrapper for tables
+echo ('</div>');
 echo(' </body>');
 echo ('</HTML>');
 ?>

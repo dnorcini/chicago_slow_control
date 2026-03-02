@@ -5,6 +5,7 @@
 // james.nikkel@gmail.com
 //
 session_start();
+$never_ref = 1;
 $req_priv = "full";
 include("db_login.php");
 include("slow_control_page_setup.php");
@@ -38,7 +39,7 @@ mysql_close($connection);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-
+echo ('<div style="width:100%; margin:0 auto;">');
 echo ('<TABLE border="1" cellpadding="2" cellspacing="2" width=100%>');
 
 echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
@@ -59,7 +60,7 @@ echo ('</FORM>');
 
 echo ('</TABLE>');
 
-echo ('<TABLE border="0" cellpadding="1" cellspacing="2">');
+echo ('<TABLE border="0" cellpadding="1" cellspacing="2" style="margin:0 auto;">');
 
 echo ('<FORM action="slow_control_add_logbook_entry.php" method="post">');  
 echo ('<TD align=left>');
@@ -84,7 +85,7 @@ echo ('</TD>');
 echo ('</FORM>');
 echo ('</TABLE>');
 
-echo ('<TABLE border="1" cellpadding="4" cellspacing="2">');
+echo ('<TABLE border="1" cellpadding="4" cellspacing="2" style="margin:0 auto;">');
 echo ('<TR>');
 
 echo ('<TH align=left>');
