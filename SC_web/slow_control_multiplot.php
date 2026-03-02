@@ -104,6 +104,13 @@ if ((empty($_SESSION['t_min_p'])) || (empty($_SESSION['t_max_p'])))
     $_SESSION['t_max_p'] = time();  // set to now
 }
 include("aux/choose_times.php");
+if (!empty($GLOBALS['SC_LONG_QUERY_CONFIRM_REQUIRED']))
+{
+    mysql_close($connection);
+    echo(' </body>');
+    echo ('</HTML>');
+    exit;
+}
 
 if (empty($_SESSION['s_roll_up']))
     $_SESSION['s_roll_up'] = array_combine($sensor_names, make_new_zero_array(count($sensor_names)));
@@ -276,6 +283,7 @@ $sens_line_styles = array_combine($sens_line_names, $sens_line_styles);
 
 ////   This next section generate the HTML with the plot names in a table.
 
+echo ('<div style="width:100%; margin:0 auto;">');
 echo ('<TABLE border="0" cellpadding="2" frame="box" width=100%>');
 echo ('<TR>');
 echo ('<TD>');
@@ -349,12 +357,18 @@ foreach ($my_sensor_names as $sensor_name)
       echo ('<TH>');
       if (array_key_exists($sensor_name, $sens_line_colours))
 	{
-	  echo ('<font color='.$sens_line_colours[$sensor_name].'>');
+	  $text_colour = $sens_line_colours[$sensor_name];
+	  if (strcasecmp($text_colour, $_SESSION['bgcolour']) == 0)
+	    $text_colour = $_SESSION['textcolour'];
+	  echo ('<font color="'.$text_colour.'">');
 	  echo ('<input type="image" src="pixmaps/checked.png" name="sens_hide" value="'.$sensor_name.'" alt="Hide" title="Hide">');
 	}
       else
 	{
-	  echo ('<font color="grey">');
+	  $text_colour = "grey";
+	  if (strcasecmp($text_colour, $_SESSION['bgcolour']) == 0)
+	    $text_colour = $_SESSION['textcolour'];
+	  echo ('<font color="'.$text_colour.'">');
 	  echo ('<input type="image" src="pixmaps/unchecked.png" name="sens_show" value="'.$sensor_name.'" alt="Show" title="Show">');
 	}
       echo ($sensor_name." / ");
