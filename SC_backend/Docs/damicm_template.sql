@@ -177,6 +177,7 @@ INSERT INTO `runs` (`num`, `start_t`, `end_t`, `file_path`, `file_root`, `note`)
 -- Table structure for table `sc_insts`
 --
 
+
 CREATE TABLE `sc_insts` (
   `name` varchar(16) NOT NULL,
   `description` varchar(64) DEFAULT NULL,
@@ -212,6 +213,8 @@ INSERT INTO `sc_insts` (`name`, `description`, `subsys`, `run`, `restart`, `WD_c
 ('HiCube80', 'Monitor and run vacuum pump', 'Test Chamber 1', 1, 0, 1, 'HiCube80/HiCube80', 'ethernet', '', -1, -1, -1, '5300', NULL, 0, 0, NULL),
 ('CryoTelGT_AVC', 'Monitor and controll CryoTel GT with AVC', 'Test Chamber 1', 1, 0, 1, 'CryoTelGT_AVC/CryoTelGT_AVC', 'ethernet', '192.168.1.102', 1714775295, 1715263483, 1047233, '100', NULL, 0, 0, NULL),
 ('WIENER_VME', 'Monitor and control VME crate for ACMs', 'Test Chamber 1', 1, 0, 1, 'WIENER_VME/WIENER_VME', 'ethernet', '', -1, -1, -1, '161', NULL, 0, 0, NULL);
+
+-- --------------------------------------------------------
 
 -- --------------------------------------------------------
 
@@ -253,50 +256,57 @@ CREATE TABLE `sc_sensors` (
   `parm2` double NOT NULL DEFAULT 0,
   `parm3` double NOT NULL DEFAULT 0,
   `parm4` double NOT NULL DEFAULT 0,
-  `notes` text DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
+  `notes` text DEFAULT NULL,
+  `critical` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs;
 
 --
 -- Dumping data for table `sc_sensors`
 --
 
-INSERT INTO `sc_sensors` (`name`, `description`, `type`, `subtype`, `ctrl_priv`, `num`, `instrument`, `units`, `discrete_vals`, `al_set_val_low`, `al_set_val_high`, `al_arm_val_low`, `al_arm_val_high`, `al_set_rate_low`, `al_set_rate_high`, `al_arm_rate_low`, `al_arm_rate_high`, `alarm_tripped`, `grace`, `last_trip`, `settable`, `show_rate`, `hide_sensor`, `update_period`, `num_format`, `user1`, `user2`, `user3`, `user4`, `parm1`, `parm2`, `parm3`, `parm4`, `notes`) VALUES
-('Inlet_Current', 'Monitor rms current of PDU inlet', '10', 'current', 'full', 0, 'Raritan_PX3', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Inlet_Power', 'Monitor active power of PDU inlet', '10', 'power', 'full', 0, 'Raritan_PX3', 'W', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('dsk_shm', 'Free space on /dev/shm', '2', 'disk', 'full', 0, 'disk_free', '%', NULL, 50, 99, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 30, NULL, '/dev/shm', NULL, NULL, NULL, 0, 0, 0, 0, ''),
-('dsk_root', 'Free space on /', '2', 'disk', 'full', 0, 'disk_free', '%', NULL, 30, 70, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 30, NULL, '/', NULL, NULL, NULL, 0, 0, 0, 0, ''),
-('Power_Output', 'Power load of UPS', '12', 'apppower', 'full', 0, 'APC3000', '%', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Battery_Charge', 'Battery Charge of UPS', '12', 'battcharge', 'full', 0, 'APC3000', '%', NULL, 98, 0, 1, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('PDU_1_OnOff', 'Set PDU Outlet 1 On/Off (cryo)', '10', 'outlet', 'full', 1, 'Raritan_PX3', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Runtime', 'Apprx. runtime of UPS', '12', 'runtime', 'full', 0, 'APC3000', 'hours', NULL, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Heater_A', 'Power Heater A', '8', 'Heater', 'full', 2, 'LS336', '%', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Heater_A_OnOff', 'Set Heater A on LS336 on/off', '8', 'Heateronoff', 'full', 2, 'LS336', 'discrete', '0:3;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Ramprate_A', 'Ramprate Heater A', '8', 'Ramprate', 'full', 2, 'LS336', 'K/min', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Setpoint_A', 'Setpoint Heater A', '8', 'Setpoint', 'full', 2, 'LS336', 'K', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Pump_OnOff', 'Set Pump to HiCube On/Off', '9', 'pumpgstatn', 'full', 0, 'HiCube80', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Rotation_Speed', 'Rotation Speed of Pump', '9', 'actualspd', 'full', 0, 'HiCube80', 'rpm', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Turbo_OnOff', 'Set Turbo Motor to HiCube Flag', '9', 'motorpump', 'full', 0, 'HiCube80', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Set_Ramprate_A', 'Set Ramprate Heater A', '8', 'Setramprate', 'full', 2, 'LS336', 'K/min', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Temp_A', 'Temperature Input A', '8', 'Temp', 'full', 2, 'LS336', 'K', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('dsk_data', 'Free space on /data', '2', 'disk_free', 'full', 0, 'disk_free', '%', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, '/data', NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Set_Heater_A', 'Setpoint Heater A', '8', 'Setsetpoint', 'full', 2, 'LS336', 'K', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Power_Output_AVC', 'Power output measured by AVC', '14', 'p', 'full', 0, 'CryoTelGT_AVC', 'K', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Reject_Temp', 'Reject Temperature of Cryotel', '14', 'reject', 'full', 0, 'CryoTelGT_AVC', 'C', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('PDU_2_OnOff', 'Set PDU Outlet 2 On/Off (TPG261)', '10', 'outlet', 'full', 2, 'Raritan_PX3', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Temp_ColdHead', 'Temperature of Cold Head', '14', 'tc', 'full', 0, 'CryoTelGT_AVC', 'K', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Set_Power_Output', 'Set power output controlled by AVC', '14', 'setwout', 'full', 0, 'CryoTelGT_AVC', 'W', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Set_Cooler', 'Set the control mode of AVC', '14', 'setcooler', 'full', 0, 'CryoTelGT_AVC', 'discrete', '0:2;Off:Power', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Voltage_u1', 'VME output voltage u1', '13', 'outvolt', 'full', 1, 'WIENER_VME', 'V', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Voltage_u0', 'VME output voltage u0', '13', 'outvolt', 'full', 0, 'WIENER_VME', 'V', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Current_u0', 'VME output current u0', '13', 'outcurr', 'full', 0, 'WIENER_VME', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Voltage_u3', 'VME output voltage u3', '13', 'outvolt', 'full', 3, 'WIENER_VME', 'V', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Voltage_u5', 'VME output voltage u5', '13', 'outvolt', 'full', 5, 'WIENER_VME', 'V', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Current_u1', 'VME output current u1', '13', 'outcurr', 'full', 1, 'WIENER_VME', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Current_u3', 'VME output current u3', '13', 'outcurr', 'full', 3, 'WIENER_VME', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Current_u5', 'VME output current u5', '13', 'outcurr', 'full', 5, 'WIENER_VME', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Set_Switch_Main', 'Set VME crate on/off', '13', 'setmain', 'full', 0, 'WIENER_VME', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL),
-('Fan_Temp', 'VME fan air temperature', '13', 'fantemp', 'full', 0, 'WIENER_VME', 'degC', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 60, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL);
-
+INSERT INTO `sc_sensors` (`name`, `description`, `type`, `subtype`, `ctrl_priv`, `num`, `instrument`, `units`, `discrete_vals`, `al_set_val_low`, `al_set_val_high`, `al_arm_val_low`, `al_arm_val_high`, `al_set_rate_low`, `al_set_rate_high`, `al_arm_rate_low`, `al_arm_rate_high`, `alarm_tripped`, `grace`, `last_trip`, `settable`, `show_rate`, `hide_sensor`, `update_period`, `num_format`, `user1`, `user2`, `user3`, `user4`, `parm1`, `parm2`, `parm3`, `parm4`, `notes`, `critical`) VALUES
+('BatteryTime', 'Liebert UPS Battery Time remaining', '12', 'batterytime', 'full', 0, 'Liebert', 'minute', 'discrete_vals', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Battery_Charge', 'Battery Charge of UPS', '12', 'battcharge', 'full', 0, 'APC3000', '%', NULL, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 1, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Chamber_pressure', 'Pressure of chamber', '9', 'pressure', 'full', 1, 'CenterOne', 'mbar', NULL, 0, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Current_u0', 'VME output current u0', '13', 'outcurr', 'full', 0, 'WIENER_VME', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Current_u1', 'VME output current u1', '13', 'outcurr', 'full', 1, 'WIENER_VME', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Current_u3', 'VME output current u3', '13', 'outcurr', 'full', 3, 'WIENER_VME', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Current_u5', 'VME output current u5', '13', 'outcurr', 'full', 5, 'WIENER_VME', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Drive_Power', 'Drive power of pump', '9', 'drvpower', 'full', 0, 'HiCube80', 'W', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('dsk_data', 'Free space on /data', '2', 'disk_free', 'full', 0, 'disk_free', '%', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, '/data', NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('dsk_root', 'Free space on /', '2', 'disk', 'full', 0, 'disk_free', '%', NULL, 30, 70, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, '/', NULL, NULL, NULL, 0, 0, 0, 0, '', 0),
+('dsk_shm', 'Free space on /dev/shm', '2', 'disk', 'full', 0, 'disk_free', '%', NULL, 50, 99, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, '/dev/shm', NULL, NULL, NULL, 0, 0, 0, 0, '', 0),
+('Fan_Temp', 'VME fan air temperature', '13', 'fantemp', 'full', 0, 'WIENER_VME', 'degC', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Heater_A', 'Power Heater A', '8', 'Heater', 'full', 1, 'LS336', '%', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Heater_A_OnOff', 'Set Heater A on LS336 on/off', '8', 'Heateronoff', 'full', 1, 'LS336', 'discrete', '0:3;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Inlet_Current', 'Monitor rms current of PDU inlet', '10', 'current', 'full', 0, 'Raritan_PX3', 'A', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Inlet_Power', 'Monitor active power of PDU inlet', '10', 'power', 'full', 0, 'Raritan_PX3', 'W', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('PDU_1_OnOff', 'Set PDU Outlet 1 On/Off (cryo)', '10', 'outlet', 'full', 1, 'Raritan_PX3', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('PDU_2_OnOff', 'Set PDU Outlet 2 On/Off (TPG261)', '10', 'outlet', 'full', 2, 'Raritan_PX3', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Power_Output', 'Power load of UPS', '12', 'apppower', 'full', 0, 'APC3000', '%', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 1, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Power_Output_AVC', 'Power output measured by AVC', '14', 'pwout', 'full', 0, 'CryoTelGT_AVC', 'W', NULL, 60, 241, 1, 0, 0, 0, 0, 0, 1, 0, 1735507431, 0, 0, 0, 10, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 1),
+('Pump_OnOff', 'Set Pump to HiCube On/Off', '9', 'pumpgstatn', 'full', 0, 'HiCube80', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Ramprate_A', 'Ramprate Heater A', '8', 'Ramprate', 'full', 1, 'LS336', 'K/min', NULL, 0, 10.1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Reject_Temp', 'Reject Temperature of Cryotel', '14', 'treject', 'full', 0, 'CryoTelGT_AVC', 'C', NULL, 0, 55, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Rotation_Speed', 'Rotation Speed of Pump', '9', 'actualspd', 'full', 0, 'HiCube80', 'rpm', NULL, 80000, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1735507461, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Runtime', 'Apprx. runtime of UPS', '12', 'runtime', 'full', 0, 'APC3000', 'hours', NULL, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 1, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Setpoint_A', 'Setpoint Heater A', '8', 'Setpoint', 'full', 1, 'LS336', 'K', NULL, 100, 310, 1, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Set_Cooler', 'Set the control mode of AVC', '14', 'setcooler', 'full', 0, 'CryoTelGT_AVC', 'discrete', '0:2;Off:Power', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 10, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 1),
+('Set_Heater_A', 'Setpoint Heater A', '8', 'Setsetpoint', 'full', 1, 'LS336', 'K', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Set_Power_Output', 'Set power output controlled by AVC', '14', 'setpwout', 'full', 0, 'CryoTelGT_AVC', 'W', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Set_Ramprate_A', 'Set Ramprate Heater A', '8', 'Setramprate', 'full', 1, 'LS336', 'K/min', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Set_Switch_Main', 'Set VME crate on/off', '13', 'setmain', 'full', 0, 'WIENER_VME', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 1),
+('Temp_A', 'Temperature Input A', '8', 'Temp', 'full', 1, 'LS336', 'K', NULL, 100, 310, 1, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Temp_B', 'Temperature Input B', '8', 'Temp', 'full', 2, 'LS336', 'K', NULL, 100, 310, 1, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Temp_C', 'Temperature Input C', '8', 'Temp', 'full', 3, 'LS336', 'K', NULL, 100, 310, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Temp_ColdHead', 'Temperature of Cold Head', '14', 'tc', 'full', 0, 'CryoTelGT_AVC', 'K', NULL, 50, 310, 1, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Turbo_OnOff', 'Set Turbo Motor to HiCube Flag', '9', 'motorpump', 'full', 0, 'HiCube80', 'discrete', '0:1;Off:On', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('UPSBatteryCharge', 'Liebert UPS Battery Percentage Charge', '12', 'batteryperc', 'full', 0, 'Liebert', '%', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('UPS_Output', 'Liebert UPS Output Power', '12', 'outpower', 'full', 0, 'Liebert', 'Watts', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Voltage_u0', 'VME output voltage u0', '13', 'outvolt', 'full', 0, 'WIENER_VME', 'V', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Voltage_u1', 'VME output voltage u1', '13', 'outvolt', 'full', 1, 'WIENER_VME', 'V', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Voltage_u3', 'VME output voltage u3', '13', 'outvolt', 'full', 3, 'WIENER_VME', 'V', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0),
+('Voltage_u5', 'VME output voltage u5', '13', 'outvolt', 'full', 5, 'WIENER_VME', 'V', NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 45, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, 0);
 -- --------------------------------------------------------
 
 --
