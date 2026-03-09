@@ -1,7 +1,6 @@
 # Slow Control Front-End: User Guide
 > Author: Cinyu Zhu, Johns Hopkins, March 2026
 
-
 Short guide to basic operations in the slow control web interface for **end users**.
 ## 1. User Account
 ### 1.1 Register: 
@@ -31,24 +30,25 @@ Ask an admin (Cinyu Zhu, Danielle Norcini, Radomir Smida, etc.) to create an acc
 ## 2. Monitor data
 ### 2.1 Refresh time
 - **Page refresh time**: In the header, use the Refresh time dropdown (e.g., 10s, 30s, 1m, 3m, 10m, 30m, or never) to choose how often the browser reloads the current page to retrieve data from the SQL database. The new refresh time works only when you submit the form by hitting the `enter` key or clicking the reload icon.
+- After submitting a form (e.g. refresh time), the page restores your previous scroll position.
 - You can click the reload icon to refresh manually.
 - **Instrument/sensor update time** is a separate thing: each sensor has an update_period (in seconds) stored in the database. The backend instrument processes read sensors and writes to the DB for that period. Changing the dropdown only affects how often the web page reloads; it does not change how often instruments read or write data. See more about sensor update time in the Config section.
 ### 2.2 Text
 - The **Text** tab shows the current (latest) value of each sensor, as stored in the database. Values are grouped by sensor type; you can choose which types to show.
 - Settable sensors are not shown on Text (they appear on Control).
 ### 2.3 Plots
-- **Plots** show a time series of sensor values. Use the **Begin time/date** and **End time/date** fields (or the arrow buttons: to start, to end) to set the time window. You can enter dates/times or use relative shortcuts (e.g., `-1h` from the end of data). Careful: selecting plotting data during a long period of time (e.g., months) may result in a long SQL query time.
+- **Plots** show a time series of sensor values. Use the **Begin time/date** and **End time/date** fields (or the arrow buttons: to start, to end) to set the time window. You can enter dates/times or use relative shortcuts (e.g., `-1h` from the end of data). Careful: selecting plotting data during a long period of time (e.g., months) may result in a long SQL query time. For queries spanning more than 90 days, the system will ask for confirmation before running.
 - For a single-sensor detailed view, click the Calc (calculator) iconon the right side of each plot, you can:
   - Use **Zoom in/out** and the other click modes (move begin/central/end time/Selects value) to adjust the time window or check the exact value of a given time.
   - Calculate the log/integral/average/linear regression of the data
   - Download the data in your time frame as a text file
 ### 2.4 MPlot and Scatter
-- **MPlot** – Multi-plot view: several sensors’ time-series in one page with a common time axis. Useful to compare trends. 
+- **MPlot** – Multi-plot view: several sensors’ time-series in one page with a common time axis. Useful to compare trends.
 - **Scatter** – Scatter view: plot one sensor vs another (e.g. X vs Y). 
 
 ## 3. Control
-- The **Control** tab lists sensors that are **settable** (setpoints, on/off, etc.). 
-- Select the new value (or choose from discrete options) and submit. Your change is written to the database; the instrument process for that sensor reads it and applies it to the hardware. 
+- The **Control** tab lists sensors that are **settable** (setpoints, on/off, etc.).
+- Select the new value (or choose from discrete options) and submit. Your change is written to the database; the instrument process for that sensor reads it and applies it to the hardware. For **critical** sensors, a confirmation page is shown before the new value is applied. 
 
 ## 4. Alarm
 ### 4.1 Trigger an alarm
@@ -80,14 +80,14 @@ When an alarm is triggered, The Master_alarm global is set. The alarm_alert_sys 
 ## 5. Sys Log
 
 - The **Sys Log** (table `msg_log`) stores timestamped messages: **Alarm**, **Config.** (instrument/sensor changes), **Shifts** (shift/on-call changes), **Setpoint**, **Error**, **Alert**, etc. Each entry has: time, message text, type, and whether it’s an error.
-- **How to access:** Click **Sys Log** in the header. You can filter by **message type** (checkboxes), limit the number of messages, search by text, and optionally show only messages in the current plot time range (“From plot times”).
+- **How to access:** Click **Sys Log** in the header. You can filter by **message type** (checkboxes), limit the number of messages, search by text, and optionally show only messages in the current plot time range (“From plot times”). You can page through the log (navigate by page) instead of loading all messages at once.
 
 ## 6. Config
 Changing things here can affect instruments and sensors. Usually only touched when setting up an instrument.
 ### 6.1 Config instrument
 - From **Config**, click **Edit Instrument Configuration** to open the instrument list. For each instrument, there is:
   - **Controlled by Watchdog?** – If checked, the watchdog is allowed to start this instrument when `run=1` and PID=-1, and to kill/restart it if it’s stuck (no heartbeat in time) or still running when `run=0`.
-  - **Restart** – Click to request a restart: the backend sets `restart=1`; the instrument process sees it, clears it, and exits with SIGHUP so the watchdog can start it again. Use when the process is hung, or you want a clean restart.
+  - **Restart** – Click to request a restart: the backend sets `restart=1`; the instrument process sees it, clears it, and exits with SIGHUP so the watchdog can start it again. Use when the process is hung, or you want a clean restart. You can **restart all instruments** in one action from sensor_config page.
   - **Run** – Run checked = should be running; unchecked = should be stopped. The watchdog starts instruments with `run=1` , but no process is running; it kills instruments that have `run=0` and haven’t exited. (Watchdog itself is always set as “run”.)
   - **Device address**: usually ip address of the instrument, used in the backend code.
   - **Delete** / **Reset** – Delete removes the instrument from the table; Reset clears PID and start/last_update times .
@@ -96,12 +96,13 @@ Changing things here can affect instruments and sensors. Usually only touched wh
 ### 6.1.1 Backend Processes
 Each instrument has a corresponding backend program that communicates with the instrument and takes care of the readout (read_sensor) and control (set_sensor). When an instrument is running, it should have **one and only one** process active with the pid shown on the config page. You can check the active processes from the terminal by `pidof <instrument>` (e.g., `pidof CenterThree` for the pressure gauge). If there is more than one pid, kill the extra processes by `sudo kill -9 <pid>`. Kill those different from what's shown on the config instrument page. Or kill them all and then restart the instrument. **This is the cause of strange readouts most of the time.**
 
-If there isn't any pid active, but the instrument is set as run, check all the instrument and sensor configs are set correctly, restart the instrument in the config page, and there should be a new pid appear in the config page as well as in the output of `pidof <instrument>`. If the problem persists, also check the `/dev/shm/stderr.<instrument>`and take further actions.
+If there isn't any pid active, but the instrument is set as run, check all the instrument and sensor configs are set correctly, restart the instrument in the config page, and there should be a new pid appear in the config page as well as in the output of `pidof <instrument>`. If the problem persists, also check the `/dev/shm/stderr.<instrument>` and take further actions. **Stderr** is also available from the web: 'log' link from the instrument config page to view each instrument’s stderr output.
 ### 6.2 Config sensor:
 - Sensors are **linked to an instrument** in the database; the instrument backend program reads or sets their values and writes to the sensor tables. In **Config** → **Edit Sensor Configuration** you can change description, type, subtype, hide/show, settable, control privilege, update_period (sensor refresh time), and alarm setpoints/grace. 
-- Sensors appear on the Text (and Plots) tabs for viewing, and on Control if they are settable.
+- You can edit the **update interval** (update_period) for all—in one go then restart all the instruments from the top of sensor config page if needed.
+- Sensors appear on the Text (and Plots) tabs for read-only, and on Control if they are settable.
 ### 6.3 Frontend Color
-- In Config (main config page, not instrument/sensor), you can set web text colour and web background color (e.g., for dark/light theme). These are applied to the front-end globally.
+- In Config (main config page, not instrument/sensor), you can set web text colour and web background color (e.g., for dark/light theme). These are applied to the front-end globally across devices.
 
 ## 7. Other Unused features
 ### 7.1 Logbook
