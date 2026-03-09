@@ -77,6 +77,65 @@ if (isset($_POST['sens_settable']))
     $query = "INSERT into `msg_log` (`time`, `msgs`, `type`, `is_error`) VALUES ('".time()."', '".$mesg."', 'Config.', '0')"; 
     $result = mysql_query($query);	
 }
+
+if (isset($_POST['sens_critical']))
+{
+    if ($sensor_critical[$_POST['sens_critical']])
+	$query = "UPDATE `sc_sensors` SET `critical` = 0 WHERE `name` = \"".$_POST['sens_critical']."\"";
+    else
+	$query = "UPDATE `sc_sensors` SET `critical` = 1 WHERE `name` = \"".$_POST['sens_critical']."\"";
+    $result = mysql_query($query);
+    if (!$result)
+	die ("Could not query the database <br />" . mysql_error());
+    
+    if ($sensor_critical[$_POST['sens_critical']])
+	$mesg = "".$_POST['sens_critical']." set to un-critical by ".$_SESSION['user_name'].".";
+    else
+	$mesg = "".$_POST['sens_critical']." set to critical by ".$_SESSION['user_name'].".";
+    $query = "INSERT into `msg_log` (`time`, `msgs`, `type`, `is_error`) VALUES ('".time()."', '".$mesg."', 'Config.', '0')"; 
+    $result = mysql_query($query);	
+}
+
+if (isset($_POST['update_period_all']) && $_POST['update_period_all'] !== '')
+{
+    $_POST['update_period_all'] = (int)$_POST['update_period_all'];
+    if ($_POST['update_period_all'] > 0)
+    {
+	$query = "UPDATE `sc_sensors` SET `update_period` = ".$_POST['update_period_all'];
+	$result = mysql_query($query);
+	if (!$result)
+	    die ("Could not query the database <br />" . mysql_error());
+	$mesg = "Update period set to ".$_POST['update_period_all']." s for all sensors by ".$_SESSION['user_name'].".";
+	$query = "INSERT into `msg_log` (`time`, `msgs`, `type`, `is_error`) VALUES ('".time()."', '".$mesg."', 'Config.', '0')";
+	$result = mysql_query($query);
+    }
+}
+
+if (isset($_POST['update_period_critical']) && $_POST['update_period_critical'] !== '')
+{
+    $_POST['update_period_critical'] = (int)$_POST['update_period_critical'];
+    if ($_POST['update_period_critical'] > 0)
+    {
+	$query = "UPDATE `sc_sensors` SET `update_period` = ".$_POST['update_period_critical']." WHERE `critical` = 1";
+	$result = mysql_query($query);
+	if (!$result)
+	    die ("Could not query the database <br />" . mysql_error());
+	$mesg = "Update period set to ".$_POST['update_period_critical']." s for all critical sensors by ".$_SESSION['user_name'].".";
+	$query = "INSERT into `msg_log` (`time`, `msgs`, `type`, `is_error`) VALUES ('".time()."', '".$mesg."', 'Config.', '0')";
+	$result = mysql_query($query);
+    }
+}
+
+if (!empty($_POST['restart_all_wd']))
+{
+    $query = "UPDATE `sc_insts` SET `restart` = 1 WHERE `WD_ctrl` = 1";
+    $result = mysql_query($query);
+    if (!$result)
+	die ("Could not query the database <br />" . mysql_error());
+    $mesg = "Restart requested for all watchdog-controlled instruments by ".$_SESSION['user_name'].".";
+    $query = "INSERT into `msg_log` (`time`, `msgs`, `type`, `is_error`) VALUES ('".time()."', '".$mesg."', 'Config.', '0')";
+    $result = mysql_query($query);
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 if (isset($_POST['sens_privileges']))
@@ -485,6 +544,32 @@ $_SESSION['num_val_avgs'] = $temp_num;
 ////   This next section generate the HTML with the plot names in a table.
 $cur_time = time();
 
+echo ('<TABLE border="1" cellpadding="4" width=100%>');
+echo ('<TR>');
+echo ('<TD align="center" width="50%">');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
+echo ('Set update period for <b>all</b> sensors: <input type="text" name="update_period_all" value="" size="12" placeholder="seconds"> ');
+echo ('<input type="submit" value="Set all">');
+echo ('</FORM>');
+echo ('</TD>');
+echo ('<TD align="center" width="50%">');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
+echo ('Set update period for <b>critical</b> sensors only: <input type="text" name="update_period_critical" value="" size="12" placeholder="seconds"> ');
+echo ('<input type="submit" value="Set critical">');
+echo ('</FORM>');
+echo ('</TD>');
+echo ('</TR>');
+echo ('<TR>');
+echo ('<TD align="center" colspan="2">');
+echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
+echo ('<input type="hidden" name="restart_all_wd" value="1">');
+echo ('Sensor update period takes effect after instruments restart. ');
+echo ('<input type="submit" value="Restart all">');
+echo ('</FORM>');
+echo ('</TD>');
+echo ('</TR>');
+echo ('</TABLE>');
+
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 $i=1;
 echo ('<TR>');
@@ -512,13 +597,12 @@ foreach ($my_sensor_names as $sensor_name)
     echo ('<TABLE border="0" cellpadding="0" width=100%>');
 
     echo ('<TR>');                 /////  row 1
-    echo ('<TH align="left" colspan = 1>');
+    echo ('<TH align="left" colspan="1">');
     if ($sensor_al_trip[$sensor_name])
 	echo ('<font color="red">');
     echo ($sensor_name .':  ');
-    echo ('</TH>');   
-	    
-    echo ('<TD align="right" colspan = 1>');
+    echo ('</TH>');
+    echo ('<TD align="center" width="18%">');
     echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
     echo ('<input type="hidden" name="sens_hide" value="'.$sensor_name.'">');
     if ($sensor_hide[$sensor_name])
@@ -527,8 +611,7 @@ foreach ($my_sensor_names as $sensor_name)
 	echo ('Hide <input type="image" src="pixmaps/unchecked.png" alt="Hide" title="Hide">');
     echo ('</FORM>');
     echo ('</TD>');
-
-    echo ('<TD align="right" colspan = 1>');
+    echo ('<TD align="center" width="18%">');
     echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
     echo ('<input type="hidden" name="sens_show_rate" value="'.$sensor_name.'">');
     if ($sensor_show_rate[$sensor_name])
@@ -537,27 +620,35 @@ foreach ($my_sensor_names as $sensor_name)
 	echo ('Show Rate <input type="image" src="pixmaps/unchecked.png" alt="Show Rate" title="Show Rate">');
     echo ('</FORM>');
     echo ('</TD>');
-	    
-    echo ('<TD align="right" colspan = 1>');
+    echo ('<TD align="center" width="18%">');
     echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
     echo ('<input type="hidden" name="sens_settable" value="'.$sensor_name.'">');
     if ($sensor_settable[$sensor_name])
-	echo ('Settable: <input type="image" src="pixmaps/checked.png" alt="Make not settable" title="Make not settable">');
+	echo ('Settable <input type="image" src="pixmaps/checked.png" alt="Make not settable" title="Make not settable">');
     else
-	echo ('Settable: <input type="image" src="pixmaps/unchecked.png" alt="Make settable" title="Make settable">');
-    echo ('</FORM>');    
+	echo ('Settable <input type="image" src="pixmaps/unchecked.png" alt="Make settable" title="Make settable">');
+    echo ('</FORM>');
+    echo ('</TD>');
+    echo ('<TD align="center" width="18%">');
+    echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
+    echo ('<input type="hidden" name="sens_critical" value="'.$sensor_name.'">');
+    if ($sensor_critical[$sensor_name])
+	echo ('Critical <input type="image" src="pixmaps/checked.png" alt="Remove critical" title="Remove critical">');
+    else
+	echo ('Critical <input type="image" src="pixmaps/unchecked.png" alt="Mark critical" title="Mark critical">');
+    echo ('</FORM>');
     echo ('</TD>');
     echo ('</TR>');
     
     echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
     echo ('<TR>');                 /////  row 2
-    echo ('<TD align="left" colspan = 4>');
+    echo ('<TD align="left" colspan="5">');
     echo ('Sensor description: <input type="text" name="sens_desc" value="'.$sensor_descs[$sensor_name].'" size = 48>');
     echo ('</TD>');
     echo ('</TR>');    
 	    
     echo ('<TR>');                 /////  row 3
-    echo ('<TD align="left" colspan = 2>');
+    echo ('<TD align="left" colspan="3">');
     //echo ('Type: <input type="text" name="sens_type" value="'.$sensor_types[$sensor_name].'" size = 16>');
     echo ('Type: ');
     echo ('<SELECT name="sens_type[]" multiple=true size=2>');
@@ -571,82 +662,82 @@ foreach ($my_sensor_names as $sensor_name)
     echo ('</SELECT>');
     echo ('</TD>');
 	    
-    echo ('<TD align="right" colspan = 2>');
+    echo ('<TD align="right" colspan="2">');
     echo ('Subtype: <input type="text" name="sens_subtype" value="'.$sensor_subtypes[$sensor_name].'" size = 16>');
     echo ('</TD>');
     echo ('</TR>');  
 	    
     echo ('<TR>');                 /////  row 4
-    echo ('<TD align="left" colspan = 2>');
+    echo ('<TD align="left" colspan="3">');
     echo ('Number: <input type="text" name="sens_num" value="'.$sensor_numbers[$sensor_name].'" size = 6>');
     echo ('</TD>');
-    echo ('<TD align="right" colspan = 2>');
+    echo ('<TD align="right" colspan="2">');
     echo ('Instrument Name: <input type="text" name="sens_inst" value="'.$sensor_instruments[$sensor_name].'" size = 16>');
     echo ('</TD>');
     echo ('</TR>');  
 	    
     echo ('<TR>');                 /////  row 5
-    echo ('<TD align="left" colspan=2>');
+    echo ('<TD align="left" colspan="3">');
     echo ('Units: <input type="text" name="sens_units" value="'.$sensor_units[$sensor_name].'" size = 16>');
     echo ('</TD>');
-    echo ('<TD align="right" colspan=2>');
+    echo ('<TD align="right" colspan="2">');
     echo ('Discrete Units: <input type="text" name="sens_discrete_vals" value="'.$sensor_discrete_vals[$sensor_name].'" size = 16>');
     echo ('</TD>');
     echo ('</TR>');  
 	    
     echo ('<TR>');                 /////  row 6
-    echo ('<TD align="left" colspan=2>');
+    echo ('<TD align="left" colspan="3">');
     echo ('Update period: <input type="text" name="sens_period" value="'.$sensor_update_period[$sensor_name].'" size = 6> (seconds) ');
     echo ('</TD>');
-    echo ('<TD align="right" colspan = 2>');
+    echo ('<TD align="right" colspan="2">');
     echo ('Alarm grace period: <input type="text" name="sens_grace" value="'.$sensor_grace[$sensor_name].'" size = 6> (seconds)');
     echo ('</TD>');
     echo ('</TR>');  
 	    
     echo ('<TR>');                 /////  row 7
-    echo ('<TD align="left" colspan=4>');
+    echo ('<TD align="left" colspan="5">');
     echo ('Text number format: <input type="text" name="sens_format" value="'.$sensor_num_format[$sensor_name].'" size = 6> (C style)');
     echo ('</TD>');
     echo ('</TR>');  
 
     echo ('<TR>');                 /////  row 8
-    echo ('<TD align="left" colspan = 2>');
+    echo ('<TD align="left" colspan="3">');
     echo ('String field 1: <input type="text" name="sens_user1" value="'.$sensor_user1[$sensor_name].'" size = 16> (txt)');
     echo ('</TD>');   
-    echo ('<TD align="right"  colspan = 2>');
+    echo ('<TD align="right" colspan="2">');
     echo ('String field 2: <input type="text" name="sens_user2" value="'.$sensor_user2[$sensor_name].'" size = 16> (txt)');
     echo ('</TD>');
     echo ('</TR>');    
 
     echo ('<TR>');                 /////  row 9
-    echo ('<TD align="left"  colspan = 2>');
+    echo ('<TD align="left" colspan="3">');
     echo ('String field 3: <input type="text" name="sens_user3" value="'.$sensor_user3[$sensor_name].'" size = 16> (txt)');
     echo ('</TD>');   
-    echo ('<TD align="right" colspan = 2>');
+    echo ('<TD align="right" colspan="2">');
     echo ('String field 4: <input type="text" name="sens_user4" value="'.$sensor_user4[$sensor_name].'" size = 16> (txt)');
     echo ('</TD>');
     echo ('</TR>');    
 	    
     echo ('<TR>');                 /////  row 10
-    echo ('<TD align="left" colspan = 2>');
+    echo ('<TD align="left" colspan="3">');
     echo ('Parameter 1: <input type="text" name="sens_parm1" value="'.$sensor_parm1[$sensor_name].'" size = 8> (dbl)');
     echo ('</TD>');   
-    echo ('<TD align="right"  colspan = 2>');
+    echo ('<TD align="right" colspan="2">');
     echo ('Parameter 2: <input type="text" name="sens_parm2" value="'.$sensor_parm2[$sensor_name].'" size = 8> (dbl)');
     echo ('</TD>');
     echo ('</TR>');    
 	    
     echo ('<TR>');                 /////  row 11
-    echo ('<TD align="left"  colspan = 2>');
+    echo ('<TD align="left" colspan="3">');
     echo ('Parameter 3: <input type="text" name="sens_parm3" value="'.$sensor_parm3[$sensor_name].'" size = 8> (dbl)');
     echo ('</TD>');   
-    echo ('<TD align="right" colspan = 2>');
+    echo ('<TD align="right" colspan="2">');
     echo ('Parameter 4: <input type="text" name="sens_parm4" value="'.$sensor_parm4[$sensor_name].'" size = 8> (dbl)');
     echo ('</TD>');
     echo ('</TR>');    
 	    
     echo ('<TR>');                   
-    echo ('<TD align="center" colspan=4>');
+    echo ('<TD align="center" colspan="5">');
     echo ('<input type="hidden" name="sens_name" value="'.$sensor_name.'">');
     echo ('<input type="submit" name="void" value="submit">');
     echo ('</TD>');
@@ -655,13 +746,13 @@ foreach ($my_sensor_names as $sensor_name)
 	    
 	    
     echo ('<TR>');                   
-    echo ('<TD align="center" colspan=4>');
+    echo ('<TD align="center" colspan="5">');
     echo ('-----');		      
     echo ('</TD>');
     echo ('</TR>');   
 	    
     echo ('<TR>');                /////  row 12       
-    echo ('<TD align="left" colspan=3>');
+    echo ('<TD align="left" colspan="4">');
     echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
     echo ('Notes:');
     echo ('<BR>');
@@ -699,7 +790,7 @@ foreach ($my_sensor_names as $sensor_name)
     echo ('</TR>');   
 	    
     echo ('<TR>');  
-    echo ('<TD align="right" colspan=4>'); 
+    echo ('<TD align="right" colspan="5">'); 
     echo ('<FORM action="slow_control_del_sensor.php" method="post">');
     echo ('<input type="hidden" name="del_sensor" value='.$sensor_name.'>');
     echo ('<input type="image" src="pixmaps/drop.png">  Delete this sensor ');
@@ -708,7 +799,7 @@ foreach ($my_sensor_names as $sensor_name)
     echo ('</TR>');
 
     echo ('<TR>');                    ///////////////////  footer
-    echo ('<TD align="center" colspan=4>');
+    echo ('<TD align="center" colspan="5">');
     echo ('-----');
     echo ('<BR>');
     echo ('Current value:'.format_num($sensor_values[$sensor_name]));

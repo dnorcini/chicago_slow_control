@@ -1,5 +1,5 @@
 <?php
-  // slow_control_text.php
+  // slow_control_set_vals.php
   // Part of the CLEAN slow control.  
   // James Nikkel, Yale University, 2006.
   // james.nikkel@yale.edu
@@ -9,15 +9,52 @@ $never_ref = 1;
 $req_priv = "full";
 include("db_login.php");
 include("slow_control_page_setup.php");
-include("aux/get_sensor_info.php"); 
+include("aux/get_sensor_info.php");
+
+// --- Confirm step for critical sensors: show username + code form, then exit ---
+if (isset($_POST['action']) && $_POST['action'] === 'confirm' && isset($_POST['set_sens_name'], $_POST['new_set_val'])) {
+    $sensor = $_POST['set_sens_name'];
+    $newval = $_POST['new_set_val'];
+    if (check_access($_SESSION['privileges'], $sensor_ctrl_priv[$sensor], $allowed_host_array) && !empty($sensor_critical[$sensor])) {
+        $label = $sensor_descs[$sensor];
+        $display_val = $newval;
+        if (strncmp($sensor_units[$sensor], "discrete", 8) == 0) {
+            $all_vals = explode(";", $sensor_discrete_vals[$sensor]);
+            $vals = array_combine(explode(":", $all_vals[0]), explode(":", $all_vals[1]));
+            if (isset($vals[$newval])) {
+                $display_val = $vals[$newval];
+            }
+        }
+        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        $confirm_code = '';
+        for ($i = 0; $i < 5; $i++) {
+            $confirm_code .= $chars[mt_rand(0, strlen($chars) - 1)];
+        }
+        $_SESSION['critical_confirm_code'] = $confirm_code;
+        echo "<div style=\"font-size:1.35em;\">";
+        echo "<h2 style=\"font-size:1.4em;\">Confirm critical sensor change</h2>";
+        echo "<p><b>Sensor:</b> " . htmlspecialchars($label) . "</p>";
+        echo "<p><b>New value:</b> " . htmlspecialchars($display_val) . "</p>";
+        echo "<p style=\"color:red;\">⚠ This will immediately change the hardware state.</p>";
+        echo "<p>To confirm, enter your <b>username</b> and the <b>confirmation code</b> shown below.</p>";
+        echo "<p style=\"font-size:1.4em; font-family:monospace; letter-spacing:0.3em; padding:12px; background:#f0f0f0; display:inline-block;\"><b>{$confirm_code}</b></p>";
+        echo "<form method=\"post\" action=\"slow_control_apply.php\">";
+        echo "  <p>Username: <input type=\"text\" name=\"confirm_username\" autocomplete=\"username\" size=\"20\" style=\"font-size:1em;\"></p>";
+        echo "  <p>Confirmation code: <input type=\"text\" name=\"confirm_code\" size=\"6\" maxlength=\"5\" style=\"text-transform:uppercase; font-size:1em;\"></p>";
+        echo "  <input type=\"hidden\" name=\"set_sens_name\" value=\"" . htmlspecialchars($sensor) . "\">";
+        echo "  <input type=\"hidden\" name=\"new_set_val\" value=\"" . htmlspecialchars($newval) . "\">";
+        echo "  <input type=\"submit\" value=\"Confirm\" style=\"font-size:0.9em;\"> <a href=\"slow_control_set_vals.php\" style=\"font-size:0.9em;\">Cancel</a>";
+        echo "</form>";
+        echo "</div>";
+        echo "</body></HTML>";
+        exit;
+    }
+}
+
 include("aux/new_set_val.php");     // do insert of new value if requested
-
 ///  The idea here is to create a list of unique sensor types from all the available sensors.
-///  This allows us to just view one type at a time on the screen.
 include("aux/choose_types.php");    // sets session variable $choose_type from the check boxes.
-
 ///  Read the last values from the database and save them to an array $sensor_values
-///  indexed by $sensor_name
 include("aux/get_sensor_vals.php");
 mysql_close($connection);
 
@@ -81,13 +118,15 @@ foreach ($my_sensor_names as $sensor_name)
 	  echo ('</TD>');
 	  echo ('</TR>');
 		    
+	  $form_action = $sensor_critical[$sensor_name] ? 'slow_control_set_vals.php' : 'slow_control_apply.php';
+	  $form_hidden = $sensor_critical[$sensor_name] ? '<input type="hidden" name="action" value="confirm">' : '';
 	  echo ('<TR>');
 	  if (count($all_vals) < 5)                // make buttons if there are < 5 items
 	    {
 	      foreach ($all_vals as $av_v => $av_s)
 		{
 		  echo ('<TD  align="center">');
-		  echo ('<FORM action="slow_control_confirm.php" method="post">');
+		  echo ('<FORM action="'.$form_action.'" method="post">'.$form_hidden);
 		  echo ('<input type="submit" name="dummy" value="'.$av_s.'" title="Set to '.$av_s.'">  ');
 		  echo ('<input type="hidden" name="new_set_val" value="'.$av_v.'">');
 		  echo ('<input type="hidden" name="set_sens_name" value="'.$sensor_name.'">');
@@ -98,7 +137,7 @@ foreach ($my_sensor_names as $sensor_name)
 	  else                                   // use pull down for more possibilities
 	    {
 	      echo ('<TD align="center" colspan="4">');
-	      echo ('<FORM action="slow_control_confirm.php" method="post">');
+	      echo ('<FORM action="'.$form_action.'" method="post">'.$form_hidden);
 	      echo ('<input type="submit" name="dummy" value="Change" title="Set to: ">  ');
 	      echo ('<select name="new_set_val">');
 	      foreach ($all_vals as $av_v => $av_s)
@@ -129,8 +168,10 @@ foreach ($my_sensor_names as $sensor_name)
 	  echo ('</TD>');
 	  echo ('</TR>');
 		    
+	  $form_action = $sensor_critical[$sensor_name] ? 'slow_control_set_vals.php' : 'slow_control_apply.php';
+	  $form_hidden = $sensor_critical[$sensor_name] ? '<input type="hidden" name="action" value="confirm">' : '';
 	  echo ('<TR>');
-	  echo ('<FORM action="slow_control_confirm.php" method="post">');
+	  echo ('<FORM action="'.$form_action.'" method="post">'.$form_hidden);
 	  echo ('<TD align="center">');
 	  echo ('New Value: <input type="text" name="new_set_val" value="'.format_num2($sensor_values[$sensor_name], $sensor_num_format[$sensor_name]).'" size = 9>');
 	  echo ('<input type="hidden" name="set_sens_name" value="'.$sensor_name.'">');

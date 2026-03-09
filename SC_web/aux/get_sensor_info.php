@@ -43,6 +43,7 @@ $sensor_last_trip = array();
 $sensor_settable = array();
 $sensor_show_rate = array();
 $sensor_hide = array();
+$sensor_critical = array();
 $sensor_update_period = array();
 $sensor_num_format = array();
 $sensor_user1 = array();
@@ -168,6 +169,11 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
     else
       $sensor_hide[] = 0;
 
+    if (isset($row['critical']))
+      $sensor_critical[] = (int)$row['critical'];
+    else
+      $sensor_critical[] = 0;
+
     if (isset($row['update_period']))
       $sensor_update_period[] = (int)$row['update_period'];
     else
@@ -246,6 +252,7 @@ $sensor_last_trip = array_combine($sensor_names, $sensor_last_trip);
 $sensor_settable = array_combine($sensor_names, $sensor_settable);
 $sensor_show_rate = array_combine($sensor_names, $sensor_show_rate);
 $sensor_hide = array_combine($sensor_names, $sensor_hide);
+$sensor_critical = array_combine($sensor_names, $sensor_critical);
 $sensor_update_period = array_combine($sensor_names, $sensor_update_period);
 $sensor_num_format = array_combine($sensor_names, $sensor_num_format);
 $sensor_user1 = array_combine($sensor_names, $sensor_user1);
