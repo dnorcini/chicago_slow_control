@@ -1,6 +1,11 @@
 April 2024: SC installation on Debian12
 
 Refer to old notes (i.e. CentOS 7 install) for more detailed explanation of certain steps. Here we provide a “quick (-er)” guide to get the SC running on Debian 12 (DAMIC-M official OS).
+
+Update: January 2026, Cinyu Zhu
+
+Editing and adding notes for damicm-sc installation
+
 ## Dependencies
 * LAMP
   * Apache2 webserver, v2.4.59
@@ -40,12 +45,12 @@ First, be sure to check you don’t have any MySQL/MariaDB packages already inst
 # dpkg -l | grep -e mysql -e mariadb
 ```
 
-If you need to remove old  packages, [follow the purge instructions here:](https://unix.stackexchange.com/questions/550154/the-following-packages-have-unmet-dependencies-mariadb-server). To see all available add-on packages on the mirror (in past on CentOS must have `mariadb-devel` installed for it to find global SC header files:
+If you need to remove old  packages, [follow the purge instructions here:](https://unix.stackexchange.com/questions/550154/the-following-packages-have-unmet-dependencies-mariadb-server). To see all available add-on packages on the mirror (in past on CentOS must have `mariadb-devel` installed for it to find global SC header files):
 ```
 # apt-cache search mariadb
 ```
 
-To work with our code, we DO NOT want to install MariaDB >v10 (otherwise, when you go to compile the SC code, you will get issues finding `myglobals.h` and `mysql.h` includes (even if you see them in the includes directory). Stick with v10:
+To work with our code, we DO NOT want to install MariaDB >v10, otherwise, when you go to compile the SC code, you will get issues finding `myglobals.h` and `mysql.h` includes (even if you see them in the includes directory). Stick with v10 (default of Debian12):
 ```
 # apt-get install mariadb-server=“1:10.11.6-0+deb12u1”
 # apt-get install libmariadb-dev
@@ -248,12 +253,25 @@ www-data user
 $ mkdir /usr/share/phpMyAdmin/tmp
 $ sudo chmod 777 /usr/share/phpMyAdmin/tmp
 $ sudo chown -R www-data /usr/share/phpMyAdmin
-$ sudo systemctl apache2 restart
+$ sudo systemctl restart apache2
 ```
 
 Point browser to http://localhost/phpMyAdmin. If the login fails and complains about credentials, try resetting the root user info via `sudo mysql_secure_installation`.
 
 ## Install SC software
+### clang essitials
+```
+sudo apt-get install -y build-essential
+```
+check installation:
+```
+$ make --version
+GNU Make 4.3
+$ gcc --version
+gcc (Debian 12.2.0-14+deb12u1) 12.2.0
+$ g++ --version
+g++ (Debian 12.2.0-14+deb12u1) 12.2.0
+```
 ### Get the source code
 Give your user sudo permissions (in this case, `damicm` is the username):
 ```
@@ -367,15 +385,14 @@ You can check out the structure in phpMyAdmin. Most of the instruments you will 
 For whatever reason, the collation (way that the database decode characters) is non-standard and will cause errors when you try to perform certain actions (mostly when in phpMyAdmin). It’s not completely necessary, but to avoid, we just change it now:
 ```
 $ sudo emacs -nw /etc/mysql/mariadb.conf.d/50-server.cnf
-change to UNICODE
-$ sudo emacs -nw /etc/mysql/client.cnf
+# change to UNICODE
 character-set-server  = utf8mb4
 collation-server      = utf8mb4_unicode_ci
 ```
 
 To load these new configs, In phpMyAdmin go to the `mysql` table and change the view:  mysql -> Views -> user -> structure -> edit view -> Go. Then in the `mysql` table: operations -> collation -> utf8mb4_unicode_ci -> Go
 
-Now we can create the `control_user` (with the same password as written in the config file) under the User accounts tab. This user should be given all privileges and grant access over `localhost`. Set MariaDB to load the `control` database by default:
+Now we can go to phpMyAdmin index page, choose `User accounts` on top panel, and create the `control_user` (with the same password as written in the config file). This user should be given all privileges and grant access over `localhost`. Set MariaDB to load the `control` database by default:
 ```
 $ mysql -u root -p
 > USE control;
@@ -395,8 +412,8 @@ $db_password='TYPE_PASSWORD_HERE';    // fill me in as well!
 
 So the webpage can display plots properly, we need to give Apache access:
 ``` 
-$ sudo mkdir jgraph_cache
-$ sudo chmod a+rw jgraph_cache
+$ sudo mkdir jpgraph_cache
+$ sudo chmod a+rw jpgraph_cache
 $ sudo chown -R www-data:www-data jpgraph_cache/
 $ sudo systemctl restart apache2
 ```
@@ -464,8 +481,6 @@ You can check the last time the database logged an entry on the web interface. N
 ## Backup database
 This can be done however you choose. We provide a simple script (`SC_backend/Docs/backupsql.sh`) that dumps the specified databases into a .sql file and then rsyncs them onto our cluster. We send an email when the process is complete and delete backups older then a specified number of days. Copy this file and put it in the directory that you want it to run from.
 
-Instead of setting up an internal SMTP server to send the emails, it may be easier just to make a gmail account to use the google server to relay emails through mailutil, see: https://medium.com/@FlorenceOkoli/smtp-mailutils-how-to-send-your-mails-via-the-linux-terminal-6d95803a1104.
-
 To have the backup script run at a certain time every day (or whatever interval), set up a cronjob:
 ```
 $ crontab -e
@@ -478,3 +493,124 @@ Example of job definition: # .---------------- minute (0 - 59) # | .--------
 ```
 
 This sets configuration will have the script run once everyday at 18:00.
+
+## ssh access to the machine
+````
+sudo apt install openssh-server
+sudo systemctl enable ssh
+sudo systemctl status ssh
+````
+It should be active(running) and listening on port 22
+
+## keep sc subnet ip address after reboot:
+Debian 12 uses NetworkManager
+
+Check the current ip address and device (which physical ethernet port is associated, e.g. enp129s0)
+````
+$ ip addr
+````
+````
+$ nmcli device status
+DEVICE      TYPE      STATE      CONNECTION
+enp129s0    ethernet  connected  Wired connection 1
+````
+set up profile:
+````
+sudo nmcli connection add \
+  type ethernet \
+  ifname enp129s0 \
+  con-name slow-control \
+  ipv4.method manual \
+  ipv4.addresses 192.168.1.1/24
+````
+bring it up:
+````
+sudo nmcli connection down slow-control 2>/dev/null
+sudo nmcli connection up slow-control
+````
+verify:
+````
+nmcli device status
+ip addr show enp129s0
+````
+
+## Setup Email SMTP for SC alarm
+Email contents and mailing lists have already been taken care of by the `int send_mail_message(char *address, char *message)` in alarm trigger and alart system in the SC software. So all we need is to set up smtp 
+
+### Goal: 
+Enable this to work for a normal user
+
+`echo "hello" | mail -s "test" someone@example.com`
+
+
+### 0) Prep: Gmail side 
+
+Create a new Gmail account, turn on 2-Step Verification (required for app password).
+
+Create an App Password and copy it.
+
+You will paste this into `/etc/msmtprc` as the password.
+
+If you don’t use an App Password, you’ll often get:
+`535 5.7.8 Username and Password not accepted`. 
+Because the `mail` in Debian 12 OS doesn't support the advanced security required for Gmail.
+
+### 2) Verify wiring (sendmail points to msmtp)
+```
+which mail
+ls -l /usr/sbin/sendmail
+readlink -f /usr/sbin/sendmail
+```
+expected output:
+```
+/usr/bin/mail
+lrwxrwxrwx 1 root root 12 Feb  5  2023 /usr/sbin/sendmail -> ../bin/msmtp
+/usr/bin/msmtp
+```
+
+### 3) Create a dedicated group for reading /etc/msmtprc
+```
+sudo groupadd -f msmtp
+sudo usermod -aG msmtp <YOUR_USERNAME>
+````
+
+### 4) Create /etc/msmtprc (system-wide msmtp config)
+`sudo nano /etc/msmtprc`
+````
+defaults
+auth           on
+tls            on
+tls_starttls   on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+
+# Log to the user's home directory (simplifies permissions)
+logfile        /home/<YOUR_USERNAME>/.msmtp.log
+
+account gmail
+host smtp.gmail.com
+port 587
+from <YOUR_GMAIL>@gmail.com
+user <YOUR_GMAIL>@gmail.com
+password <YOUR_GMAIL_APP_PASSWORD>
+
+account default : gmail
+````
+
+Lock down permissions:
+````
+sudo chown root:msmtp /etc/msmtprc
+sudo chmod 640 /etc/msmtprc
+````
+
+### 5) Create the per-user logfile
+````
+touch ~/.msmtp.log
+chmod 600 ~/.msmtp.log
+````
+### 6) Test via `mail`
+`echo "mail test" | mail -s "subject mailx test" <DEST_EMAIL>`
+
+Then check your `<DEST_EMAIL>` inbox and check the log via `tail -n 50 ~/.msmtp.log`
+
+
+
