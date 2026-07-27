@@ -40,7 +40,7 @@ int check_instruments(struct inst_struct *wd_inst)
     sprintf(query_strng, "SELECT `name` FROM `sc_insts` WHERE `run` = 1 AND `PID` = -1 AND `WD_ctrl` = 1");
 
     my_errors += process_statement(query_strng, res_strng, &num_rows, &num_cols);
-    printf("check_instruments: %d instruments requested to run\n", num_rows);
+    // printf("check_instruments: %d instruments requested to run\n", num_rows);
 
     for (i = 0; i < num_rows; i++)
     {

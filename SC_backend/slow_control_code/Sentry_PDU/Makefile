@@ -9,7 +9,7 @@ PROGS = Sentry_PDU
 
 all: $(PROGS) 
 
-APC3000: $(PROGS).o
+Sentry_PDU: $(PROGS).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $@.o $(LIBS)
 	rm -f $@.o
 

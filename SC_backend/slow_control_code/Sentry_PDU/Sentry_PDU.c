@@ -5,7 +5,7 @@
 #include "SC_db_interface_raw.h"
 #include "SC_aux_fns.h"
 #include "SC_sensor_interface.h"
-#define SNMPGET_PATH "/usr/bin/snmpget"
+// #define SNMPGET_PATH "/usr/bin/snmpget"
 
 #define INSTNAME "Sentry_PDU"
 
@@ -36,7 +36,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
   char ret_string[512];
   char buffer[128];
   FILE *tmp;
-  printf("in read sensor");
+  // printf("in read sensor");
 
   if (strncmp(s_s->subtype, "outlet", 6) == 0)
   {
@@ -245,7 +245,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 int main(int argc, char *argv[])
 {
   char **my_argv;
-  char inst_name[16];
+  char inst_name[16] = {0};
   int i;
   struct inst_struct this_inst;
   struct sensor_struct *all_sensors;

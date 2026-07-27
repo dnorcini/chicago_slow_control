@@ -210,7 +210,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     sprintf(cmd_string, "snmpset -v 2c -m +WIENER-CRATE-MIB -c private %s sysMainSwitch.0 i %i", i_s->dev_address, (int)s_s->new_set_val);
     // send snmp command to command line and store response in tmp file
     tmp = popen(cmd_string, "r");
-    printf(tmp);
+    // printf(tmp);
     if (tmp == NULL)
     {
       printf("Failed to run command\n");
@@ -221,7 +221,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     while (fgets(buffer, sizeof(buffer), tmp) != NULL)
     {
       strcpy(ret_string, buffer); // safer
-      printf("ret_string: %s", ret_string);
+      // printf("ret_string: %s", ret_string);
     }
     int status = pclose(tmp);
     if (status != 0)

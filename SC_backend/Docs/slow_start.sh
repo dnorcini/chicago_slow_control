@@ -7,5 +7,5 @@ mysql -u root -pMyLife4Aiur control -Bse "UPDATE sc_insts SET PID=-1, start_time
 echo "Watchdog entry in database reset..."
 
 #run Watchdog program
-/home/damic/SC_backend/slow_control_code/SC_Watchdog/SC_Watchdog Watchdog
+/home/damicm/SC_backend/slow_control_code/SC_Watchdog/SC_Watchdog Watchdog
 echo "Watchdog is now running..."

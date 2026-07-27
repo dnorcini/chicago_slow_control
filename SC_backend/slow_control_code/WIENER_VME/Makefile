@@ -9,7 +9,7 @@ PROGS = WIENER_VME
 
 all: $(PROGS) 
 
-LS336: $(PROGS).o
+WIENER_VME: $(PROGS).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $@.o $(LIBS)
 	rm -f $@.o
 

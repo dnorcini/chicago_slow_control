@@ -25,7 +25,7 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s)
   if ((inst_dev = connect_tcp(i_s)) < 0)
   {
     fprintf(stderr, "Connect failed. \n");
-    printf(stderr, "Connect failed. \n");
+    // printf(stderr, "Connect failed. \n");
     my_signal = SIGTERM;
     return (1);
   }
@@ -60,7 +60,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     msleep(100);
     sprintf(cmd_string, "\x05"); // hex for <ENQ>
     query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string) / sizeof(char));
-    printf("Received: '%s'\n", ret_string);
+    // printf("Received: '%s'\n", ret_string);
     sscanf(ret_string, "%*d, %lE", val_out);
   }
 
@@ -158,25 +158,25 @@ int main(int argc, char *argv[])
     my_argv[i] = strdup(argv[i]);
 
   my_argv[i] = NULL;
-  printf("Command-line arguments:\n");
+  // printf("Command-line arguments:\n");
   for (int j = 0; j < argc; j++)
   {
-    printf("  argv[%d] = %s\n", j, my_argv[j]);
+    // printf("  argv[%d] = %s\n", j, my_argv[j]);
   }
 
   sprintf(db_conf_file, DEF_DB_CONF_FILE);
-  printf("Using DB config file: %s\n", db_conf_file);
+  // printf("Using DB config file: %s\n", db_conf_file);
 
   parse_CL_for_string(argc, argv, INSTNAME, inst_name);
-  printf("Parsed instrument name: %s\n", inst_name);
+  // printf("Parsed instrument name: %s\n", inst_name);
 
   read_mysql_inst_struct(&this_inst, inst_name);
-  printf("Instrument loaded from DB:\n");
-  printf("  Name: %s\n", this_inst.name);
-  printf("  PID: %d\n", this_inst.PID);
+  // printf("Instrument loaded from DB:\n");
+  // printf("  Name: %s\n", this_inst.name);
+  // printf("  PID: %d\n", this_inst.PID);
 
   generate_sensor_structs(&this_inst, &all_sensors);
-  printf("Number of sensors initialized: %d\n", this_inst.num_active_sensors);
+  // printf("Number of sensors initialized: %d\n", this_inst.num_active_sensors);
 
   // detach current process
   daemonize(this_inst.name);
