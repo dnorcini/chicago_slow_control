@@ -1,0 +1,21 @@
+444  sudo apt update
+445  sudo apt install -y   build-essential   cmake   git   pkg-config
+
+// no apt install unfortunately for debian 12
+// so build open62541 yourself from github
+446  cd ~
+447  git clone https://github.com/open62541/open62541.git
+448  cd open62541
+449  mkdir build
+450  cd build
+451  cmake ..   -DBUILD_SHARED_LIBS=ON   -DUA_ENABLE_AMALGAMATION=OFF
+452  make -j$(nproc)
+
+// Install it system-wide
+453  sudo make install
+454  sudo ldconfig
+
+// Verify installation
+455  ls /usr/local/include/open62541/client.h
+456  ldconfig -p | grep open62541
+457  pkg-config --cflags --libs open62541
