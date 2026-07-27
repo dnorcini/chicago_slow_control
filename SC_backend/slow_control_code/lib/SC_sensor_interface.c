@@ -43,7 +43,13 @@ void init_sensor_struct(struct sensor_struct *s_s)
     s_s->rate = 0;
     s_s->avg = 0;
     s_s->min_val = DBL_MAX;
-    s_s->max_val = DBL_MIN; 
+    s_s->max_val = DBL_MIN;
+
+    // Zeroed so that a settable sensor whose sc_sens_<name> history table has no rows yet
+    // (e.g. brand new sensor, never set through the web interface) can't hand set_sensor()
+    // an uninitialized/garbage value if a future caller ever skips the read_mysql_sensor_data() check.
+    s_s->new_set_time = 0;
+    s_s->new_set_val = 0;
 
     s_s->data_type = SCALAR_DATA;  // by default set data type to scalar for insertion into db.
 
@@ -310,14 +316,18 @@ void sensor_loop(struct inst_struct *i_s, struct sensor_struct *s_s_a)
       if (!(is_null(this_sensor_struc->name)))  
 	{
 	  ///////////////////////////////////////////////////////////////////////// change setpoint
-	  if (this_sensor_struc->settable)    
+	  if (this_sensor_struc->settable)
 	    {
-	      read_mysql_sensor_data(this_sensor_struc->name, &this_sensor_struc->new_set_time, 
-				     &this_sensor_struc->new_set_val, &rate_place_holder);
-	      if (this_sensor_struc->new_set_time > this_sensor_struc->last_set_time)  
-		{				
+	      // If the sensor's sc_sens_<name> history table has no rows yet (e.g. a brand new
+	      // sensor that has never been set through the web interface), read_mysql_sensor_data()
+	      // fails and leaves new_set_time/new_set_val untouched. Skip the setpoint check
+	      // entirely in that case instead of acting on a stale/uninitialized value.
+	      if (read_mysql_sensor_data(this_sensor_struc->name, &this_sensor_struc->new_set_time,
+					 &this_sensor_struc->new_set_val, &rate_place_holder) == 0 &&
+		  this_sensor_struc->new_set_time > this_sensor_struc->last_set_time)
+		{
 		  this_sensor_struc->last_set_time = this_sensor_struc->new_set_time;
-		  
+
 		  j = 0;
 		  while ( (sens_errors = set_sensor(i_s, this_sensor_struc)) != 0 )
 		    {
@@ -326,7 +336,7 @@ void sensor_loop(struct inst_struct *i_s, struct sensor_struct *s_s_a)
 			{
 			  sprintf(this_sys_message_struc.ip_address, " ");
 			  sprintf(this_sys_message_struc.subsys, "%s", this_sensor_struc->type);
-			  sprintf(this_sys_message_struc.msgs, "New setpoint: %s = %e could not be set.", 
+			  sprintf(this_sys_message_struc.msgs, "New setpoint: %s = %e could not be set.",
 				  this_sensor_struc->name , this_sensor_struc->new_set_val);
 			  sprintf(this_sys_message_struc.type, "Setpoint");
 			  this_sys_message_struc.is_error = 1;
@@ -339,7 +349,7 @@ void sensor_loop(struct inst_struct *i_s, struct sensor_struct *s_s_a)
 		    {
 		      sprintf(this_sys_message_struc.ip_address, " ");
 		      sprintf(this_sys_message_struc.subsys, "%s", this_sensor_struc->type);
-		      sprintf(this_sys_message_struc.msgs, "New setpoint: %s = %e.", 
+		      sprintf(this_sys_message_struc.msgs, "New setpoint: %s = %e.",
 			      this_sensor_struc->name , this_sensor_struc->new_set_val);
 		      sprintf(this_sys_message_struc.type, "Setpoint");
 		      this_sys_message_struc.is_error = 0;
