@@ -22,7 +22,7 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
     // modbus_connect: Attempts to connect. If unsuccessful, it exits with an error.
     if (modbus_connect(&inst_dev) == -1) 
     {
-      fprintf(stderr, "ERROR Connection failed\n");
+      log_err("ERROR Connection failed\n");
       exit(1);
     }
     
@@ -47,7 +47,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     const int max_tries = 5;
 
     if (strncmp(s_s->subtype, "cryoread", strlen("cryoread")) != 0) {
-        fprintf(stderr, "Unsupported subtype: %s\n", s_s->subtype);
+        log_err("Unsupported subtype: %s\n", s_s->subtype);
         return 1; // Failure
     }
     if (s_s->num != 1  && s_s->num != 2  && s_s->num != 34 &&    
@@ -55,7 +55,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
         s_s->num != 41 && s_s->num != 42 && s_s->num != 43 &&  
         s_s->num != 44 && s_s->num != 46 && s_s->num != 48 && s_s->num != 49 &&   
         s_s->num != 50 && s_s->num != 52 && s_s->num != 54){
-        fprintf(stderr, "Unsupported modbus register address: %s\n", s_s->num);
+        log_err("Unsupported modbus register address: %s\n", s_s->num);
         return 1; // Failure
     }
 
@@ -85,8 +85,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
                     }
                     bits[32] = '\0';
 
-                    // fprintf(stderr,
-                    //         "Sensor num %d: u32=0x%08X, bits=%s (regs: 0x%04X 0x%04X)\n",
+                    // log_err(                    //         "Sensor num %d: u32=0x%08X, bits=%s (regs: 0x%04X 0x%04X)\n",
                     //         s_s->num, u32, bits, regs[0], regs[1]);
 
                     *val_out = (double)u32;
@@ -95,7 +94,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
             }
             else{
                 //reading failed message
-                fprintf(stderr, "read_input_registers failed (num=%d, start_addr=%d, count=2, ret=%d)\n",
+                log_err("read_input_registers failed (num=%d, start_addr=%d, count=2, ret=%d)\n",
                 s_s->num, start_addr, ret);
                 msleep(100);
                 continue;
@@ -122,7 +121,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
             }
     }
 
-    fprintf(stderr, "Failed to read input reg addr=%d (manual ~%d) subtype=%s after %d attempts.\n",
+    log_err("Failed to read input reg addr=%d (manual ~%d) subtype=%s after %d attempts.\n",
             start_addr, 30001 + start_addr, (s_s->subtype ? s_s->subtype : "unknown"), max_tries);
     return 1; // failure
 }
@@ -132,7 +131,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 {
     if (strncmp(s_s->subtype, "cryoset", 7) != 0)
     {
-        fprintf(stderr, "Cryomech: Unsupported sensor subtype for setting: %s\n", s_s->subtype);
+        log_err("Cryomech: Unsupported sensor subtype for setting: %s\n", s_s->subtype);
         return 1;
     }
     //   1   -> ON
@@ -140,7 +139,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     int write_val = (int)(s_s->new_set_val);
     if (write_val != 1 && write_val != 255)
     {
-        fprintf(stderr, "Cryomech: Invalid set value %d (allowed: 1=ON, 255=OFF)\n", write_val);
+        log_err("Cryomech: Invalid set value %d (allowed: 1=ON, 255=OFF)\n", write_val);
         return 1;
     }
 
@@ -152,8 +151,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
     if (ret <= 0)
     {
-        fprintf(stderr,
-                "Cryomech: Failed to write holding register %d with value %d (ret=%d)\n",
+        log_err(                "Cryomech: Failed to write holding register %d with value %d (ret=%d)\n",
                 reg_addr, write_val, ret);
         return 1;
     }

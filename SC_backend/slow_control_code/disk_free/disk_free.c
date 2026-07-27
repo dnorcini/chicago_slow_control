@@ -28,7 +28,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     
     *val_out = 100.0 * (this_fs.f_bavail) / (double)(this_fs.f_blocks);
     
-    //fprintf(stdout, "%s, blocks: %d, avail: %d, free: %d, block size: %d \n", s_s->user1, this_fs.f_blocks, this_fs.f_bavail, this_fs.f_bfree, this_fs.f_frsize);
+    //log_out("%s, blocks: %d, avail: %d, free: %d, block size: %d \n", s_s->user1, this_fs.f_blocks, this_fs.f_bavail, this_fs.f_bfree, this_fs.f_frsize);
 
     sleep(2);
     return(0);

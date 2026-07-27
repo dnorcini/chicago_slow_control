@@ -68,7 +68,7 @@ static void dump_namespace_array(void) {
   req.nodesToRead =
       (UA_ReadValueId *)UA_Array_new(1, &UA_TYPES[UA_TYPES_READVALUEID]);
   if (!req.nodesToRead) {
-    fprintf(stderr, "[HiCubeNeo] NamespaceArray: UA_Array_new failed\n");
+    log_err("[HiCubeNeo] NamespaceArray: UA_Array_new failed\n");
     return;
   }
 
@@ -88,7 +88,7 @@ static void dump_namespace_array(void) {
 int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a) {
 
   if (!i_s || !i_s->dev_address || strlen(i_s->dev_address) == 0) {
-    fprintf(stderr, "[HiCubeNeo] ERROR: empty endpoint in i_s->dev_address\n");
+    log_err("[HiCubeNeo] ERROR: empty endpoint in i_s->dev_address\n");
     return 1;
   }
 
@@ -98,10 +98,10 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a) {
 
   char endpoint[128];
   snprintf(endpoint, sizeof(endpoint), "opc.tcp://%s:4840", i_s->dev_address);
-  fprintf(stderr, "[HiCubeNeo] set_up_inst: endpoint=\"%s\"\n", endpoint);
+  log_err("[HiCubeNeo] set_up_inst: endpoint=\"%s\"\n", endpoint);
   UA_StatusCode st = UA_Client_connect(client, endpoint);
   if (st != UA_STATUSCODE_GOOD) {
-    fprintf(stderr, "[HiCubeNeo] OPC-UA connect failed: 0x%08x (%s)\n", st,
+    log_err("[HiCubeNeo] OPC-UA connect failed: 0x%08x (%s)\n", st,
             UA_StatusCode_name(st));
     UA_Client_delete(client);
     client = NULL;
@@ -124,7 +124,7 @@ void clean_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a) {
 /* Service-level read of a scalar numeric, with detailed debug */
 static int read_double(const char *nodeIdStr, double *out) {
   if (!client) {
-    // fprintf(stderr, "[HiCubeNeo] read_double: client=NULL\n");
+    // log_err("[HiCubeNeo] read_double: client=NULL\n");
     return 1;
   }
 
@@ -177,15 +177,15 @@ static int read_double(const char *nodeIdStr, double *out) {
         *out = (double)*(UA_Byte *)v->data;
         rc = 0;
       } else
-        fprintf(stderr, "[HiCubeNeo]  Unsupported numeric type: %s\n",
+        log_err("[HiCubeNeo]  Unsupported numeric type: %s\n",
                 v->type->typeName);
     } else {
-      fprintf(stderr, "[HiCubeNeo]  Variant not scalar or data NULL\n");
+      log_err("[HiCubeNeo]  Variant not scalar or data NULL\n");
     }
   }
 
   if (rc != 0)
-    fprintf(stderr, "[HiCubeNeo] READ FAILED for node=\"%s\"\n", nodeIdStr);
+    log_err("[HiCubeNeo] READ FAILED for node=\"%s\"\n", nodeIdStr);
 
   UA_ReadResponse_clear(&resp);
   UA_Array_delete(req.nodesToRead, 1, &UA_TYPES[UA_TYPES_READVALUEID]);
@@ -197,7 +197,7 @@ static int read_double(const char *nodeIdStr, double *out) {
 int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s,
                 double *val_out) {
   if (!s_s) {
-    fprintf(stderr, "[HiCubeNeo] read_sensor: s_s=NULL\n");
+    log_err("[HiCubeNeo] read_sensor: s_s=NULL\n");
     return 1;
   }
 
@@ -212,7 +212,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s,
     if (rc == 0)
       *val_out = status;
   } else {
-    fprintf(stderr, "[HiCubeNeo] Unsupported sensor subtype: %s\n",
+    log_err("[HiCubeNeo] Unsupported sensor subtype: %s\n",
             s_s->subtype);
     rc = 1;
   }
@@ -223,7 +223,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s,
 /* Write SYS_STATUS as Float (1.0f = off, 12.0f = on per your mapping) */
 static int write_status(int value) {
   if (!client) {
-    fprintf(stderr, "[HiCubeNeo] write_status: client=NULL\n");
+    log_err("[HiCubeNeo] write_status: client=NULL\n");
     return 1;
   }
   /* Build the target NodeId (owns its string) */
@@ -236,7 +236,7 @@ static int write_status(int value) {
   /* Deep-copy NodeId into wv (separate ownership) */
   UA_StatusCode cst = UA_NodeId_copy(&nid, &wv.nodeId);
   if (cst != UA_STATUSCODE_GOOD) {
-    fprintf(stderr, "[HiCubeNeo] UA_NodeId_copy failed: 0x%08x (%s)\n", cst,
+    log_err("[HiCubeNeo] UA_NodeId_copy failed: 0x%08x (%s)\n", cst,
             UA_StatusCode_name(cst));
     UA_NodeId_clear(&nid);
     return 1;
@@ -269,7 +269,7 @@ static int write_status(int value) {
   UA_NodeId_clear(&nid);
 
   if (!ok) {
-    fprintf(stderr, "[HiCubeNeo] WRITE FAILED (Float %f)\n", (double)fval);
+    log_err("[HiCubeNeo] WRITE FAILED (Float %f)\n", (double)fval);
     return 1;
   }
 
@@ -279,20 +279,20 @@ static int write_status(int value) {
 #define _def_set_sensor
 int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s) {
   if (!s_s) {
-    fprintf(stderr, "[HiCubeNeo] set_sensor: s_s=NULL\n");
+    log_err("[HiCubeNeo] set_sensor: s_s=NULL\n");
     return 1;
   }
 
   if (strcmp(s_s->subtype, "pump_status") == 0) {
     int set_val = (int)s_s->new_set_val; /* 1=off, 12=on */
     if (set_val != 1 && set_val != 12) {
-      fprintf(stderr, "[HiCubeNeo] Invalid pump set value %d\n", set_val);
+      log_err("[HiCubeNeo] Invalid pump set value %d\n", set_val);
       return 1;
     }
     return write_status(set_val);
   }
 
-  fprintf(stderr, "[HiCubeNeo] Unsupported sensor subtype for set: %s\n",
+  log_err("[HiCubeNeo] Unsupported sensor subtype for set: %s\n",
           s_s->subtype);
   return 1;
 }

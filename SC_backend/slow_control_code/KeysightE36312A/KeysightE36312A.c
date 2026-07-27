@@ -23,7 +23,7 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
 
   if ((inst_dev = connect_tcp(i_s)) < 0)
     {
-      fprintf(stderr, "Connect failed. \n");
+      log_err("Connect failed. \n");
       my_signal = SIGTERM;
       return(1);
     }
@@ -57,7 +57,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 
   if (s_s->num < 1 || s_s->num > 3) // Checks correct sensor number
     {
-      fprintf(stderr, "%d is an incorrect value for num. Must be 1, 2 or 3. \n", s_s->num);
+      log_err("%d is an incorrect value for num. Must be 1, 2 or 3. \n", s_s->num);
       return(1);
     }
 
@@ -70,7 +70,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
      
      if(sscanf(ret_string, "%lf", val_out) != 1)
        {
-	 fprintf(stderr, "Bad return string: \"%s\" in read voltage!\n", ret_string);
+	 log_err("Bad return string: \"%s\" in read voltage!\n", ret_string);
 	 return(1);
        }	
    }
@@ -84,14 +84,14 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
        
      if(sscanf(ret_string, "%lf", val_out) != 1)
        {
-         fprintf(stderr, "Bad return string: \"%s\" in read current!\n", ret_string);
+         log_err("Bad return string: \"%s\" in read current!\n", ret_string);
          return(1);
        }
    }
 
   else       // Print an error if invalid subtype is entered
     {
-      fprintf(stderr, "Wrong type for %s \n", s_s->name);
+      log_err("Wrong type for %s \n", s_s->name);
       return(1);
     } 
   msleep(600);
@@ -108,7 +108,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
   if (s_s->num < 1 || s_s->num > 3) // Checks correct sensor number
     {
-      fprintf(stderr, "%d is an incorrect value for num. Must be 1, 2 or 3. \n", s_s->num);
+      log_err("%d is an incorrect value for num. Must be 1, 2 or 3. \n", s_s->num);
       return(1);
     }
   
@@ -125,7 +125,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
 	{
-	  fprintf(stderr, "Bad return string: \"%s\" in read set voltage!\n", ret_string);
+	  log_err("Bad return string: \"%s\" in read set voltage!\n", ret_string);
 	  return(1);
 	}
 
@@ -133,14 +133,14 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
       if (s_s->new_set_val != 0)
 	if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
 	  {
-	    fprintf(stderr, "New set voltage of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
+	    log_err("New set voltage of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
 	    return(1);
 	  }
       */
       
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
         {
-          fprintf(stderr, "Bad return string: \"%s\" in read set voltage!\n", ret_string);
+          log_err("Bad return string: \"%s\" in read set voltage!\n", ret_string);
           return(1);
         }
     }
@@ -158,14 +158,14 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
         {
-          fprintf(stderr, "Bad return string: \"%s\" in read set on/off!\n", ret_string);
+          log_err("Bad return string: \"%s\" in read set on/off!\n", ret_string);
           return(1);
         }
     }
 
   else       // Print an error if invalid subtype is entered
     {
-      fprintf(stderr, "Wrong type for %s \n", s_s->name);
+      log_err("Wrong type for %s \n", s_s->name);
       return(1);
     } 
 

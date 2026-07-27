@@ -12,6 +12,7 @@
 /* James public licence. */
 
 #include "SC_alarms.h"
+#include "SC_aux_fns.h"
 
 #define INSTNAME "alarm_alert_sys"
 
@@ -231,7 +232,7 @@ int main (int argc, char *argv[])
 	    error_count++;
 	    if (error_count > 12)
 	      {
-		fprintf(stderr, "Alert system failed!  Please fix and restart.\n");
+		log_err("Alert system failed!  Please fix and restart.\n");
 		sprintf(this_sys_message_struc.ip_address, " ");
 		sprintf(this_sys_message_struc.subsys, this_inst.dev_type);
 		sprintf(this_sys_message_struc.msgs, "Alert system failed!  Please fix and restart.");
@@ -263,7 +264,7 @@ int main (int argc, char *argv[])
 		fcntl(fd, F_SETFD, flag | FD_CLOEXEC);
 	}
 	execv(my_argv[0], my_argv);
-	fprintf(stderr, "execv() failed.");
+	log_err("execv() failed.");
 	exit(1);
     }
 

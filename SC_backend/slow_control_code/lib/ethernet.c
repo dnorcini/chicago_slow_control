@@ -5,6 +5,7 @@
 /* James public licence. */
 
 #include "ethernet.h"
+#include "SC_aux_fns.h"
 
 ////// Establishes a TCP connection
 int connect_tcp_raw(char *IP_address, int port)
@@ -19,7 +20,7 @@ int connect_tcp_raw(char *IP_address, int port)
   
   if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-      fprintf(stderr, "Could not make socket: %d \n", fd);
+      log_err("Could not make socket: %d \n", fd);
       my_signal = SIGTERM;
       return(-1);
     }
@@ -29,7 +30,7 @@ int connect_tcp_raw(char *IP_address, int port)
   option = 1;
   if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const void *)&option, sizeof(int)) < 0)
     {
-      fprintf(stderr, "Could not set option: %d \n", option);
+      log_err("Could not set option: %d \n", option);
       close(fd);
       my_signal = SIGTERM;
 	return(-1);
@@ -39,7 +40,7 @@ int connect_tcp_raw(char *IP_address, int port)
   option = IPTOS_LOWDELAY;
   if (setsockopt(fd, IPPROTO_TCP, IP_TOS, (const void *)&option, sizeof(int)) < 0)
     {
-      fprintf(stderr, "Could not set option: %d \n", option);
+      log_err("Could not set option: %d \n", option);
       close(fd);
       my_signal = SIGTERM;
       return(-1);
@@ -47,7 +48,7 @@ int connect_tcp_raw(char *IP_address, int port)
   
   if (connect(fd, (struct sockaddr *)&addr, sizeof(struct sockaddr_in)) < 0 )
     {
-      fprintf(stderr, "Could not make connection to: %s:%d \n", IP_address, port);
+      log_err("Could not make connection to: %s:%d \n", IP_address, port);
       my_signal = SIGTERM;
       close(fd);
       return(-1);
@@ -77,7 +78,7 @@ int query_tcp(int fd, char *cmd_string, size_t c_count, char *ret_string, size_t
 
   if (send(fd, cmd_string, c_count, 0) < 0)
     {
-      fprintf(stderr, "send error in query_tcp\n");
+      log_err("send error in query_tcp\n");
       return(1);
     }
   
@@ -91,20 +92,20 @@ int query_tcp(int fd, char *cmd_string, size_t c_count, char *ret_string, size_t
     { 
       if (errno == EINTR) 
 	{					
-	  fprintf(stderr, "A non blocked signal was caught.\n");		
+	  log_err("A non blocked signal was caught.\n");		
 	  FD_ZERO(&rfds);						
 	  FD_SET(fd, &rfds);				
 	} 
       else 
 	{							
-	  fprintf(stderr, "Select failure.\n"); 
+	  log_err("Select failure.\n"); 
 	  return(1);					
 	}								
     }								
   
   if (select_ret == 0) // Timeout
     {
-      fprintf(stderr, "Timeout in query_tcp.\n");
+      log_err("Timeout in query_tcp.\n");
       return(1);	
     }
   
@@ -113,12 +114,12 @@ int query_tcp(int fd, char *cmd_string, size_t c_count, char *ret_string, size_t
       rdstatus = recv(fd, ret_string, r_count, MSG_DONTWAIT);
       if (rdstatus == 0) 
 	{
-	  fprintf(stderr, "Connection closed.\n");
+	  log_err("Connection closed.\n");
 	  return(1);
 	}
       else if (rdstatus < 0) 
 	{
-	  fprintf(stderr, "Socket failure.\n");
+	  log_err("Socket failure.\n");
 	  return(1);
 	}
       select_ret = 0;
@@ -128,7 +129,7 @@ int query_tcp(int fd, char *cmd_string, size_t c_count, char *ret_string, size_t
     return(0);
   
   if (rdstatus == 0) 
-    fprintf(stderr, "Connection closed\n");
+    log_err("Connection closed\n");
   
   return(1);
 }
@@ -138,7 +139,7 @@ int write_tcp(int fd, char *cmd_string, size_t c_count)
 {
   if (send(fd, cmd_string, c_count, 0) < 0)
     {
-      fprintf(stderr, "send error in query_tcp\n");
+      log_err("send error in query_tcp\n");
       return(1);
     }
   
@@ -165,20 +166,20 @@ int read_tcp(int fd, char *ret_string, size_t r_count)
     { 
       if (errno == EINTR) 
 	{					
-	  fprintf(stderr, "A non blocked signal was caught.\n");		
+	  log_err("A non blocked signal was caught.\n");		
 	  FD_ZERO(&rfds);						
 	  FD_SET(fd, &rfds);				
 	} 
       else 
 	{							
-	  fprintf(stderr, "Select failure.\n"); 
+	  log_err("Select failure.\n"); 
 	  return(1);					
 	}								
     }								
   
   if (select_ret == 0) // Timeout
     {
-      fprintf(stderr, "Timeout in read_tcp.\n");
+      log_err("Timeout in read_tcp.\n");
       return(1);	
     }
   
@@ -187,12 +188,12 @@ int read_tcp(int fd, char *ret_string, size_t r_count)
       rdstatus = recv(fd, ret_string, r_count, MSG_DONTWAIT);
       if (rdstatus == 0) 
 	{
-	  fprintf(stderr, "Connection closed.\n");
+	  log_err("Connection closed.\n");
 	  return(1);
 	}
       else if (rdstatus < 0) 
 	{
-	  fprintf(stderr, "Socket failure.\n");
+	  log_err("Socket failure.\n");
 	  return(1);
 	}
       select_ret = 0;
@@ -202,7 +203,7 @@ int read_tcp(int fd, char *ret_string, size_t r_count)
     return(0);
   
   if (rdstatus == 0) 
-    fprintf(stderr, "Connection closed\n");
+    log_err("Connection closed\n");
   
   return(1);
 }

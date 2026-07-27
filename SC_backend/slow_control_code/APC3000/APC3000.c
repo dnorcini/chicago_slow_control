@@ -28,7 +28,7 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
     
     if (modbus_connect(&inst_dev) == -1) 
     {
-	fprintf(stderr, "ERROR Connection failed\n");
+	log_err("ERROR Connection failed\n");
 	exit(1);
     }
     
@@ -108,7 +108,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
      
     else
     {
-	fprintf(stderr, "Wrong subtype for %s \n", s_s->name);
+	log_err("Wrong subtype for %s \n", s_s->name);
 	return(1);
     }
 

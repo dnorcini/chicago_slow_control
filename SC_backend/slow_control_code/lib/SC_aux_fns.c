@@ -97,10 +97,41 @@ void init_dbl_array(double *array_in, int num, double val)
 
 void print_error (char *message)
 {
-  time_t now; 
+  time_t now;
   time(&now);
   fprintf(stderr, "%s", ctime(&now));
-  fprintf(stderr, "  %s\n", message); 
+  fprintf(stderr, "  %s\n", message);
+}
+
+
+static void print_timestamp(FILE *stream)
+{
+  char ts[32];
+  time_t now = time(NULL);
+  struct tm tm_now;
+  localtime_r(&now, &tm_now);
+  strftime(ts, sizeof(ts), "%Y-%m-%d %H:%M:%S", &tm_now);
+  fprintf(stream, "[%s] ", ts);
+}
+
+
+void log_err(const char *format, ...)
+{
+  va_list args;
+  print_timestamp(stderr);
+  va_start(args, format);
+  vfprintf(stderr, format, args);
+  va_end(args);
+}
+
+
+void log_out(const char *format, ...)
+{
+  va_list args;
+  print_timestamp(stdout);
+  va_start(args, format);
+  vfprintf(stdout, format, args);
+  va_end(args);
 }
 
 
@@ -184,7 +215,7 @@ void msleep(double sleep_time)
 char int_to_letter(int n)   // converts an integer to a, b, c, d, ...
 {
   if ((n < 1) || (n > 26))
-    fprintf(stderr, "int_to_letter(n), 1<=n<=26, you provided n=%d", n);
+    log_err("int_to_letter(n), 1<=n<=26, you provided n=%d", n);
   char c = n+96;
   return(c);
 }
@@ -192,7 +223,7 @@ char int_to_letter(int n)   // converts an integer to a, b, c, d, ...
 char int_to_Letter(int n)   // converts an integer to A, B, C, D, ...
 {
   if ((n < 1) || (n > 26))
-    fprintf(stderr, "int_to_Letter(n), 1<=n<=26, you provided n=%d", n);
+    log_err("int_to_Letter(n), 1<=n<=26, you provided n=%d", n);
   char c = n+64;
   return(c);
 }
@@ -217,9 +248,9 @@ void parse_CL_for_string(int argc, char *argv[], char *default_string, char *str
     {
       if ((strncasecmp(argv[1], "help", 4) == 0) || (strncasecmp(argv[1], "-h", 2) == 0) || (strncasecmp(argv[1], "--h", 3) == 0))
 	{
-	  fprintf(stdout, "Usage: %s %s \n", argv[0], argv[0]);
-	  fprintf(stdout, "   or: %s           (use default instrument entry: %s) \n", argv[0], string);
-	  fprintf(stdout, "   or: %s --help (-h) for this help. \n", argv[0]);
+	  log_out("Usage: %s %s \n", argv[0], argv[0]);
+	  log_out("   or: %s           (use default instrument entry: %s) \n", argv[0], string);
+	  log_out("   or: %s --help (-h) for this help. \n", argv[0]);
 	  exit(1);
 	}
       else 
@@ -247,7 +278,7 @@ int send_mail_message(char *address, char *message)
   sys_command = malloc((strlen(message) + 128) * sizeof(char)); 
   if (sys_command == NULL)
     {
-      fprintf(stderr, "Malloc failed\n");
+      log_err("Malloc failed\n");
       return(1);
     }
   */
@@ -259,20 +290,20 @@ int send_mail_message(char *address, char *message)
   close(message_file);  
     
   if (w_status < 0)
-    fprintf(stderr, "Trouble writing message file in send_mail_message, w_status=%d\n", (int)w_status);
+    log_err("Trouble writing message file in send_mail_message, w_status=%d\n", (int)w_status);
     
 
   sprintf(sys_command, "/bin/mail -s \"Slow control alarm\" %s < %s > /dev/null ", address,  message_file_name);
   if (system(sys_command) == -1)
     {
-      fprintf(stderr, "Trouble sending with /bin/mail in send_mail_message\n");
+      log_err("Trouble sending with /bin/mail in send_mail_message\n");
       ret_val++;
     }
 
   sprintf(sys_command, "rm -f %s", message_file_name);               // delete message after sending 
   if (system(sys_command) == -1)
     {
-      fprintf(stderr, "Trouble deleting message in send_mail_message\n");
+      log_err("Trouble deleting message in send_mail_message\n");
       ret_val++;
     }
 
@@ -340,7 +371,7 @@ int implode_from_double(char *str_out, int str_sz, char *delim,
     }
   if (sizeof(str_out)-strlen(str_out) < 1)
     {
-      fprintf(stderr, "Not all of array_in may have been written in implode.\n");
+      log_err("Not all of array_in may have been written in implode.\n");
       return(1);
     }
   return(0);
@@ -359,7 +390,7 @@ int implode_from_int(char *str_out, int str_sz, char *delim,
     }
   if (sizeof(str_out)-strlen(str_out) < 1)
     {
-      fprintf(stderr, "Not all of array_in may have been written in implode.\n");
+      log_err("Not all of array_in may have been written in implode.\n");
       return(1);
     }
   return(0);
@@ -379,7 +410,7 @@ int implode_from_one_int(char *str_out, int str_sz, char *delim,
     }
   if (sizeof(str_out)-strlen(str_out) < 1)
     {
-      fprintf(stderr, "Not all wanted ints may have been written in implode.\n");
+      log_err("Not all wanted ints may have been written in implode.\n");
       return(1);
     }
   return(0);
@@ -401,7 +432,7 @@ int implode_from_one_double(char *str_out, int str_sz, char *delim,
     }
   if (sizeof(str_out)-strlen(str_out) < 1)
     {
-      fprintf(stderr, "Not all wanted doubles  may have been written in implode.\n");
+      log_err("Not all wanted doubles  may have been written in implode.\n");
       return(1);
     }
   return(0);

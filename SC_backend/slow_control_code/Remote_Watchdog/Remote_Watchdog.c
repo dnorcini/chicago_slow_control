@@ -46,7 +46,7 @@ int check_status(void)
     {
 	// send off warning 
 
-	fprintf(stdout, "%s Last Watchdog update time: %d seconds ago.\n",  ctime(&now), abs(time(NULL) - i_s.last_update_time)); 
+	log_out("%s Last Watchdog update time: %d seconds ago.\n",  ctime(&now), abs(time(NULL) - i_s.last_update_time)); 
 	
 	my_errors++;
     }
@@ -106,9 +106,9 @@ int fill_address_list(void)
 
 void help_and_exit(void)
 {
-    fprintf(stdout, "Usage: Remote_Watchdog INSTNAME DB_CONF \n");
-    fprintf(stdout, "where INSTNAME is the instrument name, and DB_CONF is the path to the master db ini file. \n");
-    fprintf(stdout, "   or: Remote_Watchdog --help (-h) for this help. \n");
+    log_out("Usage: Remote_Watchdog INSTNAME DB_CONF \n");
+    log_out("where INSTNAME is the instrument name, and DB_CONF is the path to the master db ini file. \n");
+    log_out("   or: Remote_Watchdog --help (-h) for this help. \n");
     exit(1);
 }
 
@@ -151,7 +151,7 @@ int main (int argc, char *argv[])
  
     if (read_mysql_inst_struct(&this_inst, inst_name) > 0)
     {
-	fprintf(stdout, "Could not find instrument or db.\n");
+	log_out("Could not find instrument or db.\n");
 	help_and_exit();
     }	
 
@@ -176,7 +176,7 @@ int main (int argc, char *argv[])
 	error_count=0;	
 	while(fill_address_list())
 	{
-	    fprintf(stderr, "get addy error\n");
+	    log_err("get addy error\n");
 	    error_count++;
 	    if (error_count > 5)
 		break;
@@ -184,7 +184,7 @@ int main (int argc, char *argv[])
 	}
 	while(check_status())
 	{
-	    fprintf(stderr, "get status error\n");
+	    log_err("get status error\n");
 	    error_count++;
 	    if (error_count > 5)
 		break;

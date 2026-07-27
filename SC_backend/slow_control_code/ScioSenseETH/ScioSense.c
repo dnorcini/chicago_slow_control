@@ -72,7 +72,7 @@ static int read_ufm01_frame(void)
     for (attempts = 0; attempts < 30; attempts++) {
         int n = timed_recv(buf + len, (int)sizeof(buf) - len, 3);
         if (n <= 0) {
-            fprintf(stderr, "UFM-01: read timeout or connection lost\n");
+            log_err("UFM-01: read timeout or connection lost\n");
             return 1;
         }
         len += n;
@@ -127,7 +127,7 @@ static int read_ufm01_frame(void)
         return 0;
     }
 
-    fprintf(stderr, "UFM-01: failed to find valid frame after %d attempts\n", attempts);
+    log_err("UFM-01: failed to find valid frame after %d attempts\n", attempts);
     return 1;
 }
 
@@ -135,7 +135,7 @@ static int read_ufm01_frame(void)
 int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
 {
     if ((inst_dev = connect_tcp(i_s)) < 0) {
-        fprintf(stderr, "UFM-01: TCP connect failed.\n");
+        log_err("UFM-01: TCP connect failed.\n");
         my_signal = SIGTERM;
         return 1;
     }
@@ -159,7 +159,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     /* Refresh cached frame if it is more than 1 second old */
     if (time(NULL) - cache_time > 1) {
         if (read_ufm01_frame()) {
-            fprintf(stderr, "UFM-01: failed to read frame for sensor %s\n", s_s->name);
+            log_err("UFM-01: failed to read frame for sensor %s\n", s_s->name);
             return 1;
         }
     }
@@ -169,7 +169,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     else if (strncmp(s_s->subtype, "temp",  4) == 0) *val_out = cached_temp;
     else if (strncmp(s_s->subtype, "empty", 5) == 0) *val_out = cached_empty;
     else {
-        fprintf(stderr, "UFM-01: unknown subtype \"%s\" for sensor %s\n",
+        log_err("UFM-01: unknown subtype \"%s\" for sensor %s\n",
                 s_s->subtype, s_s->name);
         return 1;
     }

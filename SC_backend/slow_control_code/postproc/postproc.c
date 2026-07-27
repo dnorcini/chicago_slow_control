@@ -16,6 +16,7 @@
 #define num_sensors 4
 
 #include "SC_db_interface_raw.h"
+#include "SC_aux_fns.h"
 
 int read_mysql_sensor_data_greater_than_t0 (char *sensor_name, time_t *t_out, double *v_out, time_t t0, int N)
 {
@@ -37,15 +38,15 @@ int read_mysql_sensor_data_greater_than_t0 (char *sensor_name, time_t *t_out, do
     el_ij = malloc(512 * sizeof(char)); 
     if ((query_strng == NULL) || (res_strng == NULL))
     {
-	fprintf(stderr, "Malloc failed\n");
+	log_err("Malloc failed\n");
 	return(1);
     }
 
     sprintf(query_strng, "SELECT * FROM `%s` WHERE `time` >= %d ORDER BY `time` ASC LIMIT %d", sensor_name, t0, N);
-    //fprintf(stdout, "%s \n", query_strng);
+    //log_out("%s \n", query_strng);
 
     ret_val += process_statement(query_strng, res_strng, &num_rows, &num_cols);
-    //fprintf(stdout, "%s \n", res_strng);
+    //log_out("%s \n", res_strng);
 
     for (i=0; i < num_rows; i++)
     {
@@ -89,12 +90,12 @@ int main (int argc, char *argv[])
     {
 	if (i != retrieve_config_parms (file_des, "sensor_names_out", sensor_names_out[i], i))
 	{
-	    fprintf(stderr, "Cound not find sensor parameter.\n");
+	    log_err("Cound not find sensor parameter.\n");
 	    exit(1);
 	}
 	if (i != retrieve_config_parms (file_des, "sensor_names_in", sensor_names_in[i], i))
 	{
-	    fprintf(stderr, "Cound not find sensor parameter.\n");
+	    log_err("Cound not find sensor parameter.\n");
 	    exit(1);
 	}
 	
@@ -121,9 +122,9 @@ int main (int argc, char *argv[])
 		    last_time = new_time[1];
 		    insert_mysql_sensor_data(sensor_names_out[i], last_time, Rate);
 
-		    //fprintf(stdout, "new time 1: %d, new time 2: %d \n",  new_time[0], new_time[1]);
+		    //log_out("new time 1: %d, new time 2: %d \n",  new_time[0], new_time[1]);
 		    
-		    //fprintf(stdout, "last time: %d, Rate: %f \n",  last_time, Rate);
+		    //log_out("last time: %d, Rate: %f \n",  last_time, Rate);
 
 		    read_mysql_sensor_data_greater_than_t0(sensor_names_in[i], new_time, new_val, last_time, 2);
 		    

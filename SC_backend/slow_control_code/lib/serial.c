@@ -5,6 +5,7 @@
 /* James public licence. */
 
 #include "serial.h"
+#include "SC_aux_fns.h"
 
 int query_serial(int fd, char *cmd_string, size_t c_count, char *ret_string, size_t r_count)
 {
@@ -14,7 +15,7 @@ int query_serial(int fd, char *cmd_string, size_t c_count, char *ret_string, siz
     {
       if (write(fd, cmd_string, c_count) < 0)
 	{
-	  fprintf(stderr, "To many retries in query_serial. \n");
+	  log_err("To many retries in query_serial. \n");
 	  return(1);
 	}
       
@@ -23,7 +24,7 @@ int query_serial(int fd, char *cmd_string, size_t c_count, char *ret_string, siz
 	    return(0);
     }
     
-    fprintf(stderr, "To many retries in query_serial. \n");
+    log_err("To many retries in query_serial. \n");
     return(1);
 }
 
@@ -37,7 +38,7 @@ int write_serial(int fd, char *cmd_string, size_t c_count)
 	return(0);
     }
     
-    fprintf(stderr, "To many retries in write_serial. \n");
+    log_err("To many retries in write_serial. \n");
     return(1);
 }
 
@@ -51,6 +52,6 @@ int read_serial(int fd, char *ret_string, size_t r_count)
 	  return(0);
       }
     
-    fprintf(stderr, "To many retries in read_serial. \n");
+    log_err("To many retries in read_serial. \n");
     return(1);
 }

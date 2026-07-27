@@ -40,7 +40,7 @@ int check_instruments(struct inst_struct *wd_inst)
     sprintf(query_strng, "SELECT `name` FROM `sc_insts` WHERE `run` = 1 AND `PID` = -1 AND `WD_ctrl` = 1");
 
     my_errors += process_statement(query_strng, res_strng, &num_rows, &num_cols);
-    // printf("check_instruments: %d instruments requested to run\n", num_rows);
+    printf("check_instruments: %d instruments requested to run\n", num_rows);
 
     for (i = 0; i < num_rows; i++)
     {
@@ -69,7 +69,7 @@ int check_instruments(struct inst_struct *wd_inst)
 
         if (read_mysql_inst_struct(&i_s, inst_name) != 0)
         {
-            fprintf(stderr, "Failed to read inst_struct for %s\n", inst_name);
+            log_err("Failed to read inst_struct for %s\n", inst_name);
             continue;
         }
 
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
         }
         sleep(2);
         execv(my_argv[0], my_argv);
-        fprintf(stderr, "execv() failed.");
+        log_err("execv() failed.");
         exit(1);
     }
 

@@ -5,6 +5,7 @@
 /* James public licence. */
 
 #include "SC_sensor_interface.h"
+#include "SC_aux_fns.h"
 
 
 int inc_index(int idx)
@@ -273,7 +274,7 @@ void write_temporary_sensor_data(struct sensor_struct *s_s)
     sprintf(file_name, "%s/%s", TEMP_DATA_DIR, s_s->name);
     if ((file_des = fopen(file_name, "w")) == NULL)
     {
-	fprintf(stderr, "Unable to open temp file: %s \n", file_name);
+	log_err("Unable to open temp file: %s \n", file_name);
 	return;
     }
     fprintf(file_des, "# %s:%s (%s) || Rate: %e (%s/sec) \n",  
@@ -537,7 +538,7 @@ int read_sens_struct_file(struct inst_struct *i_s, struct sensor_struct **s_s_a,
     sensors_array = malloc(num_active_sensors * sizeof(struct sensor_struct));
     if (sensors_array == NULL)		
     {
-	fprintf(stderr, "Malloc failed\n");
+	log_err("Malloc failed\n");
 	return(1);
     }
 
@@ -606,7 +607,7 @@ int generate_sensor_structs(struct inst_struct *i_s, struct sensor_struct **s_s_
     sensors_array = malloc(num_rows * sizeof(struct sensor_struct));
     if (sensors_array == NULL)		
     {
-	fprintf(stderr, "Malloc failed\n");
+	log_err("Malloc failed\n");
 	return(1);
     }
 

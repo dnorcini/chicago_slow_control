@@ -43,6 +43,9 @@ double average_array(double *array_in, int num, int discard);
 
 void print_error(char *message);
 
+void log_err(const char *format, ...);  // timestamped fprintf to stderr
+void log_out(const char *format, ...);  // timestamped fprintf to stdout
+
 int is_null(char str[]);
 
 char int_to_letter(int n);

@@ -20,7 +20,7 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
   // connection taken care of in net-snmp command
   /*  if ((inst_dev = connect_tcp(i_s)) < 0)
     {
-      fprintf(stderr, "Connect failed. \n");
+      log_err("Connect failed. \n");
       my_signal = SIGTERM;
       return(1);
       }*/
@@ -44,7 +44,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
   {
     if (s_s->num < 0 || s_s->num > 6 || s_s->num == 2 || s_s->num == 4) // Checks correct sensor number
     {
-      fprintf(stderr, "%d is an incorrect value for num. Must between 0, 1, 3, 5. \n", s_s->num);
+      log_err("%d is an incorrect value for num. Must between 0, 1, 3, 5. \n", s_s->num);
       return (1);
     }
 
@@ -75,7 +75,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 
     if (sscanf(ret_string, "%lf", val_out) != 1)
     {
-      fprintf(stderr, "Bad return string: \"%s\" in read output voltage!\n", ret_string);
+      log_err("Bad return string: \"%s\" in read output voltage!\n", ret_string);
       return (1);
     }
   }
@@ -84,7 +84,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
   {
     if (s_s->num < 0 || s_s->num > 6 || s_s->num == 2 || s_s->num == 4) // Checks correct sensor number
     {
-      fprintf(stderr, "%d is an incorrect value for num. Must between 0, 1, 3, 5. \n", s_s->num);
+      log_err("%d is an incorrect value for num. Must between 0, 1, 3, 5. \n", s_s->num);
       return (1);
     }
 
@@ -114,7 +114,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 
     if (sscanf(ret_string, "%lf", val_out) != 1)
     {
-      fprintf(stderr, "Bad return string: \"%s\" in read output current!\n", ret_string);
+      log_err("Bad return string: \"%s\" in read output current!\n", ret_string);
       return (1);
     }
   }
@@ -147,7 +147,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 
     if (sscanf(ret_string, "%lf", val_out) != 1)
     {
-      fprintf(stderr, "Bad return string: \"%s\" in read fan temp!\n", ret_string);
+      log_err("Bad return string: \"%s\" in read fan temp!\n", ret_string);
       return (1);
     }
   }
@@ -180,14 +180,14 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 
     if (sscanf(ret_string, "%lf", val_out) != 1)
     {
-      fprintf(stderr, "Bad return string: \"%s\" in read status main switch!\n", ret_string);
+      log_err("Bad return string: \"%s\" in read status main switch!\n", ret_string);
       return (1);
     }
   }
 
   else
   {
-    fprintf(stderr, "Wrong type for %s\n", s_s->name);
+    log_err("Wrong type for %s\n", s_s->name);
     return (1);
   }
 
@@ -226,7 +226,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     int status = pclose(tmp);
     if (status != 0)
     {
-      fprintf(stderr, "SNMP command failed with code %d\n", status);
+      log_err("SNMP command failed with code %d\n", status);
       return 1;
     }
 
@@ -234,7 +234,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     char *paren = strchr(ret_string, '(');
     if (paren == NULL || *(paren + 1) == '\0')
     {
-      fprintf(stderr, "Unexpected SNMP response: \"%s\"\n", ret_string);
+      log_err("Unexpected SNMP response: \"%s\"\n", ret_string);
       return 1;
     }
 
@@ -242,12 +242,12 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
     if (switch_val != (int)s_s->new_set_val)
     {
-      fprintf(stderr, "New setpoint of: %d is not equal to readback value of %d\n", (int)s_s->new_set_val, switch_val);
+      log_err("New setpoint of: %d is not equal to readback value of %d\n", (int)s_s->new_set_val, switch_val);
       return 1;
     }
 
     return (0);
   }
 }
-
 #include "main.h"
+// #include "main_no_daemon.h"

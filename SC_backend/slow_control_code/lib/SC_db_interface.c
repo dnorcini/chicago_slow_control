@@ -5,13 +5,14 @@
 /* James Public Licence. */
 
 #include "SC_db_interface_raw.h"
+#include "SC_aux_fns.h"
 
 void print_my_error (MYSQL *conn, char *message)
 {
   // Standard Mysql error printing mechanism.
   print_error(message);
   if (conn != NULL)
-    fprintf(stderr, "  Error %u (%s): %s\n", mysql_errno (conn), mysql_sqlstate(conn), mysql_error (conn));
+    log_err("  Error %u (%s): %s\n", mysql_errno (conn), mysql_sqlstate(conn), mysql_error (conn));
 }
 
 int start_mysql_conn(void)
@@ -295,7 +296,7 @@ int read_mysql_int_array(char *stmt_str, int result_int_array[], int *array_coun
       //result_int_array = malloc(*array_count * sizeof(int));  
       if (result_int_array == NULL)
 	{
-	  fprintf(stderr, "Malloc failed\n");
+	  log_err("Malloc failed\n");
 	  return(1);
 	}
       for (i = 0; i < *array_count; i++)
@@ -369,7 +370,7 @@ int insert_mysql_sensor_array_data (char *sensor_name, time_t t_in, double v_in,
   query_strng = malloc((strlen(sensor_name)+strlen(y)+1024) * sizeof(char));  
   if (query_strng == NULL)
     {
-      fprintf(stderr, "Malloc failed\n");
+      log_err("Malloc failed\n");
       return(1);
     }
   
@@ -412,7 +413,7 @@ int insert_mysql_system_message(struct sys_message_struct *sm_s)
   
   if (query_strng == NULL)
     {
-      fprintf(stderr, "Malloc failed\n");
+      log_err("Malloc failed\n");
       return(1);
     }
   
@@ -470,14 +471,14 @@ int get_element(char *element, char *res_string, int num_rows, int num_cols, int
   
   if ((row_i > num_rows) || (col_j > num_cols))
     {
-      fprintf(stderr,"i and j are not contained in the array");
+      log_err("i and j are not contained in the array");
       return(1);
     }
   
   format_strng = malloc(n * 10 * sizeof(char));  
   if (format_strng == NULL)
     {
-      fprintf(stderr, "Malloc failed\n");
+      log_err("Malloc failed\n");
       return(1);
     }
   

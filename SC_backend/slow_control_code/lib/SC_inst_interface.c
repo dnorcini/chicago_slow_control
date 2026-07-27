@@ -5,6 +5,7 @@
 /* James public licence. */
 
 #include "SC_inst_interface.h"
+#include "SC_aux_fns.h"
 
 int register_inst(struct inst_struct *i_s)
 {
@@ -13,7 +14,7 @@ int register_inst(struct inst_struct *i_s)
 
     if (i_s->PID != -1)
     {
-	fprintf(stderr, "Program is already running. \n");
+	log_err("Program is already running. \n");
 	exit(1);	
     }
     

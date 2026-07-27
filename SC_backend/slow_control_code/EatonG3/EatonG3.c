@@ -56,7 +56,7 @@ int snmp_get_int(struct inst_struct *i_s, const char *full_oid, double *val_out)
   tmp = popen(cmd_string, "r");
   if (tmp == NULL)
   {
-    fprintf(stderr, "Failed to run command: %s\n", cmd_string);
+    log_err("Failed to run command: %s\n", cmd_string);
     return (1);
   }
 
@@ -70,7 +70,7 @@ int snmp_get_int(struct inst_struct *i_s, const char *full_oid, double *val_out)
   char *val_ptr = strstr(ret_string, "INTEGER:");
   if (val_ptr == NULL)
   {
-    fprintf(stderr, "No INTEGER tag found in return string: \"%s\"\n", ret_string);
+    log_err("No INTEGER tag found in return string: \"%s\"\n", ret_string);
     return 1;
   }
 
@@ -79,7 +79,7 @@ int snmp_get_int(struct inst_struct *i_s, const char *full_oid, double *val_out)
   int raw_val;
   if (sscanf(val_ptr, "%d", &raw_val) != 1)
   {
-    fprintf(stderr, "Failed to parse integer from: \"%s\"\n", val_ptr);
+    log_err("Failed to parse integer from: \"%s\"\n", val_ptr);
     return 1;
   }
 
@@ -97,7 +97,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
   {
     if (s_s->num < 1 || s_s->num > MAX_OUTLETS)
     {
-      fprintf(stderr, "Outlet index %d is invalid. Must be between 1 and %d.\n", s_s->num, MAX_OUTLETS);
+      log_err("Outlet index %d is invalid. Must be between 1 and %d.\n", s_s->num, MAX_OUTLETS);
       return (1);
     }
 
@@ -111,7 +111,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     return snmp_get_int(i_s, OID_TOTAL_WATTS, val_out);
   }
 
-  fprintf(stderr, "Unsupported sensor subtype: %s\n", s_s->subtype);
+  log_err("Unsupported sensor subtype: %s\n", s_s->subtype);
   return 1;
 }
 
@@ -131,7 +131,7 @@ int set_outlet(struct inst_struct *i_s, int outlet, int set_val)
   tmp = popen(cmd_string, "r");
   if (tmp == NULL)
   {
-    fprintf(stderr, "Failed to run command for outlet %d.\n", outlet);
+    log_err("Failed to run command for outlet %d.\n", outlet);
     return 1;
   }
 
@@ -153,14 +153,14 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
   {
     if (s_s->num < 1 || s_s->num > MAX_OUTLETS)
     {
-      fprintf(stderr, "Outlet index %d is invalid. Must be between 1 and %d.\n", s_s->num, MAX_OUTLETS);
+      log_err("Outlet index %d is invalid. Must be between 1 and %d.\n", s_s->num, MAX_OUTLETS);
       return 1;
     }
 
     int set_val = (int)s_s->new_set_val; // 1 = ON, 2 = OFF
     if (set_val != 1 && set_val != 2)
     {
-      fprintf(stderr, "Invalid set value: %d. Must be 1 (on) or 2 (off).\n", set_val);
+      log_err("Invalid set value: %d. Must be 1 (on) or 2 (off).\n", set_val);
       return 1;
     }
 
@@ -173,13 +173,13 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     int set_val = (int)s_s->new_set_val;
     if (set_val != 1 && set_val != 2)
     {
-      fprintf(stderr, "Invalid set value for outletgroup: %d\n", set_val);
+      log_err("Invalid set value for outletgroup: %d\n", set_val);
       return 1;
     }
 
     if (is_null(s_s->user1))
     {
-      fprintf(stderr, "user1 is empty; no outlet list provided.\n");
+      log_err("user1 is empty; no outlet list provided.\n");
       return 1;
     }
 
@@ -194,7 +194,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
       int outlet = atoi(token);
       if (outlet < 1 || outlet > MAX_OUTLETS)
       {
-        fprintf(stderr, "Invalid outlet number %d in user1.\n", outlet);
+        log_err("Invalid outlet number %d in user1.\n", outlet);
         token = strtok(NULL, ",");
         continue;
       }
@@ -208,7 +208,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
   }
   else
   {
-    fprintf(stderr, "Unsupported sensor subtype for setting: %s\n", s_s->subtype);
+    log_err("Unsupported sensor subtype for setting: %s\n", s_s->subtype);
     return 1;
   }
 }

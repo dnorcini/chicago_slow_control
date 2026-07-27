@@ -29,7 +29,7 @@ int set_up_inst(struct inst_struct *i_s, struct sensor_struct *s_s_a)
 
   if ((inst_dev = connect_tcp(i_s)) < 0)
     {
-      fprintf(stderr, "Connect failed. \n");
+      log_err("Connect failed. \n");
       my_signal = SIGTERM;
       return(1);
     }
@@ -76,7 +76,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     {
       if (s_s->num < 1 || s_s->num > 4) // Checks correct sensor number
 	{
-	  fprintf(stderr, "%d is an incorrect value for num. Must between 1 and 4. \n", s_s->num);
+	  log_err("%d is an incorrect value for num. Must between 1 and 4. \n", s_s->num);
 	  return(1);
 	}
       sprintf(cmd_string, "KRDG? %c\n", int_to_Letter(s_s->num));
@@ -87,7 +87,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
       
       if(sscanf(ret_string, "%lf", val_out) != 1)
 	{
-	  fprintf(stderr, "Bad return string: \"%s\" in read temperature!\n", ret_string);
+	  log_err("Bad return string: \"%s\" in read temperature!\n", ret_string);
 	  return(1);
 	}	
     }
@@ -96,7 +96,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
 	{
-	  fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+	  log_err("%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
 	  return(1);
 	}
       sprintf(cmd_string, "HTR? %d\n", s_s->num);
@@ -106,7 +106,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
       
       if(sscanf(ret_string, "%lf", val_out) != 1)
 	{
-	  fprintf(stderr, "Bad return string: \"%s\" in read temperature!\n", ret_string);
+	  log_err("Bad return string: \"%s\" in read temperature!\n", ret_string);
 	  return(1);
 	}	
     }
@@ -115,7 +115,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
 	{
-	  fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+	  log_err("%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
 	  return(1);
 	}
       sprintf(cmd_string, "SETP? %d\n", s_s->num);
@@ -125,7 +125,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
 
       if(sscanf(ret_string, "%lf", val_out) != 1)
 	{
-	  fprintf(stderr, "Bad return string: \"%s\" in read setpoint!\n", ret_string);
+	  log_err("Bad return string: \"%s\" in read setpoint!\n", ret_string);
 	  return(1);
 	}	
     }
@@ -134,7 +134,7 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
         {
-          fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+          log_err("%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
           return(1);
 	}
       sprintf(cmd_string, "RAMP? %d\n", s_s->num);
@@ -146,13 +146,13 @@ int read_sensor(struct inst_struct *i_s, struct sensor_struct *s_s, double *val_
       
       if(sscanf(ret_string, "%lf", val_out) != 1)
         {
-          fprintf(stderr, "Bad return string: \"%s\" in read ramprate!\n", ret_string);
+          log_err("Bad return string: \"%s\" in read ramprate!\n", ret_string);
           return(1);
         }
     }
   else       // Print an error if invalid subtype is entered
     {
-      fprintf(stderr, "Wrong type for %s \n", s_s->name);
+      log_err("Wrong type for %s \n", s_s->name);
       return(1);
     } 
   msleep(600);
@@ -171,13 +171,13 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     {
       if (s_s->new_set_val < 0 ) // check valid value for Temp (>0)
 	{
-	  fprintf(stderr, "%f is an incorrect temperature. Temp must be greater than 0... You Fool! \n", s_s->new_set_val);
+	  log_err("%f is an incorrect temperature. Temp must be greater than 0... You Fool! \n", s_s->new_set_val);
 	  return(1);
 	}
 
     if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
 	{
-	  fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+	  log_err("%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
 	  return(1);
 	}
     
@@ -193,14 +193,14 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
 	{
-	  fprintf(stderr, "Bad return string: \"%s\" in read setpoint!\n", ret_string);
+	  log_err("Bad return string: \"%s\" in read setpoint!\n", ret_string);
 	  return(1);
 	}
 	
       /*      if (s_s->new_set_val != 0)
 	if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
 	  {
-	    fprintf(stderr, "New setpoint of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
+	    log_err("New setpoint of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
 	    return(1);
 	  }
       */
@@ -211,13 +211,13 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     {
       if (s_s->new_set_val < 0 ) // check valid value for Ramp (>0)
 	{
-	  fprintf(stderr, "%f is an incorrect ramprate. Ramprate must be greater than 0... You Fool! \n", s_s->new_set_val);
+	  log_err("%f is an incorrect ramprate. Ramprate must be greater than 0... You Fool! \n", s_s->new_set_val);
 	  return(1);
 	}
 
     if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
 	{
-	  fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+	  log_err("%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
 	  return(1);
 	}
     
@@ -235,14 +235,14 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
 	    
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
 	{
-	  fprintf(stderr, "Bad return string: \"%s\" in read ramprate!\n", ret_string);
+	  log_err("Bad return string: \"%s\" in read ramprate!\n", ret_string);
 	  return(1);
 	}
 	
       if (s_s->new_set_val != 0)
 	if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
 	  {
-	    fprintf(stderr, "New ramprate of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
+	    log_err("New ramprate of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
 	    return(1);
 	  }
     }
@@ -251,12 +251,12 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number
         {
-          fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+          log_err("%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
           return(1);
         }
       
       sprintf(cmd_string, "RANGE %d,%i\n", s_s->num, (int)s_s->new_set_val);
-      fprintf(stdout, "%s\n", cmd_string);
+      log_out("%s\n", cmd_string);
 	    
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
@@ -266,18 +266,18 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 
-      fprintf(stdout, "Heater status: %s\n", ret_string);
+      log_out("Heater status: %s\n", ret_string);
       
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
         {
-          fprintf(stderr, "Bad return string: \"%s\" in read heater onoff!\n", ret_string);
+          log_err("Bad return string: \"%s\" in read heater onoff!\n", ret_string);
           return(1);
         }
 
       if (s_s->new_set_val != 0)
         if (fabs(ret_val - s_s->new_set_val)/s_s->new_set_val > 0.1)
           {
-            fprintf(stderr, "New setpoint of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
+            log_err("New setpoint of: %f is not equal to read out value of %f\n", s_s->new_set_val, ret_val);
             return(1);
           }
     }
@@ -287,12 +287,12 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     {
       if (s_s->new_set_val < 0 || s_s->new_set_val > 2) // 0=local, 1=remote, 2=remote w/ lockout
 	{
-	  fprintf(stderr, "%f is an incorrect mode. Must be 0 (local), 1 (remote), or 2 (remote w/ lockout). \n", s_s->new_set_val);
+	  log_err("%f is an incorrect mode. Must be 0 (local), 1 (remote), or 2 (remote w/ lockout). \n", s_s->new_set_val);
 	  return(1);
 	}
 
       sprintf(cmd_string, "MODE %d\n", (int)s_s->new_set_val);
-      fprintf(stdout, "%s\n", cmd_string);
+      log_out("%s\n", cmd_string);
 
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
@@ -302,17 +302,17 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 
-      fprintf(stdout, "Interface mode: %s\n", ret_string);
+      log_out("Interface mode: %s\n", ret_string);
 
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
 	{
-	  fprintf(stderr, "Bad return string: \"%s\" in read mode!\n", ret_string);
+	  log_err("Bad return string: \"%s\" in read mode!\n", ret_string);
 	  return(1);
 	}
 
       if ((int)ret_val != (int)s_s->new_set_val)
 	{
-	  fprintf(stderr, "New mode of: %d is not equal to read out value of %d\n", (int)s_s->new_set_val, (int)ret_val);
+	  log_err("New mode of: %d is not equal to read out value of %d\n", (int)s_s->new_set_val, (int)ret_val);
 	  return(1);
 	}
     }
@@ -321,12 +321,12 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks correct Loop number                                                                              
         {
-          fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+          log_err("%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
           return(1);
         }
 
       sprintf(cmd_string, "OUTMODE %d,%i,%d,0\n", s_s->num, (int)s_s->new_set_val, s_s->num);
-      fprintf(stdout, "%s\n", cmd_string);
+      log_out("%s\n", cmd_string);
 
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
@@ -336,11 +336,11 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 
-      fprintf(stdout, "Output Mode: %s\n", ret_string);
+      log_out("Output Mode: %s\n", ret_string);
 
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
 	{
-          fprintf(stderr, "Bad return string: \"%s\" in read outmode!\n", ret_string);
+          log_err("Bad return string: \"%s\" in read outmode!\n", ret_string);
           return(1);
 	}
     }
@@ -349,12 +349,12 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
     {
       if (s_s->num < 1 || s_s->num > 2) // Checks corect Loop number
 	{
-          fprintf(stderr, "%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
+          log_err("%d is an incorrect value for num. Must be 1, or 2. \n", s_s->num);
           return(1);
         }
 
       sprintf(cmd_string, "MOUT %d,%f\n", s_s->num, s_s->new_set_val);
-      fprintf(stdout, "%s\n", cmd_string);
+      log_out("%s\n", cmd_string);
 
       write_tcp(inst_dev, cmd_string, strlen(cmd_string));
       sleep(1);
@@ -365,11 +365,11 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
       msleep(200);
       query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
 
-      fprintf(stdout, "Manual Output Mode: %s\n", ret_string);
+      log_out("Manual Output Mode: %s\n", ret_string);
 
       if(sscanf(ret_string, "%lf", &ret_val) != 1)
         {
-          fprintf(stderr, "Bad return string: \"%s\" in read outmode!\n", ret_string);
+          log_err("Bad return string: \"%s\" in read outmode!\n", ret_string);
           return(1);
         }
     }
@@ -377,7 +377,7 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
   */
   else       // Print an error if invalid subtype is entered
     {
-      fprintf(stderr, "Wrong type for %s \n", s_s->name);
+      log_err("Wrong type for %s \n", s_s->name);
       return(1);
     } 
 
