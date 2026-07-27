@@ -281,6 +281,41 @@ int set_sensor(struct inst_struct *i_s, struct sensor_struct *s_s)
             return(1);
           }
     }
+
+    // set the remote keypack lock
+    else if (strncmp(s_s->subtype, "Setmode", 7) == 0)  // Set the remote interface mode
+    {
+      if (s_s->new_set_val < 0 || s_s->new_set_val > 2) // 0=local, 1=remote, 2=remote w/ lockout
+	{
+	  fprintf(stderr, "%f is an incorrect mode. Must be 0 (local), 1 (remote), or 2 (remote w/ lockout). \n", s_s->new_set_val);
+	  return(1);
+	}
+
+      sprintf(cmd_string, "MODE %d\n", (int)s_s->new_set_val);
+      fprintf(stdout, "%s\n", cmd_string);
+
+      write_tcp(inst_dev, cmd_string, strlen(cmd_string));
+      sleep(1);
+
+      sprintf(cmd_string, "MODE?\n"); // queries the interface mode
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+      msleep(200);
+      query_tcp(inst_dev, cmd_string, strlen(cmd_string), ret_string, sizeof(ret_string)/sizeof(char));
+
+      fprintf(stdout, "Interface mode: %s\n", ret_string);
+
+      if(sscanf(ret_string, "%lf", &ret_val) != 1)
+	{
+	  fprintf(stderr, "Bad return string: \"%s\" in read mode!\n", ret_string);
+	  return(1);
+	}
+
+      if ((int)ret_val != (int)s_s->new_set_val)
+	{
+	  fprintf(stderr, "New mode of: %d is not equal to read out value of %d\n", (int)s_s->new_set_val, (int)ret_val);
+	  return(1);
+	}
+    }
   /*
   else if (strncmp(s_s->subtype, "Outmode", 7) == 0)  // Set the heater on/off                                                                
     {
