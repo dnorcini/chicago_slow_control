@@ -27,7 +27,6 @@ $req_priv = "full";
 include("db_login.php");
 include("page_setup.php");
 include("aux/array_defs.php"); // Import all array definitions
-include("aux/table_navigation.php");
 
 $table = "MODULE_SURFACE";
 
@@ -316,6 +315,8 @@ if (isset($_POST['id'])) {
 
 // Fetch module_surface details again after updates
 include("aux/get_module_surface_vals.php");
+$loc_result = mysql_query("SELECT `location` FROM `history` WHERE `type`='module' AND `sub_id`=$id ORDER BY (`date` IS NULL OR `date` = '') DESC, `date` DESC, `entry` DESC LIMIT 1");
+$current_location = ($loc_result && mysql_num_rows($loc_result) > 0) ? mysql_fetch_assoc($loc_result)['location'] : '';
 mysql_close($connection);
 
 // Function to generate a dropdown menu from an array
@@ -398,7 +399,9 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
     </tr>
 </table>
 <br><br>
+<?php include("aux/table_selection.php"); ?>
 
+<div class="section-block" data-section="preliminary" data-label="Preliminary">
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1" cellpadding="2" width="100%">
@@ -431,67 +434,83 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
             <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
                 Packaging radon [Bq/m^3]: <input type="text" name="radon" value="<?php echo $radon; ?>" size="10">
             </td>
+            <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
+                Current Location: <?php echo htmlspecialchars($current_location); ?>
+            </td>
         </tr>
     </table>
     <input type="submit" id="hiddenSubmit" style="display: none;">
 </form>
+</div>
 <br><br>
+<?php $hist_type = 'module';
+include("aux/history_section.php"); ?>
 
 <!-- Module layout -->
+<div class="section-block" data-section="layout" data-label="Layout">
 <?php echo "<b>Module layout</b>"; ?>
+<!-- DIE navigation buttons — standalone forms, not nested inside the layout form -->
+<table border="1" cellpadding="2" width="100%">
+    <tr>
+        <td>
+            <?php if (!empty($die_A)): ?>
+                <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
+                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A); ?>">
+                    <input type="submit" value="A" style="font-size: 14pt;">
+                </form>
+            <?php else: ?>
+                DIE ID A
+            <?php endif; ?>
+        </td>
+        <td>
+            <?php if (!empty($die_B)): ?>
+                <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
+                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_B); ?>">
+                    <input type="submit" value="B" style="font-size: 14pt;">
+                </form>
+            <?php else: ?>
+                DIE ID B
+            <?php endif; ?>
+        </td>
+        <td>
+            <?php if (!empty($die_C)): ?>
+                <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
+                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_C); ?>">
+                    <input type="submit" value="C" style="font-size: 14pt;">
+                </form>
+            <?php else: ?>
+                DIE ID C
+            <?php endif; ?>
+        </td>
+        <td>
+            <?php if (!empty($die_D)): ?>
+                <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
+                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_D); ?>">
+                    <input type="submit" value="D" style="font-size: 14pt;">
+                </form>
+            <?php else: ?>
+                DIE ID D
+            <?php endif; ?>
+        </td>
+    </tr>
+</table>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
     <table border="1" cellpadding="2" width="100%">
         <tr>
             <td>
-                <?php if (!empty($die_A)): ?>
-                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                        DIE ID
-                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A); ?>">
-                        <input type="submit" value="A" style="font-size: 14pt;">
-                    </form>
-                <?php else: ?>
-                    DIE ID A
-                <?php endif; ?>
                 <input type="text" name="die_A" value="<?php echo htmlspecialchars($die_A); ?>" size="10">
                 &nbsp&nbsp&nbsp&nbsp; Amp A<?php generate_dropdown('amp_A', $amp_array, $amp_A); ?>
             </td>
             <td>
-                <?php if (!empty($die_B)): ?>
-                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                        DIE ID
-                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_B); ?>">
-                        <input type="submit" value="B" style="font-size: 14pt;">
-                    </form>
-                <?php else: ?>
-                    DIE ID B
-                <?php endif; ?>
                 <input type="text" name="die_B" value="<?php echo htmlspecialchars($die_B); ?>" size="10">
                 &nbsp&nbsp&nbsp&nbsp; Amp B<?php generate_dropdown('amp_B', $amp_array, $amp_B); ?>
             </td>
             <td>
-                <?php if (!empty($die_C)): ?>
-                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                        DIE ID
-                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_C); ?>">
-                        <input type="submit" value="C" style="font-size: 14pt;">
-                    </form>
-                <?php else: ?>
-                    DIE ID C
-                <?php endif; ?>
                 <input type="text" name="die_C" value="<?php echo htmlspecialchars($die_C); ?>" size="10">
                 &nbsp&nbsp&nbsp&nbsp; Amp C<?php generate_dropdown('amp_C', $amp_array, $amp_C); ?>
             </td>
             <td>
-                <?php if (!empty($die_D)): ?>
-                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                        DIE ID
-                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_D); ?>">
-                        <input type="submit" value="D" style="font-size: 14pt;">
-                    </form>
-                <?php else: ?>
-                    DIE ID D
-                <?php endif; ?>
                 <input type="text" name="die_D" value="<?php echo htmlspecialchars($die_D); ?>" size="10">
                 &nbsp&nbsp&nbsp&nbsp; Amp D<?php generate_dropdown('amp_D', $amp_array, $amp_D); ?>
             </td>
@@ -501,8 +520,8 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <input type="submit" value="Submit">
             </td>
         </tr>
+    </table>
 </form>
-</table>
 
 <?php
 // Handle form submission to set the session variable and redirect
@@ -515,9 +534,11 @@ if (isset($_POST['go'])) {
     exit(); // Ensure no further code runs
 }
 ?>
+</div>
 <br><br>
 
 <!-- Preliminary Grade Assessment -->
+<div class="section-block" data-section="grade" data-label="Grade">
 <?php echo "<b>Preliminary Grade Assessment</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -613,9 +634,11 @@ if (isset($_POST['go'])) {
         </tr>
     </table>
 </form>
+</div>
 <br><br>
 
 <!-- Testing Section -->
+<div class="section-block" data-section="testing" data-label="Testing">
 <?php echo "<b>Testing</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -659,10 +682,12 @@ if (isset($_POST['go'])) {
         </tr>
     </table>
 </form>
+</div>
 <br><br>
 
 <!-- HIGH TEMP -->
 <!-- Trace Section -->
+<div class="section-block" data-section="trace_high" data-label="Trace">
 <?php echo "<b>Trace, High Temp</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -762,9 +787,11 @@ if (isset($_POST['go'])) {
         </tr>
     </table>
 </form>
+</div>
 <br><br>
 
 <!-- Image 1 - Track Defects-->
+<div class="section-block" data-section="image1high" data-label="Image 1 High">
 <?php echo "<b>Image 1, High Temp - [1skip, 20x20binning, 80rx320c, Active region, 3s Exposure] - Aim: To see tracks</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -870,9 +897,11 @@ if (isset($_POST['go'])) {
         </tr>
     </table>
 </form>
+</div>
 <br><br>
 
 <!-- Image 2 - Serial Register Defect -->
+<div class="section-block" data-section="image2high" data-label="Image 2 High">
 <?php echo "<b>Image 2, High Temp - [1skip, 1x1binning, 30rx6400c, Serial register, 10s Exposure] - Aim: Serial Register Defect</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -972,11 +1001,11 @@ if (isset($_POST['go'])) {
         </tr>
     </table>
 </form>
+</div>
 <br><br>
 
-
-
 <!-- Image 3 - Single Electron Resolution -->
+<div class="section-block" data-section="image3high" data-label="Image 3 High">
 <?php echo "<b>Image 3, High Temp - [1000skip, 1x1binning, 30rx640c, Serial register, 0s Exposure] - Aim: Single Electron Resolution</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -1081,9 +1110,11 @@ if (isset($_POST['go'])) {
         </tr>
     </table>
 </form>
+</div>
 <br><br>
 
 <!-- Image 4 - Track Defects, High VSub and V Clk -->
+<div class="section-block" data-section="image4high" data-label="Image 4 High">
 <?php echo "<b>Image 4, High Temp - [1skip, 1x1binning, 1600rx6400c, Active region, 500s Exposure] - Aim: Defect Map, Sharpness of tracks, CTI, Noise, CCD channel mapping</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -1196,10 +1227,12 @@ if (isset($_POST['go'])) {
         </tr>
     </table>
 </form>
+</div>
 <br><br>
 
 <!-- LOW TEMP -->
 <!-- Image 3 - Single Electron Resolution -->
+<div class="section-block" data-section="image3low" data-label="Image 3 Low">
 <?php echo "<b>Image 3, Low Temp - [1000skip, 1x10binning, 30rx640c, Serial register, 0s Exposure] - Aim: Single Electron Resolution</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -1304,9 +1337,11 @@ if (isset($_POST['go'])) {
         </tr>
     </table>
 </form>
+</div>
 <br><br>
 
 <!-- Image 4 - Single Electron Resolution -->
+<div class="section-block" data-section="image4low" data-label="Image 4 Low">
 <?php echo "<b>Image 4, Low Temp - [1skip, 1x1binning, 1600rx6400c, Active region, 500s Exposure] - Aim: Defect Map, Sharpness of tracks, CTI, Noise, Fe55 clusters</b>"; ?>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $id; ?>">
@@ -1450,6 +1485,7 @@ if (isset($_POST['go'])) {
         </tr>
     </table>
 </form>
+</div>
 <br><br>
 
 <?php include("aux/table_navigation.php");

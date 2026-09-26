@@ -148,6 +148,8 @@ if (strpos($_SESSION['privileges'], "admin") !== false)
     echo ('</FORM>');
 }
 
+echo ('<br><a href="computing_resources.php">Computing Resources</a>');
+
 echo(' </body>');
 echo ('</HTML>');
 ?>

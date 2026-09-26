@@ -57,16 +57,20 @@ else if ($_SESSION['choose_type'] == "DIEs") {
     echo ('<TH align="left">U1</TH>');
     echo ('<TH align="left">U2</TH>');
     echo ('<TH align="left">Grade</TH>');
+    echo ('<TH align="left">Current Location</TH>');
     echo ('</TR>');
 
     $table = "DIE";
     include("aux/get_last_table_id.php");
 
-    for ($i=1; $i <= $last_id; $i++) { 
+    for ($i=1; $i <= $last_id; $i++) {
         $_SESSION['choosen_die'] = $i;
 
         // Get selected die values:
         include("aux/get_die_vals.php");
+
+        $loc_res = mysql_query("SELECT `location` FROM `history` WHERE `type`='die' AND `sub_id`=$id ORDER BY (`date` IS NULL OR `date` = '') DESC, `date` DESC, `entry` DESC LIMIT 1");
+        $current_location = ($loc_res && mysql_num_rows($loc_res) > 0) ? mysql_fetch_assoc($loc_res)['location'] : '';
 
         // Logic to calculate tallies based on grades
         $tallies = "";
@@ -121,6 +125,7 @@ else if ($_SESSION['choose_type'] == "DIEs") {
         echo ('<TD align="left">' . htmlspecialchars($grade_U1) . '</TD>');
 	echo ('<TD align="left">' . htmlspecialchars($grade_U2) . '</TD>');
         echo ('<TD align="left" style="'.$bg_color.'">' . htmlspecialchars($tallies) . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($current_location) . '</TD>');
         echo ('</TR>');
     }
 
