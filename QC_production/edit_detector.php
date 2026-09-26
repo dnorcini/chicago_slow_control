@@ -24,6 +24,7 @@ session_start();
 $req_priv = "full";
 include("db_login.php");   // legacy mysql_connect() etc.
 include("page_setup.php"); // your header/menu
+include("aux/assay_helpers.php");
 
 mysql_select_db('assay_qc');
 
@@ -391,8 +392,8 @@ while ($c = mysql_fetch_assoc($r)) {
                 echo '<TD>' . h($d['Nuclide_1']) . '</TD>';
                 echo '<TD>' . h($d['Nuclide_2']) . '</TD>';
                 echo '<TD>' . h($d['Type']) . '</TD>';
-                echo '<TD>' . nl2br(h($d['Result'])) . '</TD>';
-                echo '<TD>' . h($d['Uncertainty']) . '</TD>';
+                echo '<TD>' . h(fmt_sci($d['Result'], 2)) . '</TD>';
+                echo '<TD>' . h(fmt_sci($d['Uncertainty'], 2)) . '</TD>';
                 // Placeholder computed columns
                 echo '<TD style="color:#777;">&nbsp;</TD>';
                 echo '<TD style="color:#777;">&nbsp;</TD>';

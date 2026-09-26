@@ -17,19 +17,71 @@ include("aux/table_navigation.php");
 // Uncertainty: submitted value is in hidden input detail_uncertainty_ROWID; cell is display only
 echo '<script>
 function toggleUnc(cellId, val, rowId) {
+  var inp = document.getElementById("detail_uncertainty_" + rowId);
   var cell = document.getElementById(cellId);
-  var hidden = document.getElementById("detail_uncertainty_" + rowId);
-  if (!cell || !hidden) return;
-  var style = " width:100%; text-align:center; box-sizing:border-box; padding:2px 6px;";
-  function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  if (!inp || !cell) return;
   if (val === "Upper Limit") {
-    var inp = cell.querySelector("input[type=text]");
-    if (inp && inp.value !== undefined) hidden.value = inp.value;
-    cell.innerHTML = "<span style=\"color:#777;\">n/a</span>";
+    inp.style.display = "none";
+    if (!cell.querySelector(".unc-na")) {
+      var s = document.createElement("span");
+      s.className = "unc-na";
+      s.style.color = "#777";
+      s.textContent = "n/a";
+      cell.appendChild(s);
+    }
   } else {
-    var v = hidden.value || "";
-    cell.innerHTML = "<input type=\"text\" id=\"unc_display_" + rowId + "\" value=\"" + esc(v) + "\"" + style + " oninput=\"document.getElementById(\'detail_uncertainty_" + rowId + "\').value=this.value\">";
+    inp.style.display = "";
+    var na = cell.querySelector(".unc-na");
+    if (na) na.parentNode.removeChild(na);
   }
+}
+
+function updateBqKgCols(tblId) {
+  var tbl = document.getElementById(tblId);
+  if (!tbl) return;
+  var unitInputs = tbl.querySelectorAll("input[name=\"detail_result_unit\"]");
+  var anyNonBqKg = false;
+  for (var i = 0; i < unitInputs.length; i++) {
+    if (unitInputs[i].value.trim() !== "Bq/kg") { anyNonBqKg = true; break; }
+  }
+  var cells = tbl.querySelectorAll(".col-bqkg");
+  for (var j = 0; j < cells.length; j++) {
+    cells[j].style.display = anyNonBqKg ? "" : "none";
+  }
+}
+
+function syncBqKg(rowId) {
+  var unitEl  = document.getElementById("detail_result_unit_"  + rowId);
+  var resEl   = document.getElementById("detail_result_"       + rowId);
+  var ribkEl  = document.getElementById("detail_result_bqkg_"  + rowId);
+  var uibkEl  = document.getElementById("detail_unc_bqkg_"     + rowId);
+  var uncEl   = document.getElementById("detail_uncertainty_"  + rowId);
+  if (!unitEl || !ribkEl || !uibkEl) return;
+
+  var isBqKg = (unitEl.value.trim() === "Bq/kg");
+  if (isBqKg) {
+    if (resEl) ribkEl.value = resEl.value;
+    if (uncEl) uibkEl.value = uncEl.value;
+    ribkEl.dataset.autoSync = "1";
+    uibkEl.dataset.autoSync = "1";
+    ribkEl.readOnly = true;
+    ribkEl.style.background = "#f0f0f0";
+    ribkEl.style.color = "#999";
+    uibkEl.readOnly = true;
+    uibkEl.style.background = "#f0f0f0";
+    uibkEl.style.color = "#999";
+  } else {
+    if (ribkEl.dataset.autoSync === "1") { ribkEl.value = ""; delete ribkEl.dataset.autoSync; }
+    if (uibkEl.dataset.autoSync === "1") { uibkEl.value = ""; delete uibkEl.dataset.autoSync; }
+    ribkEl.readOnly = false;
+    ribkEl.style.background = "";
+    ribkEl.style.color = "";
+    uibkEl.readOnly = false;
+    uibkEl.style.background = "";
+    uibkEl.style.color = "";
+  }
+  var tblId = unitEl.getAttribute("data-tbl");
+  if (tblId) updateBqKgCols(tblId);
 }
 </script>';
 
@@ -40,7 +92,7 @@ include("edit_material_POST.php");
 // RENDER PAGE
 // --------------------
 $qm = "
-  SELECT `ID`,`Material`,`Type`,`Manufacturer`,`Description`,`Liaison`,`Date`,`Remarks`,`Docdb`
+  SELECT `ID`,`Material`,`Type`,`Manufacturer`,`Description`,`Liaison`,`Date`,`Remarks`,`Docdb`,`Finished`
   FROM `$main_table`
   ORDER BY `ID` DESC
 ";
@@ -55,15 +107,31 @@ while ($row = mysql_fetch_assoc($rm)) {
     ensure_detail_table($detail_table);
 
     echo '<br>';
+    echo '<a id="assay-' . $assay_id . '"></a>';
     echo '<table border="1" cellpadding="4" width="100%">';
-    echo '<tr style="background:#eee;"><th align="left">' . h($material) . '</th></tr>';
+    echo '<tr style="background:#eee;">';
+    echo '<th style="text-align:left;">';
+    echo h($material);
+    echo '<span style="float:right; font-weight:normal; white-space:nowrap;">';
+    $finished_checked = (!empty($row['Finished']) && $row['Finished'] == 1) ? ' checked' : '';
+    echo '<label style="margin-right:12px;">Finished <input type="checkbox" name="assay_finished" value="1" form="update-form-' . $assay_id . '"' . $finished_checked . '></label>';
+    echo '<button type="submit" form="update-form-' . $assay_id . '">Save</button>';
+    echo '&nbsp;&nbsp;';
+    echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post" style="display:inline;">';
+    echo '<input type="hidden" name="assay_action" value="delete_assay">';
+    echo '<input type="hidden" name="assay_id" value="' . h($assay_id) . '">';
+    echo '<button type="submit" onclick="return confirm(\'Delete assay row and its detail table (assay_results_ID)? This cannot be undone.\');">Delete</button>';
+    echo '</form>';
+    echo '</span>';
+    echo '</th>';
+    echo '</tr>';
 
     echo '<tr><td>';  // ONE big cell wrapping everything
 
     /***********************
      * 1) UPDATE ASSAY FORM
      ***********************/
-    echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">';
+    echo '<form id="update-form-' . $assay_id . '" action="' . h($_SERVER['PHP_SELF']) . '" method="post" enctype="multipart/form-data">';
     echo '<input type="hidden" name="assay_action" value="update_assay">';
     echo '<input type="hidden" name="assay_id" value="' . h($assay_id) . '">';
 
@@ -105,53 +173,21 @@ while ($row = mysql_fetch_assoc($rm)) {
     echo '</tr>';
 
 
-    // Buttons row (Update center, Delete right)
-    echo '<tr>';
-    echo '<td colspan="3" style="text-align:center; padding-top:8px;">';
-
-    // UPDATE form
-    // echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post" style="display:inline;">';
-    echo '<input type="hidden" name="assay_action" value="update_assay">';
-    echo '<input type="hidden" name="assay_id" value="' . h($assay_id) . '">';
-    echo '<button type="submit">Update</button>';
     echo '</form>';
-
-    echo '</td>';
-
-    echo '<td colspan="3" style="text-align:right; padding-top:8px;">';
-
-    // DELETE form
-    echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post" style="display:inline;">';
-    echo '<input type="hidden" name="assay_action" value="delete_assay">';
-    echo '<input type="hidden" name="assay_id" value="' . h($assay_id) . '">';
-    echo '<button type="submit" onclick="return confirm(\'Delete assay row (detail table kept)?\');">Delete</button>';
-    echo '</form>';
-
-    echo '</td>';
-    echo '</tr>';
 
     echo '</table>';
 
 
     /***********************
-     * 3) Attached files (upload + list: preview, delete)
+     * 3) Attached files (list: preview, delete)
      ***********************/
     echo '<hr style="margin:12px 0;">';
-
-    echo '<div style="margin:6px 0;">';
-    echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post" enctype="multipart/form-data">';
-    echo '<input type="hidden" name="assay_action" value="upload_files">';
-    echo '<input type="hidden" name="assay_id" value="' . h($assay_id) . '">';
-    echo 'Upload file(s): <input type="file" name="assay_files[]" multiple> ';
-    echo '<button type="submit">Upload</button>';
-    echo '</form>';
-    echo '</div>';
 
     $qf = "SELECT * FROM `assay_files` WHERE `Assay_ID` = " . (int)$assay_id . " ORDER BY `ID` DESC";
     $rf = mysql_query($qf);
     if (!$rf) die("Could not query assay_files: " . mysql_error() . "<br>" . h($qf));
 
-    echo '<div style="margin-top:8px;"><b>Attached files</b></div>';
+    echo '<div style="margin:6px 0;"><b>Attached files</b>&nbsp;&nbsp;<input type="file" name="assay_files[]" multiple form="update-form-' . $assay_id . '"></div>';
 
     if (mysql_num_rows($rf) == 0) {
         echo '<div style="color:#555;">(No files uploaded.)</div>';
@@ -186,21 +222,25 @@ while ($row = mysql_fetch_assoc($rm)) {
 
     echo '<div style="margin:6px 0;"><b>Nuclide activities</b> (table: ' . h($detail_table) . ')</div>';
 
-    echo '<table border="1" cellpadding="3" width="100%">';
+    echo '<table id="dtbl-' . $assay_id . '" border="1" cellpadding="3" width="100%">';
     echo '<tr style="background:#f3f3f3;">';
     echo '<th>Nuclide</th>
       <th>Limit Type</th>
-      <th>Result(Bq/kg)</th>
-      <th>Uncertainty(Bq/kg)</th>
+      <th>Result</th>
+      <th>Uncertainty</th>
+      <th>Unit</th>
+      <th class="col-bqkg">Result(Bq/kg)</th>
+      <th class="col-bqkg">Uncertainty(Bq/kg)</th>
       <th>used in G4</th>
       <th>Note</th>
       <th>Action</th>';
     echo '</tr>';
 
-    $qd = "SELECT * FROM `{$detail_table}` ORDER BY `ID` DESC";
+    $qd = "SELECT * FROM `{$detail_table}` ORDER BY `ID` ASC";
     $rd = mysql_query($qd);
     if (!$rd) die("Could not query detail table: " . mysql_error() . "<br>" . h($qd));
 
+    $detail_row_ids = array();
     while ($d = mysql_fetch_assoc($rd)) {
         echo '<tr>';
         echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">';
@@ -211,11 +251,10 @@ while ($row = mysql_fetch_assoc($rm)) {
         $cell_in = ' style="width:100%; text-align:center; box-sizing:border-box; padding:2px 6px;"';
 
         $row_id = (int)$d['ID'];
+        $detail_row_ids[] = $row_id;
         $is_upper = ($d['Type'] === 'Upper Limit');
         $unc_display = fmt_sci($d['Uncertainty'], 2);
 
-        // Submitted value: always in a hidden input that is a direct child of the form (so it is always submitted)
-        echo '<input type="hidden" name="detail_uncertainty" id="detail_uncertainty_' . h($row_id) . '" value="' . h($unc_display) . '">';
 
         // type selector
         $type_select =
@@ -228,17 +267,30 @@ while ($row = mysql_fetch_assoc($rm)) {
         echo '<td' . $cell_td . '><input type="text" name="detail_nuclide_1" value="' . h($d['Nuclide_1']) . '"' . $cell_in . '></td>';
         echo '<td' . $cell_td . '>' . $type_select . '</td>';
 
-        echo '<td' . $cell_td . '><input type="text" name="detail_result" value="' . h(fmt_sci($d['Result'], 2)) . '"' . $cell_in . '></td>';
+        // Result (raw)
+        echo '<td' . $cell_td . '><input type="text" name="detail_result" id="detail_result_' . $row_id . '" value="' . h(fmt_sci($d['Result'], 2)) . '"' . $cell_in . ' oninput="syncBqKg(' . $row_id . ')"></td>';
 
-        // Uncertainty cell: display only; submitted value is in the hidden input above
+        // Uncertainty (raw); direct form input, hidden when Upper Limit
         echo '<td' . $cell_td . ' id="unc_cell_' . h($row_id) . '">';
+        echo '<input type="text" name="detail_uncertainty" id="detail_uncertainty_' . h($row_id) . '" value="' . h($unc_display) . '"' . $cell_in
+            . ($is_upper ? ' style="display:none;"' : '')
+            . ' oninput="syncBqKg(' . $row_id . ');">';
         if ($is_upper) {
-            echo '<span style="color:#777;">n/a</span>';
-        } else {
-            echo '<input type="text" id="unc_display_' . h($row_id) . '" value="' . h($unc_display) . '"' . $cell_in
-                . ' oninput="document.getElementById(\'detail_uncertainty_' . h($row_id) . '\').value=this.value">';
+            echo '<span class="unc-na" style="color:#777;">n/a</span>';
         }
         echo '</td>';
+
+        // Unit (text input, shared for both Result and Uncertainty)
+        $result_unit = isset($d['Result_Unit']) ? $d['Result_Unit'] : 'Bq/kg';
+        echo '<td' . $cell_td . '><input type="text" name="detail_result_unit" id="detail_result_unit_' . $row_id . '" data-tbl="dtbl-' . $assay_id . '" value="' . h($result_unit) . '"' . $cell_in . ' oninput="syncBqKg(' . $row_id . ')"></td>';
+
+        // Result converted to Bq/kg (manual entry; auto-filled and locked when unit is Bq/kg)
+        $ribk_display = isset($d['Result_in_BqKg']) ? fmt_sci($d['Result_in_BqKg'], 2) : '';
+        echo '<td class="col-bqkg"' . $cell_td . '><input type="text" name="detail_result_in_bqkg" id="detail_result_bqkg_' . $row_id . '" value="' . h($ribk_display) . '"' . $cell_in . '></td>';
+
+        // Uncertainty converted to Bq/kg (manual entry; auto-filled and locked when unit is Bq/kg)
+        $uibk_display = isset($d['Uncertainty_in_BqKg']) ? fmt_sci($d['Uncertainty_in_BqKg'], 2) : '';
+        echo '<td class="col-bqkg"' . $cell_td . '><input type="text" name="detail_uncertainty_in_bqkg" id="detail_unc_bqkg_' . $row_id . '" value="' . h($uibk_display) . '"' . $cell_in . '></td>';
 
         // Checkbox
         $checked = (!empty($d['Used_in_simulation']) && $d['Used_in_simulation'] == 1) ? ' checked' : '';
@@ -257,7 +309,18 @@ while ($row = mysql_fetch_assoc($rm)) {
         echo '</tr>';
     }
 
-    // add-new row (same as you had)
+    // Initialize Bq/kg sync for all rendered rows, then update column visibility
+    if (!empty($detail_row_ids)) {
+        echo '<script>';
+        foreach ($detail_row_ids as $init_id) {
+            echo 'syncBqKg(' . (int)$init_id . ');';
+        }
+        echo 'updateBqKgCols("dtbl-' . $assay_id . '");';
+        echo '</script>';
+    }
+
+    // add-new row
+    $new_row_id = 'a' . $assay_id; // unique per assay, avoids collision with numeric row IDs
     echo '<tr>';
     echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">';
     echo '<input type="hidden" name="detail_table_name" value="' . h($detail_table) . '">';
@@ -270,14 +333,18 @@ while ($row = mysql_fetch_assoc($rm)) {
         . '<option value="Value">Value</option>'
         . '</select>';
     echo '<td' . $cell_td . '><input type="text" name="detail_nuclide_1" value=""' . $cell_in . '></td>';
-    echo '<td' . $cell_td . '><input type="text" name="detail_nuclide_2" value=""' . $cell_in . '></td>';
     echo '<td' . $cell_td . '>' . $type_select_new . '</td>';
-    echo '<td' . $cell_td . '><input type="text" name="detail_result" value=""' . $cell_in . '></td>';
-    echo '<td' . $cell_td . '><input type="text" name="detail_uncertainty" value=""' . $cell_in . '></td>';
+    echo '<td' . $cell_td . '><input type="text" name="detail_result" id="detail_result_' . $new_row_id . '" value=""' . $cell_in . ' oninput="syncBqKg(\'' . $new_row_id . '\')"></td>';
+    echo '<td' . $cell_td . '><input type="text" name="detail_uncertainty" id="detail_uncertainty_' . $new_row_id . '" value=""' . $cell_in . ' oninput="syncBqKg(\'' . $new_row_id . '\')"></td>';
+    echo '<td' . $cell_td . '><input type="text" name="detail_result_unit" id="detail_result_unit_' . $new_row_id . '" data-tbl="dtbl-' . $assay_id . '" value="Bq/kg"' . $cell_in . ' oninput="syncBqKg(\'' . $new_row_id . '\')"></td>';
+    echo '<td class="col-bqkg"' . $cell_td . '><input type="text" name="detail_result_in_bqkg" id="detail_result_bqkg_' . $new_row_id . '" value=""' . $cell_in . '></td>';
+    echo '<td class="col-bqkg"' . $cell_td . '><input type="text" name="detail_uncertainty_in_bqkg" id="detail_unc_bqkg_' . $new_row_id . '" value=""' . $cell_in . '></td>';
+    echo '<td></td>'; // used in G4 — not set on add
     echo '<td' . $cell_td . '><input type="text" name="detail_note" value=""' . $cell_in . '></td>';
     echo '<td style="text-align:center; vertical-align:middle; white-space:nowrap;"><button type="submit" name="detail_action" value="add">Add</button></td>';
     echo '</form>';
     echo '</tr>';
+    echo '<script>syncBqKg(\'' . $new_row_id . '\'); updateBqKgCols("dtbl-' . $assay_id . '");</script>';
 
     echo '</table>'; // detail table
 

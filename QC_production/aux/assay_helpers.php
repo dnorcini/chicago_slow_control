@@ -42,7 +42,10 @@ function ensure_detail_table($table_name)
         `Nuclide_1` VARCHAR(8) DEFAULT NULL,
         `Type` VARCHAR(20) DEFAULT NULL,
         `Result` DOUBLE DEFAULT NULL,
+        `Result_Unit` VARCHAR(20) NOT NULL DEFAULT 'Bq/kg',
+        `Result_in_BqKg` DOUBLE DEFAULT NULL,
         `Uncertainty` DOUBLE DEFAULT NULL,
+        `Uncertainty_in_BqKg` DOUBLE DEFAULT NULL,
         `Used_in_simulation` TINYINT(1) DEFAULT 0,
         `Note` TEXT,
         PRIMARY KEY (`ID`)
@@ -50,6 +53,25 @@ function ensure_detail_table($table_name)
     ";
     $r = mysql_query($q);
     if (!$r) die("Could not create detail table: " . mysql_error() . "<BR>" . h($q));
+
+    // Migrate existing tables that predate these columns
+    $cols_to_add = array(
+        'Result_Unit'         => "VARCHAR(20) NOT NULL DEFAULT 'Bq/kg'",
+        'Result_in_BqKg'      => 'DOUBLE DEFAULT NULL',
+        'Uncertainty_in_BqKg' => 'DOUBLE DEFAULT NULL',
+    );
+    foreach ($cols_to_add as $col => $def) {
+        $col_esc = mysql_real_escape_string($col);
+        $chk = mysql_query("SELECT COUNT(*) AS n FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '{$table_name_esc}'
+            AND COLUMN_NAME = '{$col_esc}'");
+        if ($chk) {
+            $crow = mysql_fetch_assoc($chk);
+            if ((int)$crow['n'] === 0) {
+                mysql_query("ALTER TABLE `{$table_name_esc}` ADD COLUMN `{$col_esc}` {$def}");
+            }
+        }
+    }
 }
 
 function fmt_sci($v, $precision = 3)

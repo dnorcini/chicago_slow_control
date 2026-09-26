@@ -80,6 +80,8 @@ if (!empty($_POST['assay_action']) && $_POST['assay_action'] === "update_assay" 
         $docdb_sql = "'" . $docdb_esc . "'";
     }
 
+    $finished = isset($_POST['assay_finished']) ? 1 : 0;
+
     $q = "
 UPDATE `$main_table` SET
 `Material` = '$material',
@@ -89,7 +91,8 @@ UPDATE `$main_table` SET
 `Liaison` = '$liaison',
 `Date` = $date_sql,
 `Remarks` = '$remarks',
-`Docdb` = $docdb_sql
+`Docdb` = $docdb_sql,
+`Finished` = $finished
 WHERE `ID` = $id
 LIMIT 1
 ";
@@ -99,6 +102,40 @@ LIMIT 1
     // Make sure the detail table exists (in case it was deleted)
     $detail_table = detail_table_name_from_row($id, $material);
     ensure_detail_table($detail_table);
+
+    // Upload any attached files submitted with this form
+    if (!empty($_FILES['assay_files']['name'][0])) {
+        $upload_dir = "/var/www/html/QC_production/uploads/edit_assay/";
+        $max_bytes = 30 * 1024 * 1024;
+        $names = $_FILES['assay_files']['name'];
+        $tmps  = $_FILES['assay_files']['tmp_name'];
+        $errs  = $_FILES['assay_files']['error'];
+        $sizes = $_FILES['assay_files']['size'];
+        $types = $_FILES['assay_files']['type'];
+
+        for ($i = 0; $i < count($names); $i++) {
+            if ($names[$i] === '' || (int)$errs[$i] === UPLOAD_ERR_NO_FILE) continue;
+            if ((int)$errs[$i] !== UPLOAD_ERR_OK || (int)$sizes[$i] > $max_bytes) continue;
+            if (!is_uploaded_file($tmps[$i])) continue;
+
+            $ext = strtolower(pathinfo($names[$i], PATHINFO_EXTENSION));
+            $ext = preg_replace('/[^a-z0-9]/', '', $ext) ?: 'bin';
+            $stored = "assay_" . $id . "_" . time() . "_" . mt_rand(10000, 99999) . "." . $ext;
+
+            if (!move_uploaded_file($tmps[$i], $upload_dir . $stored)) continue;
+
+            $orig_esc   = mysql_real_escape_string($names[$i]);
+            $stored_esc = mysql_real_escape_string($stored);
+            $ext_esc    = mysql_real_escape_string($ext);
+            $mime_esc   = mysql_real_escape_string($types[$i]);
+            $size_int   = (int)$sizes[$i];
+
+            $q = "INSERT INTO `assay_files` (`Assay_ID`,`Orig_Name`,`Stored_Name`,`Ext`,`Mime`,`Size_Bytes`,`Uploaded_At`)
+                  VALUES ($id,'$orig_esc','$stored_esc','$ext_esc','$mime_esc',$size_int," . time() . ")";
+            $r = mysql_query($q);
+            if (!$r) { @unlink($upload_dir . $stored); die("Could not insert assay_files: " . mysql_error()); }
+        }
+    }
 }
 
 // --------------------
@@ -107,15 +144,33 @@ LIMIT 1
 if (!empty($_POST['assay_action']) && $_POST['assay_action'] === "delete_assay" && isset($_POST['assay_id'])) {
 
     $id = (int)$_POST['assay_id'];
+    $upload_dir = "/var/www/html/QC_production/uploads/edit_assay/";
 
+    // Delete uploaded files from disk and assay_files table
+    $qf = "SELECT `Stored_Name` FROM `assay_files` WHERE `Assay_ID` = $id";
+    $rf = mysql_query($qf);
+    if (!$rf) die("Could not query assay_files: " . mysql_error() . "<BR>" . h($qf));
+    while ($f = mysql_fetch_assoc($rf)) {
+        $stored = (string)$f['Stored_Name'];
+        if (preg_match('/^assay_\d+_\d+_\d+\.[A-Za-z0-9]{1,20}$/', $stored)) {
+            @unlink($upload_dir . $stored);
+        }
+    }
+    $qfd = "DELETE FROM `assay_files` WHERE `Assay_ID` = $id";
+    $rfd = mysql_query($qfd);
+    if (!$rfd) die("Could not delete assay_files: " . mysql_error() . "<BR>" . h($qfd));
+
+    // Delete main assay row
     $q = "DELETE FROM `$main_table` WHERE `ID` = $id LIMIT 1";
     $r = mysql_query($q);
     if (!$r) die("Could not delete assay: " . mysql_error() . "<BR>" . h($q));
 
-    // NOTE: We intentionally do NOT drop the detail table automatically.
-    // If you want that behavior, uncomment:
-    // $detail_table = detail_table_name_from_row($id, "");
-    // mysql_query("DROP TABLE IF EXISTS `".mysql_real_escape_string($detail_table)."`");
+    // Drop detail table
+    $detail_table = detail_table_name_from_row($id, "");
+    $detail_table_esc = mysql_real_escape_string($detail_table);
+    $qd = "DROP TABLE IF EXISTS `{$detail_table_esc}`";
+    $rd = mysql_query($qd);
+    if (!$rd) die("Could not drop detail table: " . mysql_error() . "<BR>" . h($qd));
 }
 
 // --------------------
@@ -130,15 +185,37 @@ if (!empty($_POST['detail_action']) && !empty($_POST['detail_table_name'])) {
 
     $action = $_POST['detail_action'];
 
-    $nu1 = post_esc("detail_nuclide_1");
-    $nu2 = post_esc("detail_nuclide_2");
+    $nu1  = post_esc("detail_nuclide_1");
+    $nu2  = post_esc("detail_nuclide_2");
     $type = post_esc("detail_type");
-    $res = post_esc("detail_result");
     $note = post_esc("detail_note");
 
+    // Unit (shared for Result and Uncertainty); default to Bq/kg
+    $unit = post_esc("detail_result_unit");
+    if ($unit === '') $unit = 'Bq/kg';
+
+    // Result (raw)
+    $res_sql = "NULL";
+    if (isset($_POST['detail_result']) && trim($_POST['detail_result']) !== "") {
+        $res_sql = (0.0 + $_POST['detail_result']);
+    }
+
+    // Uncertainty (raw)
     $unc_sql = "NULL";
     if (isset($_POST['detail_uncertainty']) && trim($_POST['detail_uncertainty']) !== "") {
         $unc_sql = (0.0 + $_POST['detail_uncertainty']);
+    }
+
+    // Result converted to Bq/kg (manual)
+    $ribk_sql = "NULL";
+    if (isset($_POST['detail_result_in_bqkg']) && trim($_POST['detail_result_in_bqkg']) !== "") {
+        $ribk_sql = (0.0 + $_POST['detail_result_in_bqkg']);
+    }
+
+    // Uncertainty converted to Bq/kg (manual)
+    $uibk_sql = "NULL";
+    if (isset($_POST['detail_uncertainty_in_bqkg']) && trim($_POST['detail_uncertainty_in_bqkg']) !== "") {
+        $uibk_sql = (0.0 + $_POST['detail_uncertainty_in_bqkg']);
     }
 
     if ($action === "update" && $type === "Upper Limit" && $unc_sql === "NULL") {
@@ -156,9 +233,9 @@ if (!empty($_POST['detail_action']) && !empty($_POST['detail_table_name'])) {
     if ($action === "add") {
         $q = "
 INSERT INTO `{$detail_table}`
-(`Nuclide_1`,`Nuclide_2`,`Type`,`Result`,`Uncertainty`,`Note`)
+(`Nuclide_1`,`Type`,`Result`,`Uncertainty`,`Result_Unit`,`Result_in_BqKg`,`Uncertainty_in_BqKg`,`Note`)
 VALUES
-('$nu1','$nu2','$type','$res',$unc_sql,'$note')
+('$nu1','$type',$res_sql,$unc_sql,'$unit',$ribk_sql,$uibk_sql,'$note')
 ";
         $r = mysql_query($q);
         if (!$r) die("Could not add detail row: " . mysql_error() . "<BR>" . h($q));
@@ -169,13 +246,15 @@ VALUES
         $did = (int)$_POST['detail_id'];
         $used = isset($_POST['detail_used_in_simulation']) ? 1 : 0;
 
-
         $q = "
 UPDATE `{$detail_table}` SET
 `Nuclide_1` = '$nu1',
 `Type` = '$type',
-`Result` = '$res',
+`Result` = $res_sql,
 `Uncertainty` = $unc_sql,
+`Result_Unit` = '$unit',
+`Result_in_BqKg` = $ribk_sql,
+`Uncertainty_in_BqKg` = $uibk_sql,
 `Used_in_simulation` = " . intval($used) . ",
 `Note` = '$note'
 WHERE `ID` = $did
