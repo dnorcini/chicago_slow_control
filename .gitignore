@@ -66,3 +66,4 @@ QC_Production/backup2lyon.sh
 *.log
 *.seq
 *.bcf
+QC_production/uploads/edit_assay/*

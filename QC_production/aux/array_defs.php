@@ -158,3 +158,79 @@ $typeMap = [
     'sur_' => 'surface',
     'udg_' => 'underground'
 ];
+
+////////////////////////////////////////////////////////////////////////////////////////
+// CCD (pre-production) arrays
+
+$ccd_qc_status_array = array(
+                             " ",
+                             "Unchecked",
+                             "Science-grade",
+                             "Operation-grade",
+                             "Toy-grade",
+                             "Failed",
+                             );
+
+$ccd_type_array = array(
+                        " ",
+                        "DES D42",
+                        "LBNL Skipper",
+                        "DAMIC Skipper",
+                        "DAMIC Module",
+                        "47/6 Skipper+DES"
+                        );
+
+$item_packager_array = array(
+                             " ",
+                             "UW",
+                             "LSM",
+                             "LBNL",
+                             );
+
+$item_location_array = array(
+                             " ",
+                             "UChicago",
+                             "UW",
+                             "Hopkins",
+                             "LPNHE",
+                             "LSM",
+                             "PNNL",
+                             "UZH",
+                             "IFCA",
+                             "Other",
+                             );
+
+$ccd_size_array = array(
+                        " ",
+                        "4kx2k",
+                        "1kx4k",
+                        "1kx6k",
+                        "6kx1k",
+                        "6kx1.5k",
+                        "6kx4k",
+                        "6kx6k"
+                        );
+
+$glue_parameter_names = array("Glue_humid", "Glue_temp", "Glue_radon");
+$glue_parameter_title = array_combine($glue_parameter_names, array("Rel. Humidity", "Temperature", "Radon"));
+$glue_parameter_units = array_combine($glue_parameter_names, array("%", "C", "Bq/m^3"));
+
+$wb_parameter_names = array("Wb_humid", "Wb_temp", "Wb_radon", "Wb_power", "Wb_time");
+$wb_parameter_title = array_combine($wb_parameter_names, array("Rel. Humidity", "Temperature", "Radon", "Bond Power", "Bond Time"));
+$wb_parameter_units = array_combine($wb_parameter_names, array("%", "C", "Bq/m^3", "%", "us"));
+
+$testing_noise_names = array("Noise_U1", "Noise_L1", "Noise_U2", "Noise_L2");
+$testing_noise_title = array_combine($testing_noise_names, array("Noise U1", "Noise L1", "Noise U2", "Noise L2"));
+$testing_noise_units = array_combine($testing_noise_names, array("ADU", "ADU", "ADU", "ADU"));
+
+$testing_resolution_names = array("Resolution_U1", "Resolution_L1", "Resolution_U2", "Resolution_L2");
+$testing_resolution_title = array_combine($testing_resolution_names, array("Resolution U1", "Resolution L1", "Resolution U2", "Resolution L2"));
+$testing_resolution_units = array_combine($testing_resolution_names, array("ADU", "ADU", "ADU", "ADU"));
+
+$testing_gain_names = array("Gain_U1", "Gain_L1", "Gain_U2", "Gain_L2");
+$testing_gain_title = array_combine($testing_gain_names, array("Gain U1", "Gain L1", "Gain U2", "Gain L2"));
+$testing_gain_units = array_combine($testing_gain_names, array("ADU", "ADU", "ADU", "ADU"));
+
+$testing_dark_current_names = array("Dark_current_U1", "Dark_current_L1", "Dark_current_U2", "Dark_current_L2");
+$testing_dark_current_title = array_combine($testing_dark_current_names, array("Dark_current U1", "Dark_current L1", "Dark_current U2", "Dark_current L2"));
+$testing_dark_current_units = array_combine($testing_dark_current_names, array("e-/px/day", "e-/px/day", "e-/px/day", "e-/px/day"));

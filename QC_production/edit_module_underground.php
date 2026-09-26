@@ -22,6 +22,7 @@ $req_priv = "full";
 include("db_login.php");
 include("page_setup.php");
 include("aux/array_defs.php"); // Import all array definitions
+include("aux/table_navigation.php");
 
 $table = "MODULE_UNDERGROUND2";
 
@@ -376,6 +377,8 @@ if (isset($_POST['id'])) {
 
 // Fetch module_underground details again after updates
 include("aux/get_module_underground_vals.php");
+$loc_result = mysql_query("SELECT `location` FROM `history` WHERE `type`='module' AND `sub_id`=$id ORDER BY (`date` IS NULL OR `date` = '') DESC, `date` DESC, `entry` DESC LIMIT 1");
+$current_location = ($loc_result && mysql_num_rows($loc_result) > 0) ? mysql_fetch_assoc($loc_result)['location'] : '';
 mysql_close($connection);
 
 // Function to generate a dropdown menu from an array
@@ -492,6 +495,9 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
                     Packaging radon [Bq/m^3]: <input type="text" name="radon" value="<?php echo $radon; ?>" size="10">
                 </td>
+                <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
+                    Current Location: <?php echo htmlspecialchars($current_location); ?>
+                </td>
             </tr>
         </table>
         <input type="submit" id="hiddenSubmit" style="display: none;">
@@ -501,59 +507,68 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
 
     <!-- Module layout -->
     <?php echo "<b>Module layout</b>"; ?>
+    <!-- DIE navigation buttons — standalone forms, not nested inside the layout form -->
+    <table border="1" cellpadding="2" width="100%">
+        <tr>
+            <td>
+                <?php if (!empty($die_A)): ?>
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
+                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A); ?>">
+                        <input type="submit" value="A" style="font-size: 14pt;">
+                    </form>
+                <?php else: ?>
+                    DIE ID A
+                <?php endif; ?>
+            </td>
+            <td>
+                <?php if (!empty($die_B)): ?>
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
+                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_B); ?>">
+                        <input type="submit" value="B" style="font-size: 14pt;">
+                    </form>
+                <?php else: ?>
+                    DIE ID B
+                <?php endif; ?>
+            </td>
+            <td>
+                <?php if (!empty($die_C)): ?>
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
+                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_C); ?>">
+                        <input type="submit" value="C" style="font-size: 14pt;">
+                    </form>
+                <?php else: ?>
+                    DIE ID C
+                <?php endif; ?>
+            </td>
+            <td>
+                <?php if (!empty($die_D)): ?>
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
+                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_D); ?>">
+                        <input type="submit" value="D" style="font-size: 14pt;">
+                    </form>
+                <?php else: ?>
+                    DIE ID D
+                <?php endif; ?>
+            </td>
+        </tr>
+    </table>
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
         <input type="hidden" name="id" value="<?php echo $id; ?>">
         <table border="1" cellpadding="2" width="100%">
             <tr>
                 <td>
-                    <?php if (!empty($die_A)): ?>
-                        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                            DIE ID
-                            <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A); ?>">
-                            <input type="submit" value="A" style="font-size: 14pt;">
-                        </form>
-                    <?php else: ?>
-                        DIE ID A
-                    <?php endif; ?>
                     <input type="text" name="die_A" value="<?php echo htmlspecialchars($die_A); ?>" size="10">
                     &nbsp&nbsp&nbsp&nbsp; Amp A<?php generate_dropdown('amp_A', $amp_array, $amp_A); ?>
                 </td>
                 <td>
-                    <?php if (!empty($die_B)): ?>
-                        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                            DIE ID
-                            <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_B); ?>">
-                            <input type="submit" value="B" style="font-size: 14pt;">
-                        </form>
-                    <?php else: ?>
-                        DIE ID B
-                    <?php endif; ?>
                     <input type="text" name="die_B" value="<?php echo htmlspecialchars($die_B); ?>" size="10">
                     &nbsp&nbsp&nbsp&nbsp; Amp B<?php generate_dropdown('amp_B', $amp_array, $amp_B); ?>
                 </td>
                 <td>
-                    <?php if (!empty($die_C)): ?>
-                        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                            DIE ID
-                            <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_C); ?>">
-                            <input type="submit" value="C" style="font-size: 14pt;">
-                        </form>
-                    <?php else: ?>
-                        DIE ID C
-                    <?php endif; ?>
                     <input type="text" name="die_C" value="<?php echo htmlspecialchars($die_C); ?>" size="10">
                     &nbsp&nbsp&nbsp&nbsp; Amp C<?php generate_dropdown('amp_C', $amp_array, $amp_C); ?>
                 </td>
                 <td>
-                    <?php if (!empty($die_D)): ?>
-                        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                            DIE ID
-                            <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_D); ?>">
-                            <input type="submit" value="D" style="font-size: 14pt;">
-                        </form>
-                    <?php else: ?>
-                        DIE ID D
-                    <?php endif; ?>
                     <input type="text" name="die_D" value="<?php echo htmlspecialchars($die_D); ?>" size="10">
                     &nbsp&nbsp&nbsp&nbsp; Amp D<?php generate_dropdown('amp_D', $amp_array, $amp_D); ?>
                 </td>
@@ -563,8 +578,10 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                 </td>
             </tr>
+        </table>
     </form>
-    </table>
+    <?php $hist_type = 'module';
+    include("aux/history_section.php"); ?>
 
     <?php
     // Handle form submission to set the session variable and redirect

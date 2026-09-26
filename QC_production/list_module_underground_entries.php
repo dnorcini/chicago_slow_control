@@ -56,6 +56,7 @@ if ($_SESSION['choose_type'] == "Summary") {
     echo ('<TH align="left">C</TH>');
     echo ('<TH align="left">D</TH>');
     echo ('<TH align="left">Grade</TH>');
+    echo ('<TH align="left">Current Location</TH>');
     echo ('</TR>');
 
     $table = "MODULE_UNDERGROUND2";
@@ -66,6 +67,9 @@ if ($_SESSION['choose_type'] == "Summary") {
 
         // Get selected module_underground values:
         include("aux/get_module_underground_vals.php");
+
+        $loc_res = mysql_query("SELECT `location` FROM `history` WHERE `type`='module' AND `sub_id`=$id ORDER BY (`date` IS NULL OR `date` = '') DESC, `date` DESC, `entry` DESC LIMIT 1");
+        $current_location = ($loc_res && mysql_num_rows($loc_res) > 0) ? mysql_fetch_assoc($loc_res)['location'] : '';
 
         // Logic to calculate tallies based on grades
         $tallies = "";
@@ -116,6 +120,7 @@ if ($_SESSION['choose_type'] == "Summary") {
         echo ('<TD align="left">' . htmlspecialchars($grade_C) . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($grade_D) . '</TD>');
         echo ('<TD align="left" style="' . $bg_color . '">' . htmlspecialchars($tallies) . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($current_location) . '</TD>');
         echo ('</TR>');
     }
 
@@ -127,4 +132,3 @@ if ($_SESSION['choose_type'] == "Summary") {
 mysql_close($connection);
 echo (' </body>');
 echo ('</HTML>');
-?>

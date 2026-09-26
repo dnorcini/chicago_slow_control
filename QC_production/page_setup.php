@@ -13,5 +13,5 @@ include("aux/make_title.php");
 include("aux/general_fns.php"); // general functions
 include("aux/array_defs.php"); // def arrays of variables to be used
 include("header.php");   // make headers of the page
-
+include("aux/keep_scroll_position.php");
 ?>
