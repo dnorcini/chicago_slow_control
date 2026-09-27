@@ -129,8 +129,8 @@ if (isset($_POST['id'])) {
     }
 
     // Allowed file types
-    $allowed_types = array('image/png', 'image/jpeg', 'application/pdf');
-    $allowed_logs = array('text/plain');
+    $allowed_types = ['image/png', 'image/jpeg', 'application/pdf'];
+    $allowed_logs = ['text/plain'];
 
     // ======================
     // Upload Trace and Image Files
@@ -147,18 +147,10 @@ if (isset($_POST['id'])) {
     }
 
     // Ensure the session arrays are initialized if not already
-    if (!isset($_SESSION['file_url_' . $module_surface_id])) {
-        $_SESSION['file_url_' . $module_surface_id] = [];
-    }
-    if (!isset($_SESSION['file_exists_' . $module_surface_id])) {
-        $_SESSION['file_exists_' . $module_surface_id] = [];
-    }
-    if (!isset($_SESSION['log_url_' . $module_surface_id])) {
-        $_SESSION['log_url_' . $module_surface_id] = [];
-    }
-    if (!isset($_SESSION['log_exists_' . $module_surface_id])) {
-        $_SESSION['log_exists_' . $module_surface_id] = [];
-    }
+    $_SESSION['file_url_' . $module_surface_id] ??= [];
+    $_SESSION['file_exists_' . $module_surface_id] ??= [];
+    $_SESSION['log_url_' . $module_surface_id] ??= [];
+    $_SESSION['log_exists_' . $module_surface_id] ??= [];
 
     // Loop through all file fields (trace and image files)
     foreach ($file_fields as $file_field) {
@@ -243,7 +235,7 @@ if (isset($_POST['id'])) {
     // ======================
 
     // Include all relevant form fields to update
-    $fields = array('name', 'status', 'pitch_adaptor_id', 'humidity', 'radon', 'activation', 'die_A', 'die_B', 'die_C', 'die_D', 'amp_A', 'amp_B', 'amp_C', 'amp_D', 'tester', 'test_date', 'test_time', 'chamber', 'temp_low', 'temp_high', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_A', 'grade_B', 'grade_C', 'grade_D', 'defects_A', 'defects_B', 'defects_C', 'defects_D', 'notes', 'notes_A', 'notes_B', 'notes_C', 'notes_D', 'reviewer', 'channel_A', 'channel_B', 'channel_C', 'channel_D');
+    $fields = ['name', 'status', 'pitch_adaptor_id', 'humidity', 'radon', 'activation', 'die_A', 'die_B', 'die_C', 'die_D', 'amp_A', 'amp_B', 'amp_C', 'amp_D', 'tester', 'test_date', 'test_time', 'chamber', 'temp_low', 'temp_high', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_A', 'grade_B', 'grade_C', 'grade_D', 'defects_A', 'defects_B', 'defects_C', 'defects_D', 'notes', 'notes_A', 'notes_B', 'notes_C', 'notes_D', 'reviewer', 'channel_A', 'channel_B', 'channel_C', 'channel_D'];
     $checkboxes = ['check_A', 'check_B', 'check_C', 'check_D'];
     $fields = array_merge($fields, $checkboxes);
     $fields = array_merge($fields, $trace_fields_high);
@@ -251,11 +243,11 @@ if (isset($_POST['id'])) {
 
     // Iterate over each checkbox to set them to 0 if not set in POST
     foreach ($checkboxes as $checkbox) {
-        $_POST[$checkbox] = isset($_POST[$checkbox]) ? $_POST[$checkbox] : 0;
+        $_POST[$checkbox] ??= 0;
     }
 
     // Initialize an array to hold the parts of the query
-    $query_parts = array();
+    $query_parts = [];
 
     // Loop through regular form fields and construct query parts
     foreach ($fields as $field) {
@@ -275,7 +267,7 @@ if (isset($_POST['id'])) {
     foreach ($ccds as $amp) {
         foreach ($trace_fields_high as $base_field) {
             $field_name = $base_field . $amp; // E.g., trace_saturation_A
-            $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
+            $dynamic_fields[$field_name] = $_POST[$field_name] ?? '';
             if (!empty($dynamic_fields[$field_name])) {
                 $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
             }
@@ -285,7 +277,7 @@ if (isset($_POST['id'])) {
         foreach ($image_numbers_low as $number_field) {
             foreach ($image_fields as $base_field) {
                 $field_name = 'image' . $number_field . $base_field . $amp; // E.g., image1_tracks_A
-                $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
+                $dynamic_fields[$field_name] = $_POST[$field_name] ?? '';
                 if (!empty($dynamic_fields[$field_name])) {
                     $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
                 }
@@ -294,7 +286,7 @@ if (isset($_POST['id'])) {
         foreach ($image_numbers_high as $number_field) {
             foreach ($image_fields as $base_field) {
                 $field_name = 'image' . $number_field . $base_field . $amp; // E.g., image1_tracks_A
-                $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
+                $dynamic_fields[$field_name] = $_POST[$field_name] ?? '';
                 if (!empty($dynamic_fields[$field_name])) {
                     $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
                 }
@@ -332,8 +324,8 @@ function generate_dropdown($name, $options, $selected_value)
 // File existence check
 function check_and_update_file_session($file_field, $upload_dir, $base_url, $module_surface_id)
 {
-    $upload_dir = isset($_SESSION['upload_dir']) ? $_SESSION['upload_dir'] : '';
-    $base_url = isset($_SESSION['base_url']) ? $_SESSION['base_url'] : '';
+    $upload_dir = $_SESSION['upload_dir'] ?? '';
+    $base_url = $_SESSION['base_url'] ?? '';
 
     // Construct the file name based on the file field
     $file_name = $file_field . '.png';
@@ -354,8 +346,8 @@ function check_and_update_file_session($file_field, $upload_dir, $base_url, $mod
 // Log existence check
 function check_and_update_log_session($log_field, $upload_dir, $base_url, $module_surface_id)
 {
-    $upload_dir = isset($_SESSION['upload_dir']) ? $_SESSION['upload_dir'] : '';
-    $base_url = isset($_SESSION['base_url']) ? $_SESSION['base_url'] : '';
+    $upload_dir = $_SESSION['upload_dir'] ?? '';
+    $base_url = $_SESSION['base_url'] ?? '';
 
     // Construct the log name based on the log field
     $log_name = $log_field . '.log';
@@ -435,7 +427,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 Packaging radon [Bq/m^3]: <input type="text" name="radon" value="<?php echo $radon; ?>" size="10">
             </td>
             <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
-                Current Location: <?php echo htmlspecialchars($current_location); ?>
+                Current Location: <?php echo htmlspecialchars($current_location ?? ''); ?>
             </td>
         </tr>
     </table>
@@ -455,7 +447,7 @@ include("aux/history_section.php"); ?>
         <td>
             <?php if (!empty($die_A)): ?>
                 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A); ?>">
+                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A ?? ''); ?>">
                     <input type="submit" value="A" style="font-size: 14pt;">
                 </form>
             <?php else: ?>
@@ -465,7 +457,7 @@ include("aux/history_section.php"); ?>
         <td>
             <?php if (!empty($die_B)): ?>
                 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_B); ?>">
+                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_B ?? ''); ?>">
                     <input type="submit" value="B" style="font-size: 14pt;">
                 </form>
             <?php else: ?>
@@ -475,7 +467,7 @@ include("aux/history_section.php"); ?>
         <td>
             <?php if (!empty($die_C)): ?>
                 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_C); ?>">
+                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_C ?? ''); ?>">
                     <input type="submit" value="C" style="font-size: 14pt;">
                 </form>
             <?php else: ?>
@@ -485,7 +477,7 @@ include("aux/history_section.php"); ?>
         <td>
             <?php if (!empty($die_D)): ?>
                 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_D); ?>">
+                    DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_D ?? ''); ?>">
                     <input type="submit" value="D" style="font-size: 14pt;">
                 </form>
             <?php else: ?>
@@ -499,19 +491,19 @@ include("aux/history_section.php"); ?>
     <table border="1" cellpadding="2" width="100%">
         <tr>
             <td>
-                <input type="text" name="die_A" value="<?php echo htmlspecialchars($die_A); ?>" size="10">
+                <input type="text" name="die_A" value="<?php echo htmlspecialchars($die_A ?? ''); ?>" size="10">
                 &nbsp&nbsp&nbsp&nbsp; Amp A<?php generate_dropdown('amp_A', $amp_array, $amp_A); ?>
             </td>
             <td>
-                <input type="text" name="die_B" value="<?php echo htmlspecialchars($die_B); ?>" size="10">
+                <input type="text" name="die_B" value="<?php echo htmlspecialchars($die_B ?? ''); ?>" size="10">
                 &nbsp&nbsp&nbsp&nbsp; Amp B<?php generate_dropdown('amp_B', $amp_array, $amp_B); ?>
             </td>
             <td>
-                <input type="text" name="die_C" value="<?php echo htmlspecialchars($die_C); ?>" size="10">
+                <input type="text" name="die_C" value="<?php echo htmlspecialchars($die_C ?? ''); ?>" size="10">
                 &nbsp&nbsp&nbsp&nbsp; Amp C<?php generate_dropdown('amp_C', $amp_array, $amp_C); ?>
             </td>
             <td>
-                <input type="text" name="die_D" value="<?php echo htmlspecialchars($die_D); ?>" size="10">
+                <input type="text" name="die_D" value="<?php echo htmlspecialchars($die_D ?? ''); ?>" size="10">
                 &nbsp&nbsp&nbsp&nbsp; Amp D<?php generate_dropdown('amp_D', $amp_array, $amp_D); ?>
             </td>
         </tr>
@@ -724,7 +716,7 @@ if (isset($_POST['go'])) {
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current module_surface_id
-                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+                $module_surface_id = $_SESSION['choosen_module_surface'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
                 $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
@@ -768,7 +760,7 @@ if (isset($_POST['go'])) {
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Trace File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -777,7 +769,7 @@ if (isset($_POST['go'])) {
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Trace Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -834,7 +826,7 @@ if (isset($_POST['go'])) {
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current module_surface_id
-                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+                $module_surface_id = $_SESSION['choosen_module_surface'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
                 $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
@@ -878,7 +870,7 @@ if (isset($_POST['go'])) {
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image1_High File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -887,7 +879,7 @@ if (isset($_POST['go'])) {
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image1_High Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -938,7 +930,7 @@ if (isset($_POST['go'])) {
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current module_surface_id
-                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+                $module_surface_id = $_SESSION['choosen_module_surface'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
                 $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
@@ -982,7 +974,7 @@ if (isset($_POST['go'])) {
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image2_High File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -991,7 +983,7 @@ if (isset($_POST['go'])) {
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image2_High Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1029,7 +1021,7 @@ if (isset($_POST['go'])) {
                 <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td><input type="text" name="image3_high_res_<?php echo $amp; ?>" value="<?php echo ${'image3_high_res_' . $amp}; ?>"></td>
                 <td align="center">
-                    <?php echo htmlspecialchars(${'image3_high_res_e_' . $amp}); ?>
+                    <?php echo htmlspecialchars(${'image3_high_res_e_' . $amp} ?? ''); ?>
                 </td>
                 <td><input type="text" name="image3_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image3_high_gain_' . $amp}; ?>"></td>
                 <td><input type="text" name="image3_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image3_high_dark_current_' . $amp}; ?>"></td>
@@ -1048,7 +1040,7 @@ if (isset($_POST['go'])) {
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current module_surface_id
-                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+                $module_surface_id = $_SESSION['choosen_module_surface'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
                 $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
@@ -1091,7 +1083,7 @@ if (isset($_POST['go'])) {
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image3_High File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1100,7 +1092,7 @@ if (isset($_POST['go'])) {
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image3_High Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1164,7 +1156,7 @@ if (isset($_POST['go'])) {
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current module_surface_id
-                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+                $module_surface_id = $_SESSION['choosen_module_surface'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
                 $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
@@ -1208,7 +1200,7 @@ if (isset($_POST['go'])) {
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image4_High File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1217,7 +1209,7 @@ if (isset($_POST['go'])) {
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image4_High Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1255,7 +1247,7 @@ if (isset($_POST['go'])) {
                 <td><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                 <td><input type="text" name="image3_low_res_<?php echo $amp; ?>" value="<?php echo ${'image3_low_res_' . $amp}; ?>"></td>
                 <td align="center">
-                    <?php echo htmlspecialchars(${'image3_low_res_e_' . $amp}); ?>
+                    <?php echo htmlspecialchars(${'image3_low_res_e_' . $amp} ?? ''); ?>
                 </td>
                 <td><input type="text" name="image3_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image3_low_gain_' . $amp}; ?>"></td>
                 <td><input type="text" name="image3_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image3_low_dark_current_' . $amp}; ?>"></td>
@@ -1274,7 +1266,7 @@ if (isset($_POST['go'])) {
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current module_surface_id
-                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+                $module_surface_id = $_SESSION['choosen_module_surface'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
                 $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
@@ -1318,7 +1310,7 @@ if (isset($_POST['go'])) {
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image3_Low File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1327,7 +1319,7 @@ if (isset($_POST['go'])) {
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image3_Low Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1392,7 +1384,7 @@ if (isset($_POST['go'])) {
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current module_surface_id
-                $module_surface_id = isset($_SESSION['choosen_module_surface']) ? $_SESSION['choosen_module_surface'] : 0;
+                $module_surface_id = $_SESSION['choosen_module_surface'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_module_surface/module_surface_' . $module_surface_id . '/';
                 $base_url   = '/QC_production/uploads/edit_module_surface/' . 'module_surface_' . $module_surface_id . '/';
@@ -1457,7 +1449,7 @@ if (isset($_POST['go'])) {
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image4_Low File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1466,7 +1458,7 @@ if (isset($_POST['go'])) {
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($file2_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file2_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file2_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image5_Low File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1475,7 +1467,7 @@ if (isset($_POST['go'])) {
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image4_Low Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>

@@ -7,8 +7,8 @@ $req_priv = "basic";
 include("db_login.php");
 include("page_setup.php");
 
-$sections = array(
-    array(
+$sections = [
+    [
         "label"       => "Pre-Production CCD",
         "list_label"  => "Pre-Production List",
         "list_url"    => "list_ccd_entries.php",
@@ -16,8 +16,8 @@ $sections = array(
         "detail_label" => "Pre-Production Details",
         "detail_url"  => "edit_ccd.php",
         "detail_priv" => "full",
-    ),
-    array(
+    ],
+    [
         "label"       => "DAMIC-M Die",
         "list_label"  => "Die List",
         "list_url"    => "list_entries.php",
@@ -25,8 +25,8 @@ $sections = array(
         "detail_label" => "Die Details",
         "detail_url"  => "edit_die.php",
         "detail_priv" => "full",
-    ),
-    array(
+    ],
+    [
         "label"       => "Module Surface",
         "list_label"  => "Module Surface List",
         "list_url"    => "list_module_surface_entries.php",
@@ -34,8 +34,8 @@ $sections = array(
         "detail_label" => "Module Surface Details",
         "detail_url"  => "edit_module_surface.php",
         "detail_priv" => "full",
-    ),
-    array(
+    ],
+    [
         "label"       => "Module Underground",
         "list_label"  => "Module Underground List",
         "list_url"    => "list_module_underground_entries.php",
@@ -43,8 +43,8 @@ $sections = array(
         "detail_label" => "Module Underground Details",
         "detail_url"  => "edit_module_underground.php",
         "detail_priv" => "full",
-    ),
-    array(
+    ],
+    [
         "label"       => "Module Comparison",
         "list_label"  => NULL,
         "list_url"    => NULL,
@@ -52,8 +52,8 @@ $sections = array(
         "detail_label" => "Surface vs. Underground Comparison",
         "detail_url"  => "module_comparison.php",
         "detail_priv" => "full",
-    ),
-);
+    ],
+];
 
 echo ('<br>');
 echo ('<h2>CCD Quality Control</h2>');

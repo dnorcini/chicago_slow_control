@@ -10,9 +10,9 @@ include("aux/make_data_plot.php");
 
 
 
-$plot_type_array = array(
+$plot_type_array = [
 			"CCDs",
-			);
+			];
 
 
 if (empty($_SESSION['choose_type']))
@@ -54,8 +54,8 @@ if ($_SESSION['choose_type'] == "CCDs")
 	  die ("Could not query the database <br />" . mysql_error());
 	
 	$text_version = "";
-	$ccd_id  = array();
-	$value = array();
+	$ccd_id  = [];
+	$value = [];
 
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	  {

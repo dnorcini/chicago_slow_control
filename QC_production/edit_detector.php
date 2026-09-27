@@ -30,11 +30,11 @@ mysql_select_db('assay_qc');
 
 function h($s)
 {
-    return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
 }
 function post_esc($key)
 {
-    return mysql_real_escape_string(isset($_POST[$key]) ? $_POST[$key] : "");
+    return mysql_real_escape_string($_POST[$key] ?? "");
 }
 
 // Allowlist table name helper
@@ -317,7 +317,7 @@ while ($c = mysql_fetch_assoc($r)) {
 
 
     // a dropdown menu to select assays:
-    $materials = array();
+    $materials = [];
     $res_mat = mysql_query("SELECT DISTINCT Material FROM assay_results ORDER BY Material ASC");
     while ($row_mat = mysql_fetch_assoc($res_mat)) {
         $materials[] = $row_mat['Material'];

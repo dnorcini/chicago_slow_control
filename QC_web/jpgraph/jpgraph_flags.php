@@ -18,7 +18,7 @@ DEFINE('FLAGSIZE4',4);
 
 class FlagImages {
 
-    public $iCountryNameMap = array(
+    public $iCountryNameMap = [
     'Afghanistan' => 'afgh',
     'Republic of Angola' => 'agla',
     'Republic of Albania' => 'alba',
@@ -253,27 +253,27 @@ class FlagImages {
     'Bolivarian Republic of Venezuela' => 'venz',
     'Republic of Yemen' => 'yemn',
     'Democratic Republic of Congo' => 'zare',
-    'Republic of Zimbabwe' => 'zbwe' ) ;
+    'Republic of Zimbabwe' => 'zbwe' ] ;
 
 
     private $iFlagCount = -1;
-    private $iFlagSetMap = array(
+    private $iFlagSetMap = [
     FLAGSIZE1 => 'flags_thumb35x35',
     FLAGSIZE2 => 'flags_thumb60x60',
     FLAGSIZE3 => 'flags_thumb100x100',
     FLAGSIZE4 => 'flags'
-    );
+    ];
 
     private $iFlagData ;
-    private $iOrdIdx=array();
+    private $iOrdIdx=[];
 
-    function FlagImages($aSize=FLAGSIZE1) {
+    public function __construct($aSize=FLAGSIZE1) {
         switch($aSize) {
             case FLAGSIZE1 :
             case FLAGSIZE2 :
             case FLAGSIZE3 :
             case FLAGSIZE4 :
-                $file = dirname(__FILE__).'/'.$this->iFlagSetMap[$aSize].'.dat';
+                $file = __DIR__.'/'.$this->iFlagSetMap[$aSize].'.dat';
                 $fp = fopen($file,'rb');
                 $rawdata = fread($fp,filesize($file));
                 $this->iFlagData = unserialize($rawdata);
@@ -285,16 +285,16 @@ class FlagImages {
         $this->iFlagCount = count($this->iCountryNameMap);
     }
 
-    function GetNum() {
+    public function GetNum() {
         return $this->iFlagCount;
     }
 
-    function GetImgByName($aName,&$outFullName) {
+    public function GetImgByName($aName,&$outFullName) {
         $idx = $this->GetIdxByName($aName,$outFullName);
         return $this->GetImgByIdx($idx);
     }
 
-    function GetImgByIdx($aIdx) {
+    public function GetImgByIdx($aIdx) {
         if( array_key_exists($aIdx,$this->iFlagData) ) {
             $d = $this->iFlagData[$aIdx][1];
             return Image::CreateFromString($d);
@@ -305,15 +305,15 @@ class FlagImages {
         }
     }
 
-    function GetIdxByOrdinal($aOrd,&$outFullName) {
+    public function GetIdxByOrdinal($aOrd,&$outFullName) {
         $aOrd--;
         $n = count($this->iOrdIdx);
         if( $n == 0 ) {
             reset($this->iCountryNameMap);
-            $this->iOrdIdx=array();
+            $this->iOrdIdx=[];
             $i=0;
-            while( list($key,$val) = each($this->iCountryNameMap) ) {
-                $this->iOrdIdx[$i++] = array($val,$key);
+            foreach ($this->iCountryNameMap as $key => $val) {
+                $this->iOrdIdx[$i++] = [$val,$key];
             }
             $tmp=$this->iOrdIdx[$aOrd];
             $outFullName = $tmp[1];
@@ -331,7 +331,7 @@ class FlagImages {
         }
     }
 
-    function GetIdxByName($aName,&$outFullName) {
+    public function GetIdxByName($aName,&$outFullName) {
 
         if( is_integer($aName) ) {
             $idx = $this->GetIdxByOrdinal($aName,$outFullName);
@@ -343,7 +343,7 @@ class FlagImages {
         $nlen = strlen($aName);
         reset($this->iCountryNameMap);
         // Start by trying to match exact index name
-        while( list($key,$val) = each($this->iCountryNameMap) ) {
+        foreach ($this->iCountryNameMap as $key => $val) {
             if( $nlen == strlen($val) && $val == $aName )  {
                 $found=true;
                 break;
@@ -352,8 +352,8 @@ class FlagImages {
         if( !$found ) {
             reset($this->iCountryNameMap);
             // If the exact index doesn't work try a (partial) full name
-            while( list($key,$val) = each($this->iCountryNameMap) ) {
-                if( strpos(strtolower($key), $aName) !== false ) {
+            foreach ($this->iCountryNameMap as $key => $val) {
+                if( str_contains(strtolower($key), $aName) ) {
                     $found=true;
                     break;
                 }

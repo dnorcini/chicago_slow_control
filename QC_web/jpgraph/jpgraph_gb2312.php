@@ -14,7 +14,7 @@ class GB2312toUTF8 {
     // This code table is used to translate GB2312 code (key) to
     // it's corresponding Unicode value (data)
     // --------------------------------------------------------------------
-    private $codetable = array(
+    private $codetable = [
     8481 => 12288, 8482 => 12289, 8483 => 12290, 8484 => 12539, 8485 => 713,
     8486 => 711, 8487 => 168, 8488 => 12291, 8489 => 12293, 8490 => 8213,
     8491 => 65374, 8492 => 8214, 8493 => 8230, 8494 => 8216, 8495 => 8217,
@@ -1504,9 +1504,9 @@ class GB2312toUTF8 {
     30576 => 40671, 30577 => 40674, 30578 => 40681, 30579 => 40679, 30580 => 40677,
     30581 => 40682, 30582 => 40687, 30583 => 40738, 30584 => 40748, 30585 => 40751,
     30586 => 40761, 30587 => 40759, 30588 => 40765, 30589 => 40766, 30590 => 40772,
-    0 => 0 );
+    0 => 0 ];
 
-    function gb2utf8($gb) {
+    public function gb2utf8($gb) {
         if( !trim($gb) ) return $gb;
         $utf8='';
         while($gb) {
@@ -1524,7 +1524,7 @@ class GB2312toUTF8 {
         return $utf8;
     }
 
-    function u2utf8($c) {
+    public function u2utf8($c) {
         $str='';
         if ($c < 0x80) {
             $str.=$c;

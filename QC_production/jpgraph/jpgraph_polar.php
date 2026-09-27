@@ -36,7 +36,7 @@ class PolarPlot {
     public $legendcsimtarget='';
     public $legendcsimalt='';
     public $legend="";
-    public $csimtargets=array(); // Array of targets for CSIM
+    public $csimtargets=[]; // Array of targets for CSIM
     public $csimareas="";   // Resultant CSIM area tags
     public $csimalts=null;   // ALT:s for corresponding target
     public $scale=null;
@@ -45,7 +45,7 @@ class PolarPlot {
     private $iLineWeight=1;
     private $coord=null;
 
-    function __construct($aData) {
+    public function __construct($aData) {
         $n = count($aData);
         if( $n & 1 ) {
             JpGraphError::RaiseL(17001);
@@ -56,19 +56,19 @@ class PolarPlot {
         $this->mark = new PlotMark();
     }
 
-    function SetWeight($aWeight) {
+    public function SetWeight($aWeight) {
         $this->iLineWeight = $aWeight;
     }
 
-    function SetColor($aColor){
+    public function SetColor($aColor){
         $this->iColor = $aColor;
     }
 
-    function SetFillColor($aColor){
+    public function SetFillColor($aColor){
         $this->iFillColor = $aColor;
     }
 
-    function Max() {
+    public function Max() {
         $m = $this->coord[1];
         $i=1;
         while( $i < $this->numpoints ) {
@@ -78,17 +78,17 @@ class PolarPlot {
         return $m;
     }
     // Set href targets for CSIM
-    function SetCSIMTargets($aTargets,$aAlts=null) {
+    public function SetCSIMTargets($aTargets,$aAlts=null) {
         $this->csimtargets=$aTargets;
         $this->csimalts=$aAlts;
     }
 
     // Get all created areas
-    function GetCSIMareas() {
+    public function GetCSIMareas() {
         return $this->csimareas;
     }
 
-    function SetLegend($aLegend,$aCSIM="",$aCSIMAlt="") {
+    public function SetLegend($aLegend,$aCSIM="",$aCSIMAlt="") {
         $this->legend = $aLegend;
         $this->legendcsimtarget = $aCSIM;
         $this->legendcsimalt = $aCSIMAlt;
@@ -96,7 +96,7 @@ class PolarPlot {
 
     // Private methods
 
-    function Legend($aGraph) {
+    public function Legend($aGraph) {
         $color = $this->iColor ;
         if( $this->legend != "" ) {
             if( $this->iFillColor!='' ) {
@@ -111,13 +111,13 @@ class PolarPlot {
         }
     }
 
-    function Stroke($img,$scale) {
+    public function Stroke($img,$scale) {
 
         $i=0;
-        $p=array();
+        $p=[];
         $this->csimareas='';
         while($i < $this->numpoints) {
-            list($x1,$y1) = $scale->PTranslate($this->coord[2*$i],$this->coord[2*$i+1]);
+            [$x1, $y1] = $scale->PTranslate($this->coord[2*$i],$this->coord[2*$i+1]);
             $p[2*$i] = $x1;
             $p[2*$i+1] = $y1;
 
@@ -159,47 +159,47 @@ class PolarAxis extends Axis {
     private $show_angle_tick=true;
     private $radius_tick_color='black';
 
-    function __construct($img,$aScale) {
+    public function __construct($img,$aScale) {
         parent::__construct($img,$aScale);
     }
 
-    function ShowAngleDegreeMark($aFlg=true) {
+    public function ShowAngleDegreeMark($aFlg=true) {
         $this->show_angle_mark = $aFlg;
     }
 
-    function SetAngleStep($aStep) {
+    public function SetAngleStep($aStep) {
         $this->angle_step=$aStep;
     }
 
-    function HideTicks($aFlg=true,$aAngleFlg=true) {
+    public function HideTicks($aFlg=true,$aAngleFlg=true) {
         parent::HideTicks($aFlg,$aFlg);
         $this->show_angle_tick = !$aAngleFlg;
     }
 
-    function ShowAngleLabel($aFlg=true) {
+    public function ShowAngleLabel($aFlg=true) {
         $this->show_angle_label = $aFlg;
     }
 
-    function ShowGrid($aMajor=true,$aMinor=false,$aAngle=true) {
+    public function ShowGrid($aMajor=true,$aMinor=false,$aAngle=true) {
         $this->show_minor_grid = $aMinor;
         $this->show_major_grid = $aMajor;
         $this->show_angle_grid = $aAngle ;
     }
 
-    function SetAngleFont($aFontFam,$aFontStyle=FS_NORMAL,$aFontSize=10) {
+    public function SetAngleFont($aFontFam,$aFontStyle=FS_NORMAL,$aFontSize=10) {
         $this->angle_fontfam = $aFontFam;
         $this->angle_fontstyle = $aFontStyle;
         $this->angle_fontsize = $aFontSize;
     }
 
-    function SetColor($aColor,$aRadColor='',$aAngleColor='') {
+    public function SetColor($aColor,$aRadColor='',$aAngleColor='') {
         if( $aAngleColor == '' )
         $aAngleColor=$aColor;
         parent::SetColor($aColor,$aRadColor);
         $this->angle_fontcolor = $aAngleColor;
     }
 
-    function SetGridColor($aMajorColor,$aMinorColor='',$aAngleColor='') {
+    public function SetGridColor($aMajorColor,$aMinorColor='',$aAngleColor='') {
         if( $aMinorColor == '' )
         $aMinorColor = $aMajorColor;
         if( $aAngleColor == '' )
@@ -210,18 +210,18 @@ class PolarAxis extends Axis {
         $this->angle_color = $aAngleColor;
     }
 
-    function SetTickColors($aRadColor,$aAngleColor='') {
+    public function SetTickColors($aRadColor,$aAngleColor='') {
         $this->radius_tick_color = $aRadColor;
         $this->angle_tick_color = $aAngleColor;
     }
 
     // Private methods
-    function StrokeGrid($pos) {
+    public function StrokeGrid($pos) {
         $x = round($this->img->left_margin + $this->img->plotwidth/2);
         $this->scale->ticks->Stroke($this->img,$this->scale,$pos);
 
         // Stroke the minor arcs
-        $pmin = array();
+        $pmin = [];
         $p = $this->scale->ticks->ticks_pos;
         $n = count($p);
         $i = 0;
@@ -307,7 +307,7 @@ class PolarAxis extends Axis {
         }
     }
 
-    function StrokeAngleLabels($pos,$type) {
+    public function StrokeAngleLabels($pos,$type) {
 
         if( !$this->show_angle_label )
             return;
@@ -492,7 +492,7 @@ class PolarAxis extends Axis {
         }
     }
 
-    function Stroke($pos,$dummy=true) {
+    public function Stroke($pos,$dummy=true) {
 
         $this->img->SetLineWeight($this->weight);
         $this->img->SetColor($this->color);
@@ -589,24 +589,19 @@ class PolarAxis extends Axis {
 }
 
 class PolarScale extends LinearScale {
-    private $graph;
-    public $clockwise=false;
-
-    function __construct($aMax,$graph,$aClockwise) {
+    public function __construct($aMax,private $graph,public $clockwise) {
         parent::__construct(0,$aMax,'x');
-        $this->graph = $graph;
-        $this->clockwise = $aClockwise;
     }
 
-    function SetClockwise($aFlg) {
+    public function SetClockwise($aFlg) {
         $this->clockwise = $aFlg;
     }
 
-    function _Translate($v) {
+    public function _Translate($v) {
         return parent::Translate($v);
     }
 
-    function PTranslate($aAngle,$aRad) {
+    public function PTranslate($aAngle,$aRad) {
 
         $m = $this->scale[1];
         $w = $this->graph->img->plotwidth/2;
@@ -628,27 +623,22 @@ class PolarScale extends LinearScale {
         else {
             $y = ($this->graph->img->top_margin + $this->graph->img->plotheight) - $y;
         }
-        return array($x,$y);
+        return [$x,$y];
     }
 }
 
 class PolarLogScale extends LogScale {
-    private $graph;
-    public $clockwise=false;
-
-    function __construct($aMax,$graph,$aClockwise=false) {
+    public function __construct($aMax,private $graph,public $clockwise=false) {
         parent::__construct(0,$aMax,'x');
-        $this->graph = $graph;
         $this->ticks->SetLabelLogType(LOGLABELS_MAGNITUDE);
-        $this->clockwise = $aClockwise;
 
     }
 
-    function SetClockwise($aFlg) {
+    public function SetClockwise($aFlg) {
         $this->clockwise = $aFlg;
     }
 
-    function PTranslate($aAngle,$aRad) {
+    public function PTranslate($aAngle,$aRad) {
 
         if( $aRad == 0 )
         $aRad = 1;
@@ -672,7 +662,7 @@ class PolarLogScale extends LogScale {
         else {
             $y = ($this->graph->img->top_margin + $this->graph->img->plotheight) - $y;
         }
-        return array($x,$y);
+        return [$x,$y];
     }
 }
 
@@ -682,22 +672,22 @@ class PolarGraph extends Graph {
     public $iType=POLAR_360;
     private $iClockwise=false;
 
-    function __construct($aWidth=300,$aHeight=200,$aCachedName="",$aTimeOut=0,$aInline=true) {
+    public function __construct($aWidth=300,$aHeight=200,$aCachedName="",$aTimeOut=0,$aInline=true) {
         parent::__construct($aWidth,$aHeight,$aCachedName,$aTimeOut,$aInline) ;
         $this->SetDensity(TICKD_DENSE);
         $this->SetBox();
         $this->SetMarginColor('white');
     }
 
-    function SetDensity($aDense) {
+    public function SetDensity($aDense) {
         $this->SetTickDensity(TICKD_NORMAL,$aDense);
     }
 
-    function SetClockwise($aFlg) {
+    public function SetClockwise($aFlg) {
         $this->scale->SetClockwise($aFlg);
     }
 
-    function Set90AndMargin($lm=0,$rm=0,$tm=0,$bm=0) {
+    public function Set90AndMargin($lm=0,$rm=0,$tm=0,$bm=0) {
         $adj = ($this->img->height - $this->img->width)/2;
         $this->SetAngle(90);
         $lm2 = -$adj + ($lm-$rm+$tm+$bm)/2;
@@ -708,7 +698,7 @@ class PolarGraph extends Graph {
         $this->axis->SetLabelAlign('right','center');
     }
 
-    function SetScale($aScale,$rmax=0,$dummy1=1,$dummy2=1,$dummy3=1) {
+    public function SetScale($aScale,$rmax=0,$dummy1=1,$dummy2=1,$dummy3=1) {
         if( $aScale == 'lin' ) {
             $this->scale = new PolarScale($rmax,$this,$this->iClockwise);
         }
@@ -723,17 +713,17 @@ class PolarGraph extends Graph {
         $this->SetMargin(40,40,50,40);
     }
 
-    function SetType($aType) {
+    public function SetType($aType) {
         $this->iType = $aType;
     }
 
-    function SetPlotSize($w,$h) {
+    public function SetPlotSize($w,$h) {
         $this->SetMargin(($this->img->width-$w)/2,($this->img->width-$w)/2,
                          ($this->img->height-$h)/2,($this->img->height-$h)/2);
     }
 
     // Private methods
-    function GetPlotsMax() {
+    public function GetPlotsMax() {
         $n = count($this->plots);
         $m = $this->plots[0]->Max();
         $i=1;
@@ -744,7 +734,7 @@ class PolarGraph extends Graph {
         return $m;
     }
 
-    function Stroke($aStrokeFileName="") {
+    public function Stroke($aStrokeFileName="") {
 
         // Start by adjusting the margin so that potential titles will fit.
         $this->AdjustMarginsForTitles();

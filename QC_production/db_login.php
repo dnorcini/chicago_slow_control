@@ -3,7 +3,7 @@ require_once __DIR__ . '/aux/mysql_compat.php';   // ext/mysql shim for PHP 8.4 
 date_default_timezone_set('America/New_York');    // set this to your server's time zone (US/Eastern alias not in PHP 8.4's bundled tzdata)
 $db_host = getenv('DB_HOST') ?: 'localhost';
 $db_username = getenv('DB_USER') ?: 'control_user';           // keep whatever value was actually there before
-$db_password = getenv('DB_PASSWORD') ?: '<enter password here>';
+$db_password = getenv('DB_PASSWORD') ?: 'MyLife4Aiur';
 $db_database='die_qc';
 
 ///  Open up the database connection 

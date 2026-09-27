@@ -11,7 +11,7 @@ include("db_login.php");
 include("page_setup.php");
 
 
-if ((isset($_POST['del_user'])) && (strpos($_SESSION['privileges'], "admin") !== false))
+if ((isset($_POST['del_user'])) && (str_contains($_SESSION['privileges'], "admin")))
   {
     if (isset($_POST['really_del']))
       {
@@ -81,7 +81,7 @@ echo ('<TH align=left>');
 echo ('Edit');  
 echo ('</TH>');
 
-if (strpos($_SESSION['privileges'], "admin") !== false)
+if (str_contains($_SESSION['privileges'], "admin"))
 {
   echo ('<TH align=left>'); 
   echo ('Delete');  
@@ -113,7 +113,7 @@ foreach ($users_user_name as $user_name)
       echo ('<a href="mailto:'.$users_email[$user_name].'">'.$users_email[$user_name].'</a>');
     echo ('</TD>');
     
-    if ((strpos($_SESSION['privileges'], "admin") !== false) 
+    if ((str_contains($_SESSION['privileges'], "admin")) 
 	|| (strcmp($_SESSION['user_name'], $user_name) == 0))
     {
 	echo ('<TD align=center>'); 
@@ -124,7 +124,7 @@ foreach ($users_user_name as $user_name)
 	echo ('</TD>');
     }
 
-    if (strpos($_SESSION['privileges'], "admin") !== false)
+    if (str_contains($_SESSION['privileges'], "admin"))
     {
 	echo ('<TD align=center>'); 
 	echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
@@ -139,7 +139,7 @@ foreach ($users_user_name as $user_name)
 }
 echo ('</TABLE>');
 
-if (strpos($_SESSION['privileges'], "admin") !== false)
+if (str_contains($_SESSION['privileges'], "admin"))
 {
     echo ('<br>');
     echo ('<FORM action="edit_user.php" method="post">');

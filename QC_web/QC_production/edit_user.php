@@ -21,10 +21,10 @@ else
     $edit_user = $_SESSION['user_name'];
 
 ///////////////////////  only allow non-personal edits for admin and managers (managers can only edit shift status)
-if ((strpos($_SESSION['privileges'], "admin") === false))
+if ((!str_contains($_SESSION['privileges'], "admin")))
    $edit_user = $_SESSION['user_name'];
 
-if (isset($_POST['new_user_name']) && (strpos($_SESSION['privileges'], "admin") !== false))
+if (isset($_POST['new_user_name']) && (str_contains($_SESSION['privileges'], "admin")))
 {
     mysql_close($connection);
     include("master_db_login.php");
@@ -121,7 +121,7 @@ if (isset($_POST['change']))
 	$_POST['privileges'] = implode(",",$_POST['privileges']);
 	if (strcmp($_POST['privileges'], $users_privileges[$edit_user]) != 0)
 	  {
-	    if (strpos($_SESSION['privileges'], "admin") !== false)
+	    if (str_contains($_SESSION['privileges'], "admin"))
 	      {
 		$query = "UPDATE `users` SET `privileges` = \"".$_POST['privileges']."\" WHERE `user_name` = \"".$edit_user."\"";
 		$result = mysql_query($query);
@@ -146,7 +146,7 @@ echo ('<TH align=left>');         // 1
 echo ('Full Name');                
 echo ('</TH>');
 
-if ((strcmp($_SESSION['user_name'], $edit_user) == 0) || (strpos($_SESSION['privileges'], "admin") !== false))
+if ((strcmp($_SESSION['user_name'], $edit_user) == 0) || (str_contains($_SESSION['privileges'], "admin")))
 {
     echo ('<TH align=left>');     // 2
     echo ('Affiliation');   
@@ -163,7 +163,7 @@ if ((strcmp($_SESSION['user_name'], $edit_user) == 0) || (strpos($_SESSION['priv
 }
 
 
-if (strpos($_SESSION['privileges'], "admin") !== false)
+if (str_contains($_SESSION['privileges'], "admin"))
   {
     echo ('<TH align=left>');     // 5
     echo ('Privileges');  
@@ -177,7 +177,7 @@ echo ('</TR>');
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if ((strcmp($_SESSION['user_name'], $edit_user) == 0) || (strpos($_SESSION['privileges'], "admin") !== false))
+if ((strcmp($_SESSION['user_name'], $edit_user) == 0) || (str_contains($_SESSION['privileges'], "admin")))
 {
     echo ('<TR>');
     echo ('<TD align=left>');
@@ -192,7 +192,7 @@ else
     echo ('</TD>');
 }
 
-if ((strcmp($_SESSION['user_name'], $edit_user) == 0) || (strpos($_SESSION['privileges'], "admin") !== false))
+if ((strcmp($_SESSION['user_name'], $edit_user) == 0) || (str_contains($_SESSION['privileges'], "admin")))
 {
     echo ('<TD align=left>');
     echo ('<input type="text" name="affiliation" value="'.$users_affiliation[$edit_user].'" size="16" autocomplete="off">');
@@ -220,14 +220,14 @@ if ((strcmp($_SESSION['user_name'], $edit_user) == 0) || (strpos($_SESSION['priv
  
 }
 
-if (strpos($_SESSION['privileges'], "admin") !== false)
+if (str_contains($_SESSION['privileges'], "admin"))
 {
     echo ('<TD align=left>');
     echo ('<SELECT name="privileges[]" style="font-size: 12pt" multiple=true size=4>');
     foreach ($privilege_array as $pa)
     {
 	echo('<option ');
-	if (strpos($users_privileges[$edit_user], $pa) !== false)
+	if (str_contains($users_privileges[$edit_user], $pa))
 	    echo ('selected="selected"');
 	echo(' value="'.$pa.'">  '.$pa.'  </option>');
     }

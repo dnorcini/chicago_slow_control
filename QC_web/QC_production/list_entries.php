@@ -14,10 +14,10 @@ include("aux/make_data_plot.php");
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 
-$plot_type_array = array(
+$plot_type_array = [
 			 "Summary",
 			"CCDs",
-                         );
+                         ];
 
 
 if (empty($_SESSION['choose_type']))

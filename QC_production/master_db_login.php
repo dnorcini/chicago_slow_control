@@ -1,5 +1,6 @@
 <?php
-date_default_timezone_set('US/Eastern');    // set this to your server's time zone
+require_once __DIR__ . '/aux/mysql_compat.php';   // ext/mysql shim for PHP 8.4 (see file for details)
+date_default_timezone_set('America/New_York');    // set this to your server's time zone (US/Eastern alias not in PHP 8.4's bundled tzdata)
 $db_host='localhost';      // fill me in!
 $db_database='die_qc';
 $db_username='control_user';

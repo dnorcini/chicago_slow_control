@@ -12,12 +12,12 @@ $result = mysql_query($query);
 if (!$result)
   die ("Could not query the database <br />" . mysql_error());
 
-$glue_parm_values = array();
-$wb_parm_values = array();
-$testing_noise_values = array();
-$testing_resolution_values = array();
-$testing_gain_values = array();
-$testing_dark_current_values = array();
+$glue_parm_values = [];
+$wb_parm_values = [];
+$testing_noise_values = [];
+$testing_resolution_values = [];
+$testing_gain_values = [];
+$testing_dark_current_values = [];
 
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
   {

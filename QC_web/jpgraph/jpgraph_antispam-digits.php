@@ -9,10 +9,10 @@
 //========================================================================
 
 class HandDigits {
-    public $digits = array();
+    public $digits = [];
     public $iHeight=30, $iWidth=30;
 
-    function __construct() {
+    public function __construct() {
         //==========================================================
         // d6-small.jpg
         //==========================================================
@@ -154,22 +154,20 @@ class HandDigits {
 
 class AntiSpam {
 
-    private $iNumber='';
-
-    function __construct($aNumber='') {
-        $this->iNumber = $aNumber;
+    public function __construct(private $iNumber='')
+    {
     }
 
-    function Rand($aLen) {
+    public function Rand($aLen) {
         $d='';
         for($i=0; $i < $aLen; ++$i) {
-            $d .= rand(1,9);
+            $d .= random_int(1,9);
         }
         $this->iNumber = $d;
         return $d;
     }
 
-    function Stroke() {
+    public function Stroke() {
 
         $n=strlen($this->iNumber);
         for($i=0; $i < $n; ++$i ) {

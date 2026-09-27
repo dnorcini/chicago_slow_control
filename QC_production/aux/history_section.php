@@ -39,7 +39,7 @@ $result = mysql_query("SELECT * FROM `history`
                         ORDER BY (`date` IS NULL OR `date` = '') ASC, `date` ASC, `entry` ASC");
 if (!$result) die("Could not query history: " . mysql_error());
 
-$hist_rows = array();
+$hist_rows = [];
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
   $hist_rows[] = $row;
 
@@ -47,7 +47,7 @@ mysql_close($connection);
 ?>
 
 <br>
-<strong>History</strong> &nbsp; <small><i><?php echo htmlspecialchars($name); ?></i></small>
+<strong>History</strong> &nbsp; <small><i><?php echo htmlspecialchars($name ?? ''); ?></i></small>
 <TABLE border="1" cellpadding="4" width="100%">
   <TR>
     <TH align="left" width="12%">Date</TH>
@@ -60,23 +60,23 @@ mysql_close($connection);
   <?php foreach ($hist_rows as $hrow): ?>
     <?php if ($hist_editing_id == (int)$hrow['entry']): ?>
       <TR>
-        <FORM action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+        <FORM action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] ?? ''); ?>" method="post">
           <input type="hidden" name="history_edit_id" value="<?php echo (int)$hrow['entry']; ?>">
-          <TD><input type="text" name="hist_date"        value="<?php echo htmlspecialchars($hrow['date']);        ?>" style="width:100%;box-sizing:border-box"></TD>
-          <TD><input type="text" name="hist_action"      value="<?php echo htmlspecialchars($hrow['action']);      ?>" style="width:100%;box-sizing:border-box"></TD>
-          <TD><input type="text" name="hist_location"    value="<?php echo htmlspecialchars($hrow['location']);    ?>" style="width:100%;box-sizing:border-box"></TD>
-          <TD><input type="text" name="hist_reviewer"    value="<?php echo htmlspecialchars($hrow['reviewer']);    ?>" style="width:100%;box-sizing:border-box"></TD>
+          <TD><input type="text" name="hist_date"        value="<?php echo htmlspecialchars($hrow['date'] ?? '');        ?>" style="width:100%;box-sizing:border-box"></TD>
+          <TD><input type="text" name="hist_action"      value="<?php echo htmlspecialchars($hrow['action'] ?? '');      ?>" style="width:100%;box-sizing:border-box"></TD>
+          <TD><input type="text" name="hist_location"    value="<?php echo htmlspecialchars($hrow['location'] ?? '');    ?>" style="width:100%;box-sizing:border-box"></TD>
+          <TD><input type="text" name="hist_reviewer"    value="<?php echo htmlspecialchars($hrow['reviewer'] ?? '');    ?>" style="width:100%;box-sizing:border-box"></TD>
           <TD align="center"><input type="submit" name="history_update" value="Save"></TD>
         </FORM>
       </TR>
     <?php else: ?>
       <TR>
-        <TD><?php echo htmlspecialchars($hrow['date']);        ?></TD>
-        <TD><?php echo htmlspecialchars($hrow['action']);      ?></TD>
-        <TD><?php echo htmlspecialchars($hrow['location']);    ?></TD>
-        <TD><?php echo htmlspecialchars($hrow['reviewer']);    ?></TD>
+        <TD><?php echo htmlspecialchars($hrow['date'] ?? '');        ?></TD>
+        <TD><?php echo htmlspecialchars($hrow['action'] ?? '');      ?></TD>
+        <TD><?php echo htmlspecialchars($hrow['location'] ?? '');    ?></TD>
+        <TD><?php echo htmlspecialchars($hrow['reviewer'] ?? '');    ?></TD>
         <TD align="center">
-          <FORM action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+          <FORM action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] ?? ''); ?>" method="post">
             <input type="hidden" name="history_edit" value="<?php echo (int)$hrow['entry']; ?>">
             <input type="submit" value="Edit">
           </FORM>
@@ -86,7 +86,7 @@ mysql_close($connection);
   <?php endforeach; ?>
 
   <TR>
-    <FORM action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+    <FORM action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] ?? ''); ?>" method="post">
       <TD><input type="text" name="hist_date"        placeholder="YYYY-MM-DD"  style="width:100%;box-sizing:border-box"></TD>
       <TD><input type="text" name="hist_action"      placeholder="Action"      style="width:100%;box-sizing:border-box"></TD>
       <TD><input type="text" name="hist_location"    placeholder="Location"    style="width:100%;box-sizing:border-box"></TD>

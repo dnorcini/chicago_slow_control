@@ -7,14 +7,14 @@ session_start();
 $req_priv = "basic";
 include("db_login.php");
 include("page_setup.php");
-include("aux/make_data_plot.php");
+// include("aux/make_data_plot.php");
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 
-$plot_type_array = array(
+$plot_type_array = [
     "Summary",
     "MODULE_UNDERGROUNDs",
-);
+];
 
 if (empty($_SESSION['choose_type'])) {
     $_SESSION['choose_type'] = $plot_type_array[0];
@@ -38,7 +38,7 @@ echo ('<TABLE border="1" cellpadding="2" width=100%>');
 if ($_SESSION['choose_type'] == "Summary") {
     include("list_module_underground_entries_summary.php");
 } else if ($_SESSION['choose_type'] == "MODULE_UNDERGROUNDs") {
-    $temp = $_SESSION['choosen_module_underground'];
+    $temp = $_SESSION['choosen_module_underground'] ?? null;
 
     if (isset($_POST['go'])) {
         $_SESSION['req_id'] = $_POST['go'];
@@ -111,16 +111,16 @@ if ($_SESSION['choose_type'] == "Summary") {
         echo ('</FORM>');
         echo ('</TD>');
 
-        echo ('<TD align="left">' . htmlspecialchars($pitch_adaptor_id) . '</TD>');
-        echo ('<TD align="left">' . htmlspecialchars($ACM) . '</TD>');
-        echo ('<TD align="left">' . htmlspecialchars($test_date) . '</TD>');
-        echo ('<TD align="left">' . htmlspecialchars($name) . '</TD>');
-        echo ('<TD align="left">' . htmlspecialchars($grade_A) . '</TD>');
-        echo ('<TD align="left">' . htmlspecialchars($grade_B) . '</TD>');
-        echo ('<TD align="left">' . htmlspecialchars($grade_C) . '</TD>');
-        echo ('<TD align="left">' . htmlspecialchars($grade_D) . '</TD>');
-        echo ('<TD align="left" style="' . $bg_color . '">' . htmlspecialchars($tallies) . '</TD>');
-        echo ('<TD align="left">' . htmlspecialchars($current_location) . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($pitch_adaptor_id ?? '') . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($ACM ?? '') . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($test_date ?? '') . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($name ?? '') . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($grade_A ?? '') . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($grade_B ?? '') . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($grade_C ?? '') . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($grade_D ?? '') . '</TD>');
+        echo ('<TD align="left" style="' . $bg_color . '">' . htmlspecialchars($tallies ?? '') . '</TD>');
+        echo ('<TD align="left">' . htmlspecialchars($current_location ?? '') . '</TD>');
         echo ('</TR>');
     }
 

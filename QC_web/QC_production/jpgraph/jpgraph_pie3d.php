@@ -22,7 +22,7 @@ class PiePlot3D extends PiePlot {
 
     //---------------
     // CONSTRUCTOR
-    function __construct($data) {
+    public function __construct($data) {
         $this->radius = 0.5;
         $this->data = $data;
         $this->title = new Text("");
@@ -36,20 +36,20 @@ class PiePlot3D extends PiePlot {
     // PUBLIC METHODS
 
     // Set label arrays
-    function SetLegends($aLegend) {
+    public function SetLegends($aLegend) {
         $this->legends = array_reverse(array_slice($aLegend,0,count($this->data)));
     }
 
-    function SetSliceColors($aColors) {
+    public function SetSliceColors($aColors) {
         $this->setslicecolors = $aColors;
     }
 
-    function Legend($aGraph) {
+    public function Legend($aGraph) {
         parent::Legend($aGraph);
         $aGraph->legend->txtcol = array_reverse($aGraph->legend->txtcol);
     }
 
-    function SetCSIMTargets($aTargets,$aAlts='',$aWinTargets='') {
+    public function SetCSIMTargets($aTargets,$aAlts='',$aWinTargets='') {
         $this->csimtargets = $aTargets;
         $this->csimwintargets = $aWinTargets;
         $this->csimalts = $aAlts;
@@ -57,14 +57,14 @@ class PiePlot3D extends PiePlot {
 
     // Should the slices be separated by a line? If color is specified as "" no line
     // will be used to separate pie slices.
-    function SetEdge($aColor='black',$aWeight=1) {
+    public function SetEdge($aColor='black',$aWeight=1) {
         $this->edgecolor = $aColor;
         $this->edgeweight = $aWeight;
     }
 
     // Specify projection angle for 3D in degrees
     // Must be between 20 and 70 degrees
-    function SetAngle($a) {
+    public function SetAngle($a) {
         if( $a<5 || $a>90 ) {
             JpGraphError::RaiseL(14002);
             //("PiePlot3D::SetAngle() 3D Pie projection angle must be between 5 and 85 degrees.");
@@ -74,7 +74,7 @@ class PiePlot3D extends PiePlot {
         }
     }
 
-    function Add3DSliceToCSIM($i,$xc,$yc,$height,$width,$thick,$sa,$ea) {  //Slice number, ellipse centre (x,y), height, width, start angle, end angle
+    public function Add3DSliceToCSIM($i,$xc,$yc,$height,$width,$thick,$sa,$ea) {  //Slice number, ellipse centre (x,y), height, width, start angle, end angle
 
         $sa *= M_PI/180;
         $ea *= M_PI/180;
@@ -123,7 +123,7 @@ class PiePlot3D extends PiePlot {
             if( !empty($this->csimwintargets[$i]) ) {
                 $this->csimareas .= " target=\"".$this->csimwintargets[$i]."\" ";
             }
-             
+
             if( !empty($this->csimalts[$i]) ) {
                 $tmp=sprintf($this->csimalts[$i],$this->data[$i]);
                 $this->csimareas .= "alt=\"$tmp\" title=\"$tmp\" ";
@@ -133,34 +133,34 @@ class PiePlot3D extends PiePlot {
 
     }
 
-    function SetLabels($aLabels,$aLblPosAdj="auto") {
+    public function SetLabels($aLabels,$aLblPosAdj="auto") {
         $this->labels = $aLabels;
         $this->ilabelposadj=$aLblPosAdj;
     }
 
 
     // Distance from the pie to the labels
-    function SetLabelMargin($m) {
+    public function SetLabelMargin($m) {
         $this->value->SetMargin($m);
     }
 
     // Show a thin line from the pie to the label for a specific slice
-    function ShowLabelHint($f=true) {
+    public function ShowLabelHint($f=true) {
         $this->showlabelhint=$f;
     }
 
     // Set color of hint line to label for each slice
-    function SetLabelHintColor($c) {
+    public function SetLabelHintColor($c) {
         $this->labelhintcolor=$c;
     }
 
-    function SetHeight($aHeight) {
+    public function SetHeight($aHeight) {
         $this->iThickness = $aHeight;
     }
 
 
     // Normalize Angle between 0-360
-    function NormAngle($a) {
+    public function NormAngle($a) {
         // Normalize anle to 0 to 2M_PI
         //
         if( $a > 0 ) {
@@ -179,7 +179,7 @@ class PiePlot3D extends PiePlot {
 
 
     // Draw one 3D pie slice at position ($xc,$yc) with height $z
-    function Pie3DSlice($img,$xc,$yc,$w,$h,$sa,$ea,$z,$fillcolor,$shadow=0.65) {
+    public function Pie3DSlice($img,$xc,$yc,$w,$h,$sa,$ea,$z,$fillcolor,$shadow=0.65) {
 
         // Due to the way the 3D Pie algorithm works we are
         // guaranteed that any slice we get into this method
@@ -191,7 +191,7 @@ class PiePlot3D extends PiePlot {
             exit(1);
         }
 
-        $p[] = array();
+        $p[] = [];
 
         // Setup pre-calculated values
         $rsa = $sa/180*M_PI; // to Rad
@@ -214,9 +214,9 @@ class PiePlot3D extends PiePlot {
                     $rea += 2*M_PI;
                 }
 
-                $p = array($xc,$yc,$xc,$yc+$z,
-                $xc+$w*$cossa,$z+$yc-$h*$sinsa);
-                $pt = array($xc,$yc,$xc+$w*$cossa,$yc-$h*$sinsa);
+                $p = [$xc,$yc,$xc,$yc+$z,
+                $xc+$w*$cossa,$z+$yc-$h*$sinsa];
+                $pt = [$xc,$yc,$xc+$w*$cossa,$yc-$h*$sinsa];
 
                 for( $a=$rsa; $a < 2*M_PI; $a += $step ) {
                     $tca = cos($a);
@@ -249,9 +249,9 @@ class PiePlot3D extends PiePlot {
 
             }
             else {
-                $p = array($xc,$yc,$xc,$yc+$z,
-                $xc+$w*$cossa,$z+$yc-$h*$sinsa);
-                $pt = array($xc,$yc,$xc+$w*$cossa,$yc-$h*$sinsa);
+                $p = [$xc,$yc,$xc,$yc+$z,
+                $xc+$w*$cossa,$z+$yc-$h*$sinsa];
+                $pt = [$xc,$yc,$xc+$w*$cossa,$yc-$h*$sinsa];
 
                 $rea = $rea == 0.0 ? 2*M_PI : $rea;
                 for( $a=$rsa; $a < $rea; $a += $step ) {
@@ -277,8 +277,8 @@ class PiePlot3D extends PiePlot {
             }
         }
         elseif( $sa >= 180 ) {
-            $p = array($xc,$yc,$xc,$yc+$z,$xc+$w*$cosea,$z+$yc-$h*$sinea);
-            $pt = array($xc,$yc,$xc+$w*$cosea,$yc-$h*$sinea);
+            $p = [$xc,$yc,$xc,$yc+$z,$xc+$w*$cosea,$z+$yc-$h*$sinea];
+            $pt = [$xc,$yc,$xc+$w*$cosea,$yc-$h*$sinea];
 
             for( $a=$rea; $a>$rsa; $a -= $step ) {
                 $tca = cos($a);
@@ -304,8 +304,8 @@ class PiePlot3D extends PiePlot {
         }
         elseif( $sa >= 90 ) {
             if( $ea > 180 ) {
-                $p = array($xc,$yc,$xc,$yc+$z,$xc+$w*$cosea,$z+$yc-$h*$sinea);
-                $pt = array($xc,$yc,$xc+$w*$cosea,$yc-$h*$sinea);
+                $p = [$xc,$yc,$xc,$yc+$z,$xc+$w*$cosea,$z+$yc-$h*$sinea];
+                $pt = [$xc,$yc,$xc+$w*$cosea,$yc-$h*$sinea];
 
                 for( $a=$rea; $a > M_PI; $a -= $step ) {
                     $tca = cos($a);
@@ -340,12 +340,12 @@ class PiePlot3D extends PiePlot {
 
             }
             else { // $sa >= 90 && $ea <= 180
-                $p = array($xc,$yc,$xc,$yc+$z,
+                $p = [$xc,$yc,$xc,$yc+$z,
                 $xc+$w*$cosea,$z+$yc-$h*$sinea,
                 $xc+$w*$cosea,$yc-$h*$sinea,
-                $xc,$yc);
+                $xc,$yc];
 
-                $pt = array($xc,$yc,$xc+$w*$cosea,$yc-$h*$sinea);
+                $pt = [$xc,$yc,$xc+$w*$cosea,$yc-$h*$sinea];
 
                 for( $a=$rea; $a>$rsa; $a -= $step ) {
                     $pt[] = $xc + $w*cos($a);
@@ -361,12 +361,12 @@ class PiePlot3D extends PiePlot {
         }
         else { // sa > 0 && ea < 90
 
-            $p = array($xc,$yc,$xc,$yc+$z,
+            $p = [$xc,$yc,$xc,$yc+$z,
             $xc+$w*$cossa,$z+$yc-$h*$sinsa,
             $xc+$w*$cossa,$yc-$h*$sinsa,
-            $xc,$yc);
+            $xc,$yc];
 
-            $pt = array($xc,$yc,$xc+$w*$cossa,$yc-$h*$sinsa);
+            $pt = [$xc,$yc,$xc+$w*$cossa,$yc-$h*$sinsa];
 
             for( $a=$rsa; $a < $rea; $a += $step ) {
                 $pt[] = $xc + $w*cos($a);
@@ -378,7 +378,7 @@ class PiePlot3D extends PiePlot {
             $pt[] = $xc;
             $pt[] = $yc;
         }
-         
+
         $img->PushColor($fillcolor.":".$shadow);
         $img->FilledPolygon($p);
         $img->PopColor();
@@ -388,7 +388,7 @@ class PiePlot3D extends PiePlot {
         $img->PopColor();
     }
 
-    function SetStartAngle($aStart) {
+    public function SetStartAngle($aStart) {
         if( $aStart < 0 || $aStart > 360 ) {
             JpGraphError::RaiseL(14004);//('Slice start angle must be between 0 and 360 degrees.');
         }
@@ -396,7 +396,7 @@ class PiePlot3D extends PiePlot {
     }
 
     // Draw a 3D Pie
-    function Pie3D($aaoption,$img,$data,$colors,$xc,$yc,$d,$angle,$z,
+    public function Pie3D($aaoption,$img,$data,$colors,$xc,$yc,$d,$angle,$z,
                    $shadow=0.65,$startangle=0,$edgecolor="",$edgeweight=1) {
 
         //---------------------------------------------------------------------------
@@ -460,7 +460,7 @@ class PiePlot3D extends PiePlot {
         // Step 1 . Split all slices that crosses 90 or 270
         //
         $idx=0;
-        $adjexplode=array();
+        $adjexplode=[];
         $numcolors = count($colors);
         for($i=0; $i<count($data); ++$i, ++$idx ) {
             $da = $data[$i]/$sum * 360;
@@ -475,11 +475,11 @@ class PiePlot3D extends PiePlot {
             }
 
             $la = $a + $da/2;
-            $explode = array( $xc + $this->explode_radius[$i]*cos($la*M_PI/180)*$expscale,
-            $yc - $this->explode_radius[$i]*sin($la*M_PI/180) * ($h/$d) *$expscale );
+            $explode = [ $xc + $this->explode_radius[$i]*cos($la*M_PI/180)*$expscale,
+            $yc - $this->explode_radius[$i]*sin($la*M_PI/180) * ($h/$d) *$expscale ];
             $adjexplode[$idx] = $explode;
-            $labeldata[$i] = array($la,$explode[0],$explode[1]);
-            $originalangles[$i] = array($a,$a+$da);
+            $labeldata[$i] = [$la,$explode[0],$explode[1]];
+            $originalangles[$i] = [$a,$a+$da];
 
             $ne = $this->NormAngle($a+$da);
             if( $da <= 180 ) {
@@ -495,15 +495,15 @@ class PiePlot3D extends PiePlot {
                     $split = 270;
                 }
                 if( $split > 0 ) { // split in two
-                    $angles[$idx] = array($a,$split);
+                    $angles[$idx] = [$a,$split];
                     $adjcolors[$idx] = $colors[$i % $numcolors];
                     $adjexplode[$idx] = $explode;
-                    $angles[++$idx] = array($split,$ne);
+                    $angles[++$idx] = [$split,$ne];
                     $adjcolors[$idx] = $colors[$i % $numcolors];
                     $adjexplode[$idx] = $explode;
                 }
                 else { // no split
-                    $angles[$idx] = array($a,$ne);
+                    $angles[$idx] = [$a,$ne];
                     $adjcolors[$idx] = $colors[$i  % $numcolors];
                     $adjexplode[$idx] = $explode;
                 }
@@ -517,7 +517,7 @@ class PiePlot3D extends PiePlot {
                 elseif( $a <= 270 )  $split = 270;
                 else                 $split = 90;
 
-                $angles[$idx] = array($a,$split);
+                $angles[$idx] = [$a,$split];
                 $adjcolors[$idx] = $colors[$i % $numcolors];
                 $adjexplode[$idx] = $explode;
                 //if( $a+$da > 360-$split ) {
@@ -536,17 +536,17 @@ class PiePlot3D extends PiePlot {
                 //     and the slice is so large that it goes all the way
                 //     around 270.
                 if( ($a < 90 && ($a+$da > 270)) || ($a > 90 && $a<=270 && ($a+$da>360+90) ) || ($a > 270 && $this->NormAngle($a+$da)>270) ) {
-                    $angles[++$idx] = array($split,360-$split);
+                    $angles[++$idx] = [$split,360-$split];
                     $adjcolors[$idx] = $colors[$i % $numcolors];
                     $adjexplode[$idx] = $explode;
-                    $angles[++$idx] = array(360-$split,$ne);
+                    $angles[++$idx] = [360-$split,$ne];
                     $adjcolors[$idx] = $colors[$i % $numcolors];
                     $adjexplode[$idx] = $explode;
                 }
                 else {
                     // Just a simple split to the previous decided
                     // angle.
-                    $angles[++$idx] = array($split,$ne);
+                    $angles[++$idx] = [$split,$ne];
                     $adjcolors[$idx] = $colors[$i % $numcolors];
                     $adjexplode[$idx] = $explode;
                 }
@@ -559,7 +559,7 @@ class PiePlot3D extends PiePlot {
         $n = count($angles);
 
         for($i=0; $i<$n; ++$i) {
-            list($dbgs,$dbge) = $angles[$i];
+            [$dbgs, $dbge] = $angles[$i];
         }
 
         //
@@ -595,15 +595,15 @@ class PiePlot3D extends PiePlot {
 
         // First stroke all the slices between 90 and 270 (left half circle)
         // counterclockwise
-         
+
         while( $angles[$j][0] < 270  && $aaoption !== 2 ) {
 
-            list($x,$y) = $adjexplode[$j];
+            [$x, $y] = $adjexplode[$j];
 
             $this->Pie3DSlice($img,$x,$y,$d,$h,$angles[$j][0],$angles[$j][1],
             $z,$adjcolors[$j],$shadow);
 
-            $last = array($x,$y,$j);
+            $last = [$x,$y,$j];
 
             $j++;
             if( $j >= $n ) $j=0;
@@ -613,7 +613,7 @@ class PiePlot3D extends PiePlot {
             }
             ++$cnt;
         }
-         
+
         $slice_left = $n-$cnt;
         $j=$start-1;
         if($j<0) $j=$n-1;
@@ -623,7 +623,7 @@ class PiePlot3D extends PiePlot {
         // clockwise
         while( $cnt < $slice_left  && $aaoption !== 2 ) {
 
-            list($x,$y) = $adjexplode[$j];
+            [$x, $y] = $adjexplode[$j];
 
             $this->Pie3DSlice($img,$x,$y,$d,$h,$angles[$j][0],$angles[$j][1],
             $z,$adjcolors[$j],$shadow);
@@ -672,7 +672,7 @@ class PiePlot3D extends PiePlot {
                 }
 
                 $this->StrokeLabels($l,$img,$labeldata[$i][0]*M_PI/180,$x,$y,$z);
-                 
+
                 $this->Add3DSliceToCSIM($i,$labeldata[$i][1],$labeldata[$i][2],$h*2,$d*2,$z,
                 $originalangles[$i][0],$originalangles[$i][1]);
             }
@@ -703,7 +703,7 @@ class PiePlot3D extends PiePlot {
                 $fulledge = false;
             }
         }
-         
+
 
         for($i=0; $i < count($data); ++$i, ++$idx ) {
 
@@ -715,17 +715,17 @@ class PiePlot3D extends PiePlot {
         $img->PopColor();
     }
 
-    function StrokeFullSliceFrame($img,$xc,$yc,$sa,$ea,$w,$h,$z,$edgecolor,$exploderadius,$fulledge) {
+    public function StrokeFullSliceFrame($img,$xc,$yc,$sa,$ea,$w,$h,$z,$edgecolor,$exploderadius,$fulledge) {
         $step = 0.02;
 
         if( $exploderadius > 0 ) {
             $la = ($sa+$ea)/2;
             $xc += $exploderadius*cos($la);
             $yc -= $exploderadius*sin($la) * ($h/$w) ;
-             
+
         }
 
-        $p = array($xc,$yc,$xc+$w*cos($sa),$yc-$h*sin($sa));
+        $p = [$xc,$yc,$xc+$w*cos($sa),$yc-$h*sin($sa)];
 
         for($a=$sa; $a < $ea; $a += $step ) {
             $p[] = $xc + $w*cos($a);
@@ -758,8 +758,8 @@ class PiePlot3D extends PiePlot {
             }
 
             if( $sa >= M_PI && $ea <= 2*M_PI ) {
-                $p = array($xc + $w*cos($sa),$yc - $h*sin($sa),
-                $xc + $w*cos($sa),$z + $yc - $h*sin($sa));
+                $p = [$xc + $w*cos($sa),$yc - $h*sin($sa),
+                $xc + $w*cos($sa),$z + $yc - $h*sin($sa)];
 
                 for($a=$sa+$step; $a < $ea; $a += $step ) {
                     $p[] = $xc + $w*cos($a);
@@ -775,7 +775,7 @@ class PiePlot3D extends PiePlot {
         }
     }
 
-    function Stroke($img,$aaoption=0) {
+    public function Stroke($img,$aaoption=0) {
         $n = count($this->data);
 
         // If user hasn't set the colors use the theme array
@@ -783,7 +783,7 @@ class PiePlot3D extends PiePlot {
             $colors = array_keys($img->rgb->rgb_table);
             sort($colors);
             $idx_a=$this->themearr[$this->theme];
-            $ca = array();
+            $ca = [];
             $m = count($idx_a);
             for($i=0; $i < $m; ++$i) {
                 $ca[$i] = $colors[$idx_a[$i]];
@@ -841,7 +841,7 @@ class PiePlot3D extends PiePlot {
             $thick = $width/12;
         }
         $a = $this->angle;
-        
+
         if( $a <= 30 ) $thick *= 1.6;
         elseif( $a <= 40 ) $thick *= 1.4;
         elseif( $a <= 50 ) $thick *= 1.2;
@@ -871,7 +871,7 @@ class PiePlot3D extends PiePlot {
     // PRIVATE METHODS
 
     // Position the labels of each slice
-    function StrokeLabels($label,$img,$a,$xp,$yp,$z) {
+    public function StrokeLabels($label,$img,$a,$xp,$yp,$z) {
         $this->value->halign="left";
         $this->value->valign="top";
 
@@ -895,11 +895,11 @@ class PiePlot3D extends PiePlot {
         else {
             $w=$img->GetTextWidth($label);
         }
-        
+
         while( $a > 2*M_PI ) {
             $a -= 2*M_PI;
         }
-        
+
         if( $a>=7*M_PI/4 || $a <= M_PI/4 ) $dx=0;
         if( $a>=M_PI/4 && $a <= 3*M_PI/4 ) $dx=($a-M_PI/4)*2/M_PI;
         if( $a>=3*M_PI/4 && $a <= 5*M_PI/4 ) $dx=1;

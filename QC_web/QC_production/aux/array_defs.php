@@ -2,7 +2,7 @@
 // array_defs.php
 // D.Norcini, UChicago, 2020
 //
-$select_times = array(
+$select_times = [
     "10s" => 10,
     "30s" => 30,
     "1m" => 1*60,
@@ -10,9 +10,9 @@ $select_times = array(
     "10m" => 10*60,
     "30m" => 30*60,
     "never" => -1 
-    );
+    ];
 
-$num_msgs_array = array(
+$num_msgs_array = [
     "Last 10" => 10,
     "Last 50" => 50,
     "Last 100" => 100,
@@ -21,20 +21,20 @@ $num_msgs_array = array(
     "First 10" => -10,
     "First 50" => -50,
     "First 100" => -100,
-    );
+    ];
 
-$html_colours = array(
+$html_colours = [
     "aqua", "black", "blue", 
     "gray", "green", "lime", "maroon", 
     "navy", "orange", "purple", "red", 
     "silver", "teal", "wheat", "white", "yellow"
-    );
+    ];
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
-$privilege_array = array();
-$allowed_host_array = array();
+$privilege_array = [];
+$allowed_host_array = [];
 $query = "SELECT `name`, `allowed_host` FROM `user_privileges` ORDER BY `name`";
 $result = mysql_query($query);
 if (!$result)	
@@ -45,38 +45,38 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
     $privilege_array[] = $row['name'];
     $allowed_host_array[] = $row['allowed_host'];
 }
-$allowed_host_array = array($privilege_array, $allowed_host_array);
+$allowed_host_array = [$privilege_array, $allowed_host_array];
 $privilege_array = make_unique($privilege_array);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-$ccd_qc_status_array = array(
+$ccd_qc_status_array = [
 		             " ",
 			     "Unchecked", 
 			     "Science-grade",
 			     "Operation-grade",
 			     "Toy-grade",
 			     "Failed",
-			     );
+			     ];
 
 
-$ccd_type_array = array(
+$ccd_type_array = [
 			" ",
 			"DES D42",
 			"LBNL Skipper",
 			"DAMIC Skipper",
 			"47/6 Skipper+DES"
-			);
+			];
 
 
-$item_packager_array = array(	
+$item_packager_array = [	
 		             " ",
 	                     "UW",
 			     "Modane",
 			     "LBNL",
-                             );
-			     
-$item_location_array = array(
+                             ];
+
+$item_location_array = [
 		             " ",
 			     "UChicago",
 			     "UW",
@@ -86,84 +86,84 @@ $item_location_array = array(
 			     "Zurich",
 			     "IFCA",
 			     "Other",
-			     );
+			     ];
 
-$ccd_size_array = array(
+$ccd_size_array = [
 			" ",
                         "4kx2k",
 			"1kx4k",
 			"1kx6k",
 			"6kx4k",
 			"6kx6k"
-	                );
+	                ];
 
 ////////////////////////////////////////////////////////////////////////////////////////
-$glue_parameter_names = array(
+$glue_parameter_names = [
 				 "Glue_humid",
 				 "Glue_temp",
 				 "Glue_radon",
-                                  );
+                                  ];
 
-$glue_parameter_title = array(
+$glue_parameter_title = [
 				 "Rel. Humidity",
                                  "Temperature",
 				 "Radon",
-                                  );
+                                  ];
 $glue_parameter_title = array_combine($glue_parameter_names, $glue_parameter_title);
 
-$glue_parameter_units = array(
+$glue_parameter_units = [
 				 "%",
 				 "C",
 				 "Bq/m^3",
-				 );
+				 ];
 $glue_parameter_units = array_combine($glue_parameter_names, $glue_parameter_units);
 
 ////////////////////////////////////////////////////////////////////////////////////////
-$wb_parameter_names = array(
+$wb_parameter_names = [
 				 "Wb_humid",
 				 "Wb_temp",
 				 "Wb_radon",
 				 "Wb_power",
 				 "Wb_time",
-                                  );
+                                  ];
 
-$wb_parameter_title = array(
+$wb_parameter_title = [
 				 "Rel. Humidity",
                                  "Temperature",
 				 "Radon",
 				 "Bond Power",
 				 "Bond Time",
-                                  );
+                                  ];
 $wb_parameter_title = array_combine($wb_parameter_names, $wb_parameter_title);
 
-$wb_parameter_units = array(
+$wb_parameter_units = [
 				 "%",
 				 "C",
 				 "Bq/m^3",
 				 "%",
 				 "us"
-				 );
+				 ];
 $wb_parameter_units = array_combine($wb_parameter_names, $wb_parameter_units);
 
 ////////////////////////////////////////////////////////////////////////////////////////
-$testing_parameter_names = array(
+$testing_parameter_names = [
 				 "Dark_current",
 				 "Resolution",
 				 "Eff_resistivity",
-                                  );
+                                  ];
 
-$testing_parameter_title = array(
+$testing_parameter_title = [
 				 "Dark Current",
                                  "Resolution",
 				 "Effective Resistivity",
-                                  );
+                                  ];
 $testing_parameter_title = array_combine($testing_parameter_names, $testing_parameter_title);
 
-$testing_parameter_units = array(
+$testing_parameter_units = [
 				 "e-/pixel/image",
 				 "e-",
 				 "kOhm-cm",
-				 );
+				 ];
 $testing_parameter_units = array_combine($testing_parameter_names, $testing_parameter_units);
 
 

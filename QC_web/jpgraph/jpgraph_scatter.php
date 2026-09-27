@@ -18,36 +18,36 @@ class FieldArrow {
     public $iColor='black';
     public $iSize=10;  // Length in pixels for  arrow
     public $iArrowSize = 2;
-    private $isizespec = array(
-    	array(2,1),array(3,2),array(4,3),array(6,4),array(7,4),array(8,5),array(10,6),array(12,7),array(16,8),array(20,10)
-    	);
-    function __construct() {
+    private $isizespec = [
+    	[2,1],[3,2],[4,3],[6,4],[7,4],[8,5],[10,6],[12,7],[16,8],[20,10]
+    	];
+    public function __construct() {
     	// Empty
     }
 
-    function SetSize($aSize,$aArrowSize=2) {
+    public function SetSize($aSize,$aArrowSize=2) {
         $this->iSize = $aSize;
         $this->iArrowSize = $aArrowSize;
     }
 
-    function SetColor($aColor) {
+    public function SetColor($aColor) {
         $this->iColor = $aColor;
     }
 
-    function Stroke($aImg,$x,$y,$a) {
+    public function Stroke($aImg,$x,$y,$a) {
         // First rotate the center coordinates
-        list($x,$y) = $aImg->Rotate($x,$y);
+        [$x, $y] = $aImg->Rotate($x,$y);
 
         $old_origin = $aImg->SetCenter($x,$y);
         $old_a = $aImg->a;
         $aImg->SetAngle(-$a+$old_a);
 
         $dx = round($this->iSize/2);
-        $c = array($x-$dx,$y,$x+$dx,$y);
+        $c = [$x-$dx,$y,$x+$dx,$y];
         $x += $dx;
 
-        list($dx,$dy) = $this->isizespec[$this->iArrowSize];
-        $ca = array($x,$y,$x-$dx,$y-$dy,$x-$dx,$y+$dy,$x,$y);
+        [$dx, $dy] = $this->isizespec[$this->iArrowSize];
+        $ca = [$x,$y,$x-$dx,$y-$dy,$x-$dx,$y+$dy,$x,$y];
 
         $aImg->SetColor($this->iColor);
         $aImg->Polygon($c);
@@ -64,10 +64,10 @@ class FieldArrow {
 //===================================================
 class FieldPlot extends Plot {
     public $arrow = '';
-    private $iAngles = array();
+    private $iAngles = [];
     private $iCallback = '';
 
-    function __construct($datay,$datax,$angles) {
+    public function __construct($datay,$datax,$angles) {
         if( (count($datax) != count($datay)) )
         JpGraphError::RaiseL(20001);//("Fieldplots must have equal number of X and Y points.");
         if( (count($datax) != count($angles)) )
@@ -82,11 +82,11 @@ class FieldPlot extends Plot {
         $this->arrow = new FieldArrow();
     }
 
-    function SetCallback($aFunc) {
+    public function SetCallback($aFunc) {
         $this->iCallback = $aFunc;
     }
 
-    function Stroke($img,$xscale,$yscale) {
+    public function Stroke($img,$xscale,$yscale) {
 
         // Remeber base color and size
         $bc = $this->arrow->iColor;
@@ -100,7 +100,7 @@ class FieldPlot extends Plot {
 
             $f = $this->iCallback;
             if( $f != "" ) {
-                list($cc,$cs,$cas) = call_user_func($f,$this->coords[1][$i],$this->coords[0][$i],$this->iAngles[$i]);
+                [$cc, $cs, $cas] = call_user_func($f,$this->coords[1][$i],$this->coords[0][$i],$this->iAngles[$i]);
                 // Fall back on global data if the callback isn't set
                 if( $cc  == "" ) $cc = $bc;
                 if( $cs  == "" ) $cs = $bs;
@@ -118,7 +118,7 @@ class FieldPlot extends Plot {
     }
 
     // Framework function
-    function Legend($aGraph) {
+    public function Legend($aGraph) {
         if( $this->legend != "" ) {
             $aGraph->legend->Add($this->legend,$this->mark->fill_color,$this->mark,0,
             $this->legendcsimtarget,$this->legendcsimalt,$this->legendcsimwintarget);
@@ -135,7 +135,7 @@ class ScatterPlot extends Plot {
     private $impuls = false;
     //---------------
     // CONSTRUCTOR
-    function __construct($datay,$datax=false) {
+    public function __construct($datay,$datax=false) {
         if( (count($datax) != count($datay)) && is_array($datax)) {
         	JpGraphError::RaiseL(20003);//("Scatterplot must have equal number of X and Y points.");
         }
@@ -151,23 +151,23 @@ class ScatterPlot extends Plot {
 
     //---------------
     // PUBLIC METHODS
-    function SetImpuls($f=true) {
+    public function SetImpuls($f=true) {
         $this->impuls = $f;
     }
 
-    function SetStem($f=true) {
+    public function SetStem($f=true) {
         $this->impuls = $f;
     }
 
     // Combine the scatter plot points with a line
-    function SetLinkPoints($aFlag=true,$aColor="black",$aWeight=1,$aStyle='solid') {
+    public function SetLinkPoints($aFlag=true,$aColor="black",$aWeight=1,$aStyle='solid') {
     	$this->link->iShow = $aFlag;
     	$this->link->iColor = $aColor;
     	$this->link->iWeight = $aWeight;
     	$this->link->iStyle = $aStyle;
     }
 
-    function Stroke($img,$xscale,$yscale) {
+    public function Stroke($img,$xscale,$yscale) {
 
         $ymin=$yscale->scale_abs[0];
         if( $yscale->scale[0] < 0 )
@@ -231,7 +231,7 @@ class ScatterPlot extends Plot {
     }
 
     // Framework function
-    function Legend($aGraph) {
+    public function Legend($aGraph) {
         if( $this->legend != "" ) {
             $aGraph->legend->Add($this->legend,$this->mark->fill_color,$this->mark,0,
             $this->legendcsimtarget,$this->legendcsimalt,$this->legendcsimwintarget);

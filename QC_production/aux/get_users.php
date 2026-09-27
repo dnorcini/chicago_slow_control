@@ -12,11 +12,11 @@ if (!$result)
     die ("Could not get users table <br />" . mysql_error());
 }
 
-$users_user_name = array();
-$users_full_name = array();
-$users_affiliation = array();
-$users_email = array();
-$users_privileges = array();
+$users_user_name = [];
+$users_full_name = [];
+$users_affiliation = [];
+$users_email = [];
+$users_privileges = [];
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
 {	
     $users_user_name[] = $row['user_name'];

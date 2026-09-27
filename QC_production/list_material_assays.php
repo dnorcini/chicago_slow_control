@@ -36,7 +36,7 @@ while ($row = mysql_fetch_assoc($rm)) {
         $qd = "SELECT `Nuclide_1`, `Type`, `Result`, `Uncertainty`, `Result_Unit` FROM `{$detail_table}` ORDER BY `ID` ASC";
         $rd = mysql_query($qd);
         if ($rd && mysql_num_rows($rd) > 0) {
-            $chips = array();
+            $chips = [];
             while ($d = mysql_fetch_assoc($rd)) {
                 $nuc = h($d['Nuclide_1']);
                 $res = h(fmt_sci($d['Result'], 2));

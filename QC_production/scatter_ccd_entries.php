@@ -92,8 +92,8 @@ if (!$result)
     die ("Could not query the database <br />" . mysql_error());
 }
 
-$id_x = array();
-$x = array();
+$id_x = [];
+$x = [];
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
 {
     $id_x[] = (int)$row['id'];
@@ -107,8 +107,8 @@ if (!$result)
     die ("Could not query the database <br />" . mysql_error());
 }
 
-$id_y = array();
-$y = array();
+$id_y = [];
+$y = [];
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
 {
     $id_y[] = (int)$row['id'];
@@ -148,8 +148,8 @@ $graph->Add($scatterplot);
 
 if (!empty($y_reg))
 {
-    $x_reg=array(min($x), max($x));
-    $linereg = new LinePlot(array($y_reg[0], $y_reg[1]), $x_reg);
+    $x_reg=[min($x), max($x)];
+    $linereg = new LinePlot([$y_reg[0], $y_reg[1]], $x_reg);
     $linereg->SetColor("green");
     $graph->AddLine($linereg);
 }

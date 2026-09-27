@@ -1,11 +1,11 @@
 <?php
 function h($s)
 {
-    return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
 }
 function post_esc($key)
 {
-    return mysql_real_escape_string(isset($_POST[$key]) ? $_POST[$key] : "");
+    return mysql_real_escape_string($_POST[$key] ?? "");
 }
 function slugify($s)
 {
@@ -55,11 +55,11 @@ function ensure_detail_table($table_name)
     if (!$r) die("Could not create detail table: " . mysql_error() . "<BR>" . h($q));
 
     // Migrate existing tables that predate these columns
-    $cols_to_add = array(
+    $cols_to_add = [
         'Result_Unit'         => "VARCHAR(20) NOT NULL DEFAULT 'Bq/kg'",
         'Result_in_BqKg'      => 'DOUBLE DEFAULT NULL',
         'Uncertainty_in_BqKg' => 'DOUBLE DEFAULT NULL',
-    );
+    ];
     foreach ($cols_to_add as $col => $def) {
         $col_esc = mysql_real_escape_string($col);
         $chk = mysql_query("SELECT COUNT(*) AS n FROM INFORMATION_SCHEMA.COLUMNS

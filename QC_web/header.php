@@ -34,7 +34,7 @@ echo('<input type="image" src="pixmaps/reload.png" alt="Refresh" title="Refresh 
 echo('</TH>');
 echo('</FORM>');
 
-if (strpos($_SERVER['PHP_SELF'], "plot_entries.php") === false)
+if (!str_contains($_SERVER['PHP_SELF'], "plot_entries.php"))
 {
     if (check_access($_SESSION['privileges'], "basic", $allowed_host_array))
     {
@@ -44,7 +44,7 @@ if (strpos($_SERVER['PHP_SELF'], "plot_entries.php") === false)
     }
 }
 
-if (strpos($_SERVER['PHP_SELF'], "scatter_entries.php") === false)
+if (!str_contains($_SERVER['PHP_SELF'], "scatter_entries.php"))
 {
     if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
     {
@@ -54,7 +54,7 @@ if (strpos($_SERVER['PHP_SELF'], "scatter_entries.php") === false)
     }
 }
 
-if (strpos($_SERVER['PHP_SELF'], "list_entries.php") === false)
+if (!str_contains($_SERVER['PHP_SELF'], "list_entries.php"))
 {
     if (check_access($_SESSION['privileges'], "basic", $allowed_host_array))
     {
@@ -65,7 +65,7 @@ if (strpos($_SERVER['PHP_SELF'], "list_entries.php") === false)
 }
 
 
-if (strpos($_SERVER['PHP_SELF'], "edit_ccd.php") === false)
+if (!str_contains($_SERVER['PHP_SELF'], "edit_ccd.php"))
 {
     if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
     {
@@ -75,7 +75,7 @@ if (strpos($_SERVER['PHP_SELF'], "edit_ccd.php") === false)
     }
 }
 
-if (strpos($_SERVER['PHP_SELF'], "users.php") === false)
+if (!str_contains($_SERVER['PHP_SELF'], "users.php"))
 {
     if (check_access($_SESSION['privileges'], "full", $allowed_host_array))
     {
@@ -90,7 +90,7 @@ echo('<TH align="right">');
 echo('You are logged in as '.$_SESSION['user_name']);
 echo(' from '.$_SERVER['REMOTE_ADDR'].'.');
 
-if (strpos($_SESSION['privileges'], "guest") !== false)
+if (str_contains($_SESSION['privileges'], "guest"))
 {
     echo('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post">');
     echo('<input type="hidden" name="login" value="1">');

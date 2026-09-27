@@ -10,7 +10,7 @@
 
 
 // include Theme classes
-foreach (glob(dirname(__FILE__) . '/themes/*.php') as $theme_class_script) {
+foreach (glob(__DIR__ . '/themes/*.php') as $theme_class_script) {
   require_once($theme_class_script);
 }
 
@@ -20,25 +20,25 @@ foreach (glob(dirname(__FILE__) . '/themes/*.php') as $theme_class_script) {
 //===================================================
 abstract class Theme {
     protected $color_index;
-    
-    function __construct() {
+
+    public function __construct() {
         $this->color_index = 0;
     }
     /**
     * 
     */
-    abstract function GetColorList();
+    abstract public function GetColorList();
 
     /**
     *
     */
-    abstract function ApplyPlot($plot);
+    abstract public function ApplyPlot($plot);
 
 
     /**
     *
     */   
-    function SetupPlot($plot) {
+    public function SetupPlot($plot) {
         if (is_array($plot)) {
             foreach ($plot as $obj) {
                 $this->ApplyPlot($obj);
@@ -51,15 +51,15 @@ abstract class Theme {
     /**
     *
     */
-    function ApplyGraph($graph) {
+    public function ApplyGraph($graph) {
 
         $this->graph = $graph;
         $method_name = '';
 
-        if (get_class($graph) == 'Graph') {
+        if ($graph::class == 'Graph') {
             $method_name = 'SetupGraph';
         } else {
-            $method_name = 'Setup' . get_class($graph);
+            $method_name = 'Setup' . $graph::class;
         }
 
         if (method_exists($this, $method_name)) {
@@ -72,19 +72,19 @@ abstract class Theme {
     /**
     *
     */
-    function PreStrokeApply($graph) {
+    public function PreStrokeApply($graph) {
     }
 
     /**
     *
     */
-    function GetThemeColors($num = 30) { 
-        $result_list = array();
+    public function GetThemeColors($num = 30) { 
+        $result_list = [];
 
         $old_index = $this->color_index;
         $this->color_index = 0;
         $count = 0;
-  
+
         $i = 0;
         while (true) {
             for ($j = 0; $j < count($this->GetColorList()); $j++) {
@@ -97,14 +97,14 @@ abstract class Theme {
         }
 
         $this->color_index = $old_index;
-        
+
         return $result_list;
     }
 
     /**
     *
     */
-    function GetNextColor() {
+    public function GetNextColor() {
         $color_list = $this->GetColorList();
 
         $color = null;

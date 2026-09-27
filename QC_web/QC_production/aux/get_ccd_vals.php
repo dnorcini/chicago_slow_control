@@ -12,9 +12,9 @@ $result = mysql_query($query);
 if (!$result)
   die ("Could not query the database <br />" . mysql_error());
 
-$glue_parm_values = array();
-$wb_parm_values = array();
-$testing_parm_values = array();
+$glue_parm_values = [];
+$wb_parm_values = [];
+$testing_parm_values = [];
 
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
   {

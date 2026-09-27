@@ -69,35 +69,35 @@ if (isset($_POST['id'])) {
 
     // Origin / top fields
     $_POST['ccd_type'] = trim($_POST['ccd_type']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['ccd_type'] = addslashes($_POST['ccd_type']);
 
     $_POST['name'] = trim($_POST['name']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['name'] = addslashes($_POST['name']);
 
     $_POST['size'] = trim($_POST['size']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['size'] = addslashes($_POST['size']);
 
     $_POST['status'] = trim($_POST['status']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['status'] = addslashes($_POST['status']);
 
     $_POST['location'] = trim($_POST['location']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['location'] = addslashes($_POST['location']);
 
     $_POST['wafer_id'] = trim($_POST['wafer_id']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['wafer_id'] = addslashes($_POST['wafer_id']);
 
     $_POST['wafer_position'] = trim($_POST['wafer_position']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['wafer_position'] = addslashes($_POST['wafer_position']);
 
     $_POST['production_date'] = trim($_POST['production_date']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['production_date'] = addslashes($_POST['production_date']);
 
     $query = "UPDATE `CCD` SET `CCD_Type`=\"" . $_POST['ccd_type'] . "\", `Name`=\"" . $_POST['name'] . "\", `Size`=\"" . $_POST['size'] . "\", `Status`=\"" . $_POST['status'] . "\", `Location`=\"" . $_POST['location'] . "\", `Wafer_ID`=\"" . $_POST['wafer_id'] . "\", `Wafer_position`=\"" . $_POST['wafer_position'] . "\", `Production_date`=\"" . $_POST['production_date'] . "\", `Last_update`=" . time() . " WHERE `ID` = " . $ccd_id;
@@ -110,87 +110,87 @@ if (isset($_POST['id'])) {
 
     // Packaging / testing / notes fields
     $_POST['packager'] = trim($_POST['packager']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['packager'] = addslashes($_POST['packager']);
 
     $_POST['packaging'] = trim($_POST['packaging']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['packaging'] = addslashes($_POST['packaging']);
 
     $_POST['cable_np'] = trim($_POST['cable_np']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['cable_np'] = addslashes($_POST['cable_np']);
 
     $_POST['jfet_u1'] = trim($_POST['jfet_u1']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['jfet_u1'] = addslashes($_POST['jfet_u1']);
 
     $_POST['jfet_l1'] = trim($_POST['jfet_l1']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['jfet_l1'] = addslashes($_POST['jfet_l1']);
 
     $_POST['jfet_u2'] = trim($_POST['jfet_u2']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['jfet_u2'] = addslashes($_POST['jfet_u2']);
 
     $_POST['jfet_l2'] = trim($_POST['jfet_l2']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['jfet_l2'] = addslashes($_POST['jfet_l2']);
 
     $_POST['gluing_details'] = trim($_POST['gluing_details']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['gluing_details'] = addslashes($_POST['gluing_details']);
 
     $_POST['wirebonding_details'] = trim($_POST['wirebonding_details']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['wirebonding_details'] = addslashes($_POST['wirebonding_details']);
 
     $_POST['amp_u1'] = trim($_POST['amp_u1']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['amp_u1'] = addslashes($_POST['amp_u1']);
 
     $_POST['amp_l1'] = trim($_POST['amp_l1']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['amp_l1'] = addslashes($_POST['amp_l1']);
 
     $_POST['amp_u2'] = trim($_POST['amp_u2']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['amp_u2'] = addslashes($_POST['amp_u2']);
 
     $_POST['amp_l2'] = trim($_POST['amp_l2']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['amp_l2'] = addslashes($_POST['amp_l2']);
 
     $_POST['defects'] = trim($_POST['defects']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['defects'] = addslashes($_POST['defects']);
 
     $_POST['eff_resistivity'] = trim($_POST['eff_resistivity']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['eff_resistivity'] = addslashes($_POST['eff_resistivity']);
 
     $_POST['test_temp'] = trim($_POST['test_temp']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['test_temp'] = addslashes($_POST['test_temp']);
 
     $_POST['test_vref'] = trim($_POST['test_vref']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['test_vref'] = addslashes($_POST['test_vref']);
 
     $_POST['tester'] = trim($_POST['tester']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['tester'] = addslashes($_POST['tester']);
 
     $_POST['test_date'] = trim($_POST['test_date']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['test_date'] = addslashes($_POST['test_date']);
 
     $_POST['test_details'] = trim($_POST['test_details']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['test_details'] = addslashes($_POST['test_details']);
 
     $_POST['note'] = trim($_POST['note']);
-    if (!get_magic_quotes_gpc())
+    if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
       $_POST['note'] = addslashes($_POST['note']);
 
     $query = "UPDATE `CCD` SET `Packager`=\"" . $_POST['packager'] . "\", `Packaging_date`=\"" . $_POST['packaging'] . "\", `Cable_np`=\"" . $_POST['cable_np'] . "\", `JFET_U1`=\"" . $_POST['jfet_u1'] . "\", `AMP_U1`=\"" . $_POST['amp_u1'] . "\", `AMP_L1`=\"" . $_POST['amp_l1'] . "\", `JFET_l1`=\"" . $_POST['jfet_l1'] . "\", `JFET_U2`=\"" . $_POST['jfet_u2'] . "\", `JFET_L2`=\"" . $_POST['jfet_l2'] . "\", `Gluing_details`=\"" . $_POST['gluing_details'] . "\", `wirebonding_details`=\"" . $_POST['wirebonding_details'] . "\", `AMP_U2`=\"" . $_POST['amp_u2'] . "\", `AMP_L2`=\"" . $_POST['amp_l2'] . "\", `Defects`=\"" . $_POST['defects'] . "\", `Eff_resistivity`=\"" . $_POST['eff_resistivity'] . "\", `Test_temp`=\"" . $_POST['test_temp'] . "\", `Test_vref`=\"" . $_POST['test_vref'] . "\", `Tester`=\"" . $_POST['tester'] . "\", `Test_date`=\"" . $_POST['test_date'] . "\", `Test_details`=\"" . $_POST['test_details'] . "\", `Note`=\"" . $_POST['note'] . "\", `Last_update`=" . time() . " WHERE `ID` = " . $ccd_id;

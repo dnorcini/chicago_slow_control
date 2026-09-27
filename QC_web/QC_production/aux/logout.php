@@ -8,5 +8,5 @@ session_start();
 echo ('<br>');
 session_unset();
 session_destroy();
-$_SESSION = array();
+$_SESSION = [];
 ?>

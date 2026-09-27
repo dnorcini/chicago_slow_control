@@ -3,7 +3,7 @@
 // D.Norcini, Hopkins, 2024
 
 // Dropdown options for times
-$select_times = array(
+$select_times = [
     "10s" => 10,
     "30s" => 30,
     "1m" => 1 * 60,
@@ -11,10 +11,10 @@ $select_times = array(
     "10m" => 10 * 60,
     "30m" => 30 * 60,
     "never" => -1
-);
+];
 
 // Number of messages options
-$num_msgs_array = array(
+$num_msgs_array = [
     "Last 10" => 10,
     "Last 50" => 50,
     "Last 100" => 100,
@@ -23,10 +23,10 @@ $num_msgs_array = array(
     "First 10" => -10,
     "First 50" => -50,
     "First 100" => -100
-);
+];
 
 // HTML colors
-$html_colours = array(
+$html_colours = [
     "aqua",
     "black",
     "blue",
@@ -43,11 +43,11 @@ $html_colours = array(
     "wheat",
     "white",
     "yellow"
-);
+];
 
 // Privilege arrays dynamically populated from DB
-$privilege_array = array();
-$allowed_host_array = array();
+$privilege_array = [];
+$allowed_host_array = [];
 $query = "SELECT `name`, `allowed_host` FROM `user_privileges` ORDER BY `name`";
 $result = mysql_query($query);
 if (!$result) {
@@ -57,55 +57,55 @@ while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
     $privilege_array[] = $row['name'];
     $allowed_host_array[] = $row['allowed_host'];
 }
-$allowed_host_array = array($privilege_array, $allowed_host_array);
+$allowed_host_array = [$privilege_array, $allowed_host_array];
 $privilege_array = make_unique($privilege_array);
 
 // Define status options
-$status_array = array('Not Tested', 'Tested', 'Failed');
+$status_array = ['Not Tested', 'Tested', 'Failed'];
 
 // Define grades for L1, L2, U1, and U2
-$grade_array = array('', 'Failed', 'Operational', 'Engineering', 'Science');
+$grade_array = ['', 'Failed', 'Operational', 'Engineering', 'Science'];
 
 // Define chamber options
-$chamber_array = array(" ", "JH1", "JH2");
+$chamber_array = [" ", "JH1", "JH2"];
 
 // Define ACM numbers
-$ACM_numbers = array(" ", "101", "102", "106", "108", "109", "110");
+$ACM_numbers = [" ", "101", "102", "106", "108", "109", "110"];
 
 // Define wafer positions
-$wafer_positions = array(" ", "A", "B", "C", "D");
+$wafer_positions = [" ", "A", "B", "C", "D"];
 
 // Define feedthrough positions
-$feedthru_positions = array(" ", "1", "2", "3", "4");
+$feedthru_positions = [" ", "1", "2", "3", "4"];
 
 // Yes/No/Blank array for dropdowns
-$yes_no_blank_array = array(" ", "Yes", "No");
+$yes_no_blank_array = [" ", "Yes", "No"];
 
 // Amplifier labels (assuming it's a list of amplifiers for L1, L2, U1, U2, etc.)
-$amp_array = array(" ", "L1", "L2", "U1", "U2");
-$amplifiers = array("L1", "L2", "U1", "U2");
+$amp_array = [" ", "L1", "L2", "U1", "U2"];
+$amplifiers = ["L1", "L2", "U1", "U2"];
 
 // CCD label
-$ccds = array("A", "B", "C", "D");
+$ccds = ["A", "B", "C", "D"];
 
 // channels
-$channels = array('', 'ch0', 'ch1', 'ch2', 'ch3');
+$channels = ['', 'ch0', 'ch1', 'ch2', 'ch3'];
 
 
 // Define trace fields
-$trace_fields = array(
+$trace_fields = [
     'trace_saturation_',
     'trace_comments_',
     'trace_reference_'
-);
-$trace_fields_high = array(
+];
+$trace_fields_high = [
     'trace_high_saturation_',
     'trace_high_comments_',
     'trace_high_reference_'
-);
+];
 
 // Define other image-related fields (for defect maps, tracks, etc.)
-$image_fields = array(
+$image_fields = [
     'tracks_',
     'noise_',
     'defects_',
@@ -147,11 +147,11 @@ $image_fields = array(
     'crosstalk_B',
     'crosstalk_C',
     'crosstalk_D',
-);
+];
 
-$image_numbers = array("1_", "2_", "3_", "4_", "5_", "6_", "7_", "98_", "99_");
-$image_numbers_low = array("1_low_", "2_low_", "3_low_", "31_low_", "32_low_", "4_low_", "5_low_", "6_low_", "7_low_");
-$image_numbers_high = array("1_high_", "2_high_", "3_high_", "31_high_", "32_high_", "4_high_", "5_high_", "6_high_");
+$image_numbers = ["1_", "2_", "3_", "4_", "5_", "6_", "7_", "98_", "99_"];
+$image_numbers_low = ["1_low_", "2_low_", "3_low_", "31_low_", "32_low_", "4_low_", "5_low_", "6_low_", "7_low_"];
+$image_numbers_high = ["1_high_", "2_high_", "3_high_", "31_high_", "32_high_", "4_high_", "5_high_", "6_high_"];
 
 //for comparison page
 $typeMap = [
@@ -162,32 +162,32 @@ $typeMap = [
 ////////////////////////////////////////////////////////////////////////////////////////
 // CCD (pre-production) arrays
 
-$ccd_qc_status_array = array(
+$ccd_qc_status_array = [
                              " ",
                              "Unchecked",
                              "Science-grade",
                              "Operation-grade",
                              "Toy-grade",
                              "Failed",
-                             );
+                             ];
 
-$ccd_type_array = array(
+$ccd_type_array = [
                         " ",
                         "DES D42",
                         "LBNL Skipper",
                         "DAMIC Skipper",
                         "DAMIC Module",
                         "47/6 Skipper+DES"
-                        );
+                        ];
 
-$item_packager_array = array(
+$item_packager_array = [
                              " ",
                              "UW",
                              "LSM",
                              "LBNL",
-                             );
+                             ];
 
-$item_location_array = array(
+$item_location_array = [
                              " ",
                              "UChicago",
                              "UW",
@@ -198,9 +198,9 @@ $item_location_array = array(
                              "UZH",
                              "IFCA",
                              "Other",
-                             );
+                             ];
 
-$ccd_size_array = array(
+$ccd_size_array = [
                         " ",
                         "4kx2k",
                         "1kx4k",
@@ -209,28 +209,28 @@ $ccd_size_array = array(
                         "6kx1.5k",
                         "6kx4k",
                         "6kx6k"
-                        );
+                        ];
 
-$glue_parameter_names = array("Glue_humid", "Glue_temp", "Glue_radon");
-$glue_parameter_title = array_combine($glue_parameter_names, array("Rel. Humidity", "Temperature", "Radon"));
-$glue_parameter_units = array_combine($glue_parameter_names, array("%", "C", "Bq/m^3"));
+$glue_parameter_names = ["Glue_humid", "Glue_temp", "Glue_radon"];
+$glue_parameter_title = array_combine($glue_parameter_names, ["Rel. Humidity", "Temperature", "Radon"]);
+$glue_parameter_units = array_combine($glue_parameter_names, ["%", "C", "Bq/m^3"]);
 
-$wb_parameter_names = array("Wb_humid", "Wb_temp", "Wb_radon", "Wb_power", "Wb_time");
-$wb_parameter_title = array_combine($wb_parameter_names, array("Rel. Humidity", "Temperature", "Radon", "Bond Power", "Bond Time"));
-$wb_parameter_units = array_combine($wb_parameter_names, array("%", "C", "Bq/m^3", "%", "us"));
+$wb_parameter_names = ["Wb_humid", "Wb_temp", "Wb_radon", "Wb_power", "Wb_time"];
+$wb_parameter_title = array_combine($wb_parameter_names, ["Rel. Humidity", "Temperature", "Radon", "Bond Power", "Bond Time"]);
+$wb_parameter_units = array_combine($wb_parameter_names, ["%", "C", "Bq/m^3", "%", "us"]);
 
-$testing_noise_names = array("Noise_U1", "Noise_L1", "Noise_U2", "Noise_L2");
-$testing_noise_title = array_combine($testing_noise_names, array("Noise U1", "Noise L1", "Noise U2", "Noise L2"));
-$testing_noise_units = array_combine($testing_noise_names, array("ADU", "ADU", "ADU", "ADU"));
+$testing_noise_names = ["Noise_U1", "Noise_L1", "Noise_U2", "Noise_L2"];
+$testing_noise_title = array_combine($testing_noise_names, ["Noise U1", "Noise L1", "Noise U2", "Noise L2"]);
+$testing_noise_units = array_combine($testing_noise_names, ["ADU", "ADU", "ADU", "ADU"]);
 
-$testing_resolution_names = array("Resolution_U1", "Resolution_L1", "Resolution_U2", "Resolution_L2");
-$testing_resolution_title = array_combine($testing_resolution_names, array("Resolution U1", "Resolution L1", "Resolution U2", "Resolution L2"));
-$testing_resolution_units = array_combine($testing_resolution_names, array("ADU", "ADU", "ADU", "ADU"));
+$testing_resolution_names = ["Resolution_U1", "Resolution_L1", "Resolution_U2", "Resolution_L2"];
+$testing_resolution_title = array_combine($testing_resolution_names, ["Resolution U1", "Resolution L1", "Resolution U2", "Resolution L2"]);
+$testing_resolution_units = array_combine($testing_resolution_names, ["ADU", "ADU", "ADU", "ADU"]);
 
-$testing_gain_names = array("Gain_U1", "Gain_L1", "Gain_U2", "Gain_L2");
-$testing_gain_title = array_combine($testing_gain_names, array("Gain U1", "Gain L1", "Gain U2", "Gain L2"));
-$testing_gain_units = array_combine($testing_gain_names, array("ADU", "ADU", "ADU", "ADU"));
+$testing_gain_names = ["Gain_U1", "Gain_L1", "Gain_U2", "Gain_L2"];
+$testing_gain_title = array_combine($testing_gain_names, ["Gain U1", "Gain L1", "Gain U2", "Gain L2"]);
+$testing_gain_units = array_combine($testing_gain_names, ["ADU", "ADU", "ADU", "ADU"]);
 
-$testing_dark_current_names = array("Dark_current_U1", "Dark_current_L1", "Dark_current_U2", "Dark_current_L2");
-$testing_dark_current_title = array_combine($testing_dark_current_names, array("Dark_current U1", "Dark_current L1", "Dark_current U2", "Dark_current L2"));
-$testing_dark_current_units = array_combine($testing_dark_current_names, array("e-/px/day", "e-/px/day", "e-/px/day", "e-/px/day"));
+$testing_dark_current_names = ["Dark_current_U1", "Dark_current_L1", "Dark_current_U2", "Dark_current_L2"];
+$testing_dark_current_title = array_combine($testing_dark_current_names, ["Dark_current U1", "Dark_current L1", "Dark_current U2", "Dark_current L2"]);
+$testing_dark_current_units = array_combine($testing_dark_current_names, ["e-/px/day", "e-/px/day", "e-/px/day", "e-/px/day"]);

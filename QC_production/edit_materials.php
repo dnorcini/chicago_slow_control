@@ -160,7 +160,7 @@ while ($row = mysql_fetch_assoc($rm)) {
     echo '<input type="text" name="assay_docdb" value="' . h($row['Docdb']) . '" size="20" placeholder="e.g. 12345, 67890">';
     $docdb_raw = trim((string)$row['Docdb']);
     if ($docdb_raw !== '') {
-        $docdb_ids = array_filter(array_map('trim', preg_split('/[\s,]+/', $docdb_raw)));
+        $docdb_ids = array_filter(array_map(trim(...), preg_split('/[\s,]+/', $docdb_raw)));
         foreach ($docdb_ids as $id) {
             if ($id !== '' && is_numeric($id)) {
                 $doc_url = 'https://gev.uchicago.edu/cgi-bin/DocDB/ShowDocument?docid=' . urlencode($id);
@@ -195,7 +195,7 @@ while ($row = mysql_fetch_assoc($rm)) {
         echo '<ul>';
         while ($f = mysql_fetch_assoc($rf)) {
             $file_id = (int)$f['ID'];
-            $label = $f['Orig_Name'] ? $f['Orig_Name'] : $f['Stored_Name'];
+            $label = $f['Orig_Name'] ?: $f['Stored_Name'];
             $preview_url = "serve_assay_file.php?id=" . $file_id . "&disposition=inline";
 
             echo '<li>';
@@ -240,7 +240,7 @@ while ($row = mysql_fetch_assoc($rm)) {
     $rd = mysql_query($qd);
     if (!$rd) die("Could not query detail table: " . mysql_error() . "<br>" . h($qd));
 
-    $detail_row_ids = array();
+    $detail_row_ids = [];
     while ($d = mysql_fetch_assoc($rd)) {
         echo '<tr>';
         echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">';
@@ -281,7 +281,7 @@ while ($row = mysql_fetch_assoc($rm)) {
         echo '</td>';
 
         // Unit (text input, shared for both Result and Uncertainty)
-        $result_unit = isset($d['Result_Unit']) ? $d['Result_Unit'] : 'Bq/kg';
+        $result_unit = $d['Result_Unit'] ?? 'Bq/kg';
         echo '<td' . $cell_td . '><input type="text" name="detail_result_unit" id="detail_result_unit_' . $row_id . '" data-tbl="dtbl-' . $assay_id . '" value="' . h($result_unit) . '"' . $cell_in . ' oninput="syncBqKg(' . $row_id . ')"></td>';
 
         // Result converted to Bq/kg (manual entry; auto-filled and locked when unit is Bq/kg)

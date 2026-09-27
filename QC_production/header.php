@@ -9,7 +9,8 @@
 // Refactor and add underground and fixed tab positions
 // Cinyu Zhu, JHU, 2025
 // xzhu98@jh.edu
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE)
+    session_start();
 
 if (!(empty($_POST['login'])))
     include("aux/login.php");
@@ -23,7 +24,7 @@ function nav_link($label, $file, $required_priv)
 {
     global $allowed_host_array;
     if (check_access($_SESSION['privileges'], $required_priv, $allowed_host_array)) {
-        $is_current = strpos($_SERVER['PHP_SELF'], $file) !== false;
+        $is_current = str_contains($_SERVER['PHP_SELF'], $file);
         echo ('<TH>');
         if ($is_current) {
             echo ('<span style="font-weight:bold; color:black; border:1px solid black; padding:2px;">' . $label . '</span>');
@@ -57,7 +58,7 @@ echo ('You are logged in as ' . $_SESSION['user_name']);
 echo (' from ' . $_SERVER['REMOTE_ADDR'] . '.');
 
 
-if (strpos($_SESSION['privileges'], "guest") !== false) {
+if (str_contains($_SESSION['privileges'], "guest")) {
     echo ('<FORM action="' . $_SERVER['PHP_SELF'] . '" method="post">');
     echo ('<input type="hidden" name="login" value="1">');
     echo ('<TH width="200">');

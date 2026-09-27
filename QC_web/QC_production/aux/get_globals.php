@@ -12,19 +12,19 @@ if (!$result)
 }
 else
 {
-    $global_names = array();
-    $global_int1 = array();
-    $global_int2 = array();
-    $global_int3 = array();
-    $global_int4 = array();
-    $global_double1 = array();
-    $global_double2 = array();
-    $global_double3 = array();
-    $global_double4 = array();
-    $global_string1 = array();
-    $global_string2 = array();
-    $global_string3 = array();
-    $global_string4 = array();
+    $global_names = [];
+    $global_int1 = [];
+    $global_int2 = [];
+    $global_int3 = [];
+    $global_int4 = [];
+    $global_double1 = [];
+    $global_double2 = [];
+    $global_double3 = [];
+    $global_double4 = [];
+    $global_string1 = [];
+    $global_string2 = [];
+    $global_string3 = [];
+    $global_string4 = [];
     
     while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
     {

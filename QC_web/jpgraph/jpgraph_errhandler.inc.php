@@ -23,24 +23,24 @@ $__jpg_err_locale = DEFAULT_ERR_LOCALE;
 
 class ErrMsgText {
     private $lt=NULL;
-    function __construct() {
+    public function __construct() {
         GLOBAL $__jpg_err_locale;
         $file = 'lang/'.$__jpg_err_locale.'.inc.php';
 
         // If the chosen locale doesn't exist try english
-        if( !file_exists(dirname(__FILE__).'/'.$file) ) {
+        if( !file_exists(__DIR__.'/'.$file) ) {
             $__jpg_err_locale = 'en';
         }
 
         $file = 'lang/'.$__jpg_err_locale.'.inc.php';
-        if( !file_exists(dirname(__FILE__).'/'.$file) ) {
+        if( !file_exists(__DIR__.'/'.$file) ) {
             die('Chosen locale file ("'.$file.'") for error messages does not exist or is not readable for the PHP process. Please make sure that the file exists and that the file permissions are such that the PHP process is allowed to read this file.');
         }
         require($file);
         $this->lt = $_jpg_messages;
     }
 
-    function Get($errnbr,$a1=null,$a2=null,$a3=null,$a4=null,$a5=null) {
+    public function Get($errnbr,$a1=null,$a2=null,$a3=null,$a4=null,$a5=null) {
         GLOBAL $__jpg_err_locale;
         if( !isset($this->lt[$errnbr]) ) {
             return 'Internal error: The specified error message ('.$errnbr.') does not exist in the chosen locale ('.$__jpg_err_locale.')';
@@ -68,27 +68,14 @@ class ErrMsgText {
             // Just return the error message without arguments.
             return $ea[0];
         }
-        switch( $numargs ) {
-            case 1:
-                $msg = sprintf($ea[0],$argv[0]);
-                break;
-            case 2:
-                $msg = sprintf($ea[0],$argv[0],$argv[1]);
-                break;
-            case 3:
-                $msg = sprintf($ea[0],$argv[0],$argv[1],$argv[2]);
-                break;
-            case 4:
-                $msg = sprintf($ea[0],$argv[0],$argv[1],$argv[2],$argv[3]);
-                break;
-            case 5:
-                $msg = sprintf($ea[0],$argv[0],$argv[1],$argv[2],$argv[3],$argv[4]);
-                break;
-            case 0:
-            default:
-                $msg = sprintf($ea[0]);
-                break;
-        }
+        $msg = match ($numargs) {
+            1 => sprintf($ea[0],$argv[0]),
+            2 => sprintf($ea[0],$argv[0],$argv[1]),
+            3 => sprintf($ea[0],$argv[0],$argv[1],$argv[2]),
+            4 => sprintf($ea[0],$argv[0],$argv[1],$argv[2],$argv[3]),
+            5 => sprintf($ea[0],$argv[0],$argv[1],$argv[2],$argv[3],$argv[4]),
+            default => sprintf($ea[0]),
+        };
         return $msg;
     }
 }
@@ -102,14 +89,14 @@ class JpGraphError {
     private static $__iImgFlg = true;
     private static $__iLogFile = '';
     private static $__iTitle = 'JpGraph Error: ';
-    public static function Raise($aMsg,$aHalt=true){
+    public static function Raise($aMsg,$aHalt=true): never{
         throw new JpGraphException($aMsg);
     }
     public static function SetErrLocale($aLoc) {
         GLOBAL $__jpg_err_locale ;
         $__jpg_err_locale = $aLoc;
     }
-    public static function RaiseL($errnbr,$a1=null,$a2=null,$a3=null,$a4=null,$a5=null) {
+    public static function RaiseL($errnbr,$a1=null,$a2=null,$a3=null,$a4=null,$a5=null): never {
         throw new JpGraphExceptionL($errnbr,$a1,$a2,$a3,$a4,$a5);
     }
     public static function SetImageFlag($aFlg=true) {
@@ -140,7 +127,7 @@ class JpGraphException extends Exception {
     }
     // custom string representation of object
     public function _toString() {
-        return __CLASS__ . ": [{$this->code}]: {$this->message} at " . basename($this->getFile()) . ":" . $this->getLine() . "\n" . $this->getTraceAsString() . "\n";
+        return self::class . ": [{$this->code}]: {$this->message} at " . basename($this->getFile()) . ":" . $this->getLine() . "\n" . $this->getTraceAsString() . "\n";
     }
     // custom representation of error as an image
     public function Stroke() {
@@ -155,7 +142,7 @@ class JpGraphException extends Exception {
     	}
         $errobj->Raise($this->getMessage());
     }
-    static public function defaultHandler(Exception $exception) {
+    static public function defaultHandler(\Throwable $exception) {
         global $__jpg_OldHandler;
         if( $exception instanceof JpGraphException ) {
             $exception->Stroke();
@@ -182,7 +169,7 @@ class JpGraphExceptionL extends JpGraphException {
 
 // Setup the default handler
 global $__jpg_OldHandler;
-$__jpg_OldHandler = set_exception_handler(array('JpGraphException','defaultHandler'));
+$__jpg_OldHandler = set_exception_handler(['JpGraphException','defaultHandler']);
 
 //
 // First of all set up a default error handler
@@ -197,20 +184,20 @@ class JpGraphErrObject {
     protected $iDest = false;
 
 
-    function __construct() {
+    public function __construct() {
         // Empty. Reserved for future use
     }
 
-    function SetTitle($aTitle) {
+    public function SetTitle($aTitle) {
         $this->iTitle = $aTitle;
     }
 
-    function SetStrokeDest($aDest) {
+    public function SetStrokeDest($aDest) {
         $this->iDest = $aDest;
     }
 
     // If aHalt is true then execution can't continue. Typical used for fatal errors
-    function Raise($aMsg,$aHalt=false) {
+    public function Raise($aMsg,$aHalt=false) {
         if( $this->iDest != '' ) {
         	if( $this->iDest == 'syslog' ) {
         		error_log($this->iTitle.$aMsg);	
@@ -245,12 +232,12 @@ class JpGraphErrObject {
 //==============================================================
 class JpGraphErrObjectImg extends JpGraphErrObject {
     
-    function __construct() {
+    public function __construct() {
         parent::__construct();
         // Empty. Reserved for future use
     }
 
-    function Raise($aMsg,$aHalt=true) {
+    public function Raise($aMsg,$aHalt=true) {
         $img_iconerror =
      'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAaV'.
      'BMVEX//////2Xy8mLl5V/Z2VvMzFi/v1WyslKlpU+ZmUyMjEh/'.
@@ -301,9 +288,9 @@ class JpGraphErrObjectImg extends JpGraphErrObject {
 
         // Drop shadow
         $img->SetColor("gray");
-        $img->FilledRectangle(5,5,$w-1,$h-1,10);
+        $img->FilledRectangle(5,5,$w-1,$h-1);
         $img->SetColor("gray:0.7");
-        $img->FilledRectangle(5,5,$w-3,$h-3,10);
+        $img->FilledRectangle(5,5,$w-3,$h-3);
 
         // Window background
         $img->SetColor("lightblue");

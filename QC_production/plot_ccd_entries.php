@@ -9,7 +9,7 @@ include("db_login.php");
 include("page_setup.php");
 include("aux/make_data_plot.php");
 
-$plot_type_array = array("CCDs");
+$plot_type_array = ["CCDs"];
 
 if (empty($_SESSION['ccd_choose_plot_type']))
   $_SESSION['ccd_choose_plot_type'] = $plot_type_array[0];
@@ -48,8 +48,8 @@ if ($_SESSION['ccd_choose_plot_type'] == "CCDs")
 	  die ("Could not query the database <br />" . mysql_error());
 
 	$text_version = "";
-	$ccd_id  = array();
-	$value = array();
+	$ccd_id  = [];
+	$value = [];
 
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	  {

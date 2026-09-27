@@ -129,8 +129,8 @@ if (isset($_POST['id'])) {
     }
 
     // Allowed file types
-    $allowed_types = array('image/png', 'image/jpeg', 'application/pdf', 'application/octet-stream', '.seq', '.bcf');
-    $allowed_logs = array('text/plain');
+    $allowed_types = ['image/png', 'image/jpeg', 'application/pdf', 'application/octet-stream', '.seq', '.bcf'];
+    $allowed_logs = ['text/plain'];
 
     // ======================
     // Upload Trace and Image Files
@@ -159,18 +159,10 @@ if (isset($_POST['id'])) {
     }
 
     // Ensure the session arrays are initialized if not already
-    if (!isset($_SESSION['file_url_' . $module_underground_id])) {
-        $_SESSION['file_url_' . $module_underground_id] = [];
-    }
-    if (!isset($_SESSION['file_exists_' . $module_underground_id])) {
-        $_SESSION['file_exists_' . $module_underground_id] = [];
-    }
-    if (!isset($_SESSION['log_url_' . $module_underground_id])) {
-        $_SESSION['log_url_' . $module_underground_id] = [];
-    }
-    if (!isset($_SESSION['log_exists_' . $module_underground_id])) {
-        $_SESSION['log_exists_' . $module_underground_id] = [];
-    }
+    $_SESSION['file_url_' . $module_underground_id] ??= [];
+    $_SESSION['file_exists_' . $module_underground_id] ??= [];
+    $_SESSION['log_url_' . $module_underground_id] ??= [];
+    $_SESSION['log_exists_' . $module_underground_id] ??= [];
 
     // Loop through all file fields (trace and image files)
     foreach ($file_fields as $file_field) {
@@ -255,7 +247,7 @@ if (isset($_POST['id'])) {
     // ======================
 
     // Include all relevant form fields to update
-    $fields = array(
+    $fields = [
         'name',
         'status',
         'pitch_adaptor_id',
@@ -302,7 +294,7 @@ if (isset($_POST['id'])) {
         'channel_C',
         'channel_D',
         'image5_low_crosstalk_comments'
-    );
+    ];
     $checkboxes = ['check_A', 'check_B', 'check_C', 'check_D'];
     $fields = array_merge($fields, $checkboxes);
     $fields = array_merge($fields, $trace_fields_high);
@@ -310,11 +302,11 @@ if (isset($_POST['id'])) {
 
     // Iterate over each checkbox to set them to 0 if not set in POST
     foreach ($checkboxes as $checkbox) {
-        $_POST[$checkbox] = isset($_POST[$checkbox]) ? $_POST[$checkbox] : 0;
+        $_POST[$checkbox] ??= 0;
     }
 
     // Initialize an array to hold the parts of the query
-    $query_parts = array();
+    $query_parts = [];
 
     // Loop through regular form fields and construct query parts
     foreach ($fields as $field) {
@@ -334,7 +326,7 @@ if (isset($_POST['id'])) {
     foreach ($ccds as $amp) {
         foreach ($trace_fields_high as $base_field) {
             $field_name = $base_field . $amp; // E.g., trace_saturation_A
-            $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
+            $dynamic_fields[$field_name] = $_POST[$field_name] ?? '';
             if (!empty($dynamic_fields[$field_name])) {
                 $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
             }
@@ -344,7 +336,7 @@ if (isset($_POST['id'])) {
         foreach ($image_numbers_low as $number_field) {
             foreach ($image_fields as $base_field) {
                 $field_name = 'image' . $number_field . $base_field . $amp; // E.g., image1_tracks_A
-                $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
+                $dynamic_fields[$field_name] = $_POST[$field_name] ?? '';
                 if (!empty($dynamic_fields[$field_name])) {
                     $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
                 }
@@ -353,7 +345,7 @@ if (isset($_POST['id'])) {
         foreach ($image_numbers_high as $number_field) {
             foreach ($image_fields as $base_field) {
                 $field_name = 'image' . $number_field . $base_field . $amp; // E.g., image1_tracks_A
-                $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
+                $dynamic_fields[$field_name] = $_POST[$field_name] ?? '';
                 if (!empty($dynamic_fields[$field_name])) {
                     $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
                 }
@@ -394,8 +386,8 @@ function generate_dropdown($name, $options, $selected_value)
 // File existence check
 function check_and_update_file_session($file_field, $upload_dir, $base_url, $module_underground_id)
 {
-    $upload_dir = isset($_SESSION['upload_dir']) ? $_SESSION['upload_dir'] : '';
-    $base_url = isset($_SESSION['base_url']) ? $_SESSION['base_url'] : '';
+    $upload_dir = $_SESSION['upload_dir'] ?? '';
+    $base_url = $_SESSION['base_url'] ?? '';
 
     // Construct the file name based on the file field
     $file_name = $file_field . '.png';
@@ -416,8 +408,8 @@ function check_and_update_file_session($file_field, $upload_dir, $base_url, $mod
 // Log existence check
 function check_and_update_log_session($log_field, $upload_dir, $base_url, $module_underground_id)
 {
-    $upload_dir = isset($_SESSION['upload_dir']) ? $_SESSION['upload_dir'] : '';
-    $base_url = isset($_SESSION['base_url']) ? $_SESSION['base_url'] : '';
+    $upload_dir = $_SESSION['upload_dir'] ?? '';
+    $base_url = $_SESSION['base_url'] ?? '';
 
     // Construct the log name based on the log field
     $log_name = $log_field . '.log';
@@ -496,7 +488,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     Packaging radon [Bq/m^3]: <input type="text" name="radon" value="<?php echo $radon; ?>" size="10">
                 </td>
                 <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
-                    Current Location: <?php echo htmlspecialchars($current_location); ?>
+                    Current Location: <?php echo htmlspecialchars($current_location ?? ''); ?>
                 </td>
             </tr>
         </table>
@@ -513,7 +505,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
             <td>
                 <?php if (!empty($die_A)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A); ?>">
+                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_A ?? ''); ?>">
                         <input type="submit" value="A" style="font-size: 14pt;">
                     </form>
                 <?php else: ?>
@@ -523,7 +515,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
             <td>
                 <?php if (!empty($die_B)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_B); ?>">
+                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_B ?? ''); ?>">
                         <input type="submit" value="B" style="font-size: 14pt;">
                     </form>
                 <?php else: ?>
@@ -533,7 +525,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
             <td>
                 <?php if (!empty($die_C)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_C); ?>">
+                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_C ?? ''); ?>">
                         <input type="submit" value="C" style="font-size: 14pt;">
                     </form>
                 <?php else: ?>
@@ -543,7 +535,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
             <td>
                 <?php if (!empty($die_D)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
-                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_D); ?>">
+                        DIE ID <input type="hidden" name="go" value="<?php echo htmlspecialchars($die_D ?? ''); ?>">
                         <input type="submit" value="D" style="font-size: 14pt;">
                     </form>
                 <?php else: ?>
@@ -557,19 +549,19 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
         <table border="1" cellpadding="2" width="100%">
             <tr>
                 <td>
-                    <input type="text" name="die_A" value="<?php echo htmlspecialchars($die_A); ?>" size="10">
+                    <input type="text" name="die_A" value="<?php echo htmlspecialchars($die_A ?? ''); ?>" size="10">
                     &nbsp&nbsp&nbsp&nbsp; Amp A<?php generate_dropdown('amp_A', $amp_array, $amp_A); ?>
                 </td>
                 <td>
-                    <input type="text" name="die_B" value="<?php echo htmlspecialchars($die_B); ?>" size="10">
+                    <input type="text" name="die_B" value="<?php echo htmlspecialchars($die_B ?? ''); ?>" size="10">
                     &nbsp&nbsp&nbsp&nbsp; Amp B<?php generate_dropdown('amp_B', $amp_array, $amp_B); ?>
                 </td>
                 <td>
-                    <input type="text" name="die_C" value="<?php echo htmlspecialchars($die_C); ?>" size="10">
+                    <input type="text" name="die_C" value="<?php echo htmlspecialchars($die_C ?? ''); ?>" size="10">
                     &nbsp&nbsp&nbsp&nbsp; Amp C<?php generate_dropdown('amp_C', $amp_array, $amp_C); ?>
                 </td>
                 <td>
-                    <input type="text" name="die_D" value="<?php echo htmlspecialchars($die_D); ?>" size="10">
+                    <input type="text" name="die_D" value="<?php echo htmlspecialchars($die_D ?? ''); ?>" size="10">
                     &nbsp&nbsp&nbsp&nbsp; Amp D<?php generate_dropdown('amp_D', $amp_array, $amp_D); ?>
                 </td>
             </tr>
@@ -741,7 +733,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <td colspan="4" align="center" style="white-space: nowrap;">
                     <?php
                     // Retrieve the current module_underground_id
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';  // This should be the actual server file path
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/'; // Web URL
 
@@ -771,7 +763,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
 
                     ?>
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="seq_high_file" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -780,7 +772,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp; &nbsp; &nbsp; &nbsp;
 
                     <?php if ($file_exists2): ?>
-                        <a href="<?php echo htmlspecialchars($file_url2); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url2 ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="bcf_high_file" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -827,7 +819,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <td align="center" style="white-space: nowrap;">
                         <?php
                         // Retrieve the current module_underground_id
-                        $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                        $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                         $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';  // This should be the actual server file path
                         $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/'; // Web URL
 
@@ -849,11 +841,11 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                         }
                         ?>
                         <?php if ($file_exists): ?>
-                            <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                            <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                                 <img src="pixmaps/icon.png" alt="PSD File" style="height: 20px; width: auto;">
                             </a>
                         <?php endif; ?>
-                        <input type="file" name="psd_high_file_<?php echo htmlspecialchars($amp); ?>" accept="image/png">
+                        <input type="file" name="psd_high_file_<?php echo htmlspecialchars($amp ?? ''); ?>" accept="image/png">
                         &nbsp; &nbsp; &nbsp; &nbsp;
                     </td>
                 </tr>
@@ -869,7 +861,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
                     // Retrieve the current module_underground_id
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
 
                     // Absolute path on the server's file system
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';  // This should be the actual server file path
@@ -897,7 +889,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Trace File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -980,7 +972,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     }
                     ?>
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image1_High File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1034,7 +1026,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
                     // Retrieve the current module_underground_id
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
 
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/'; // Web URL
@@ -1078,7 +1070,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image2_High File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1087,7 +1079,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp; &nbsp; &nbsp; &nbsp;
 
                     <?php if ($log_exists): ?>
-                        <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="Image2_High Log" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1125,7 +1117,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <tr>
                     <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_res_<?php echo $amp; ?>" value="<?php echo ${'image31_high_res_' . $amp}; ?>"></td>
-                    <td align="center"><?php echo htmlspecialchars(${'image31_high_res_e_' . $amp}); ?></td>
+                    <td align="center"><?php echo htmlspecialchars(${'image31_high_res_e_' . $amp} ?? ''); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image31_high_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image31_high_dark_current_' . $amp}; ?>"></td>
                     <td align="center"><?php echo number_format(${'image31_high_dark_current_' . $amp} / ${'image31_high_gain_' . $amp} * 86400 / 341, 2); ?></td>
@@ -1144,7 +1136,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
                     // Retrieve the current module_underground_id
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/'; // Web URL
                     $image31_high_file_name = 'image31_high_file.png';
@@ -1167,7 +1159,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image3_High File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1206,7 +1198,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <tr>
                     <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_res_<?php echo $amp; ?>" value="<?php echo ${'image32_high_res_' . $amp}; ?>"></td>
-                    <td align="center"><?php echo htmlspecialchars(${'image32_high_res_e_' . $amp}); ?></td>
+                    <td align="center"><?php echo htmlspecialchars(${'image32_high_res_e_' . $amp} ?? ''); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image32_high_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image32_high_dark_current_' . $amp}; ?>"></td>
                     <td align="center"><?php echo number_format(${'image32_high_dark_current_' . $amp} / ${'image32_high_gain_' . $amp} * 86400 / 654, 2); ?></td>
@@ -1225,7 +1217,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
                     // Retrieve the current module_underground_id
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/'; // Web URL
                     $image32_high_file_name = 'image32_high_file.png';
@@ -1247,7 +1239,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image3_High File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1315,7 +1307,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
                     // Retrieve the current module_underground_id
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
 
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/'; // Web URL
@@ -1359,7 +1351,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image4_High File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1368,7 +1360,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp; &nbsp; &nbsp; &nbsp;
 
                     <?php if ($log_exists): ?>
-                        <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="Image4_High Log" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1406,7 +1398,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <tr>
                     <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_res_<?php echo $amp; ?>" value="<?php echo ${'image31_low_res_' . $amp}; ?>"></td>
-                    <td align="center"><?php echo htmlspecialchars(${'image31_low_res_e_' . $amp}); ?></td>
+                    <td align="center"><?php echo htmlspecialchars(${'image31_low_res_e_' . $amp} ?? ''); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image31_low_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image31_low_dark_current_' . $amp}; ?>"></td>
                     <td align="center"><?php echo number_format(${'image31_low_dark_current_' . $amp} / ${'image31_low_gain_' . $amp} * 86400 / 371 / 10, 2); ?></td>
@@ -1425,7 +1417,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
                     // Retrieve the current module_underground_id
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/'; // Web URL
 
@@ -1450,7 +1442,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image31_Low File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1489,7 +1481,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <tr>
                     <td align="center"><?php echo "ch" . $count . " (ext" . $count_plus . ")"; ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_res_<?php echo $amp; ?>" value="<?php echo ${'image32_low_res_' . $amp}; ?>"></td>
-                    <td align="center"><?php echo htmlspecialchars(${'image32_low_res_e_' . $amp}); ?></td>
+                    <td align="center"><?php echo htmlspecialchars(${'image32_low_res_e_' . $amp} ?? ''); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image32_low_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image32_low_dark_current_' . $amp}; ?>"></td>
                     <td align="center"><?php echo number_format(${'image32_low_dark_current_' . $amp} / ${'image32_low_gain_' . $amp} * 86400 / 684 / 10, 2); ?></td>
@@ -1508,7 +1500,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
                     // Retrieve the current module_underground_id
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/'; // Web URL
                     $image32_low_file_name = 'image32_low_file.png';
@@ -1530,7 +1522,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image32_Low File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1586,7 +1578,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -1629,7 +1621,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 41_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
@@ -1637,7 +1629,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="file" name="image41_low_file" accept="image/png">
 
                     <?php if ($file_exists2): ?>
-                        <a href="<?php echo htmlspecialchars($file_url2); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url2 ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 42_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
@@ -1645,7 +1637,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="file" name="image42_low_file" accept="image/png">
 
                     <?php if ($log_exists2): ?>
-                        <a href="<?php echo htmlspecialchars($log_url2); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($log_url2 ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="Image 42_Low Log" style="height: 20px;">
                         </a>
                     <?php endif; ?>
@@ -1691,7 +1683,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -1710,7 +1702,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 43_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
@@ -1765,7 +1757,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -1803,7 +1795,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 44_Low File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1811,7 +1803,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="file" name="image44_low_file" accept="image/png">
 
                     <?php if ($log_exists): ?>
-                        <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="Image4_Low Log" style="height: 20px; width: auto; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1866,7 +1858,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -1904,14 +1896,14 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists2): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 52_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
                     <label for="image52_low_file">Energy_Peaks:</label>
                     <input type="file" name="image52_low_file" accept="image/png">
                     <?php if ($log_exists): ?>
-                        <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="Image5_Low Log" style="height: 20px; width: auto; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -1957,7 +1949,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -1976,7 +1968,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 53_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
@@ -2032,7 +2024,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -2053,7 +2045,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 54_Low File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -2117,7 +2109,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -2137,7 +2129,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 55_Low File" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -2164,7 +2156,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($log_exists): ?>
-                        <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="Image 55_Low log" style="height: 20px; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -2221,7 +2213,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <td align="left" colspan="1" style="border: none; white-space: nowrap;"> </td>
                 <td align="left" colspan="9" style="white-space: nowrap;">
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -2257,7 +2249,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists2): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 62_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
@@ -2265,7 +2257,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="file" name="image62_low_file" accept="image/png">
 
                     <?php if ($log_exists): ?>
-                        <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="Image6_Low Log" style="height: 20px; width: auto; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -2280,7 +2272,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -2310,14 +2302,14 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 63_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
                     <label for="image63_low_file"> Frontside Images:</label>
                     <input type="file" name="image63_low_file" accept="image/png">
                     <?php if ($file_exists2): ?>
-                        <a href="<?php echo htmlspecialchars($file_url2); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url2 ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 64_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
@@ -2371,7 +2363,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                 <td align="left" colspan="0.3" style="border: none; white-space: nowrap;"> </td>
                 <td align="left" colspan="3" style="white-space: nowrap;">
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -2407,7 +2399,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists2): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 62_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
@@ -2415,7 +2407,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="file" name="image72_low_file" accept="image/png">
 
                     <?php if ($log_exists): ?>
-                        <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon2.png" alt="image7_Low Log" style="height: 20px; width: auto; width: auto;">
                         </a>
                     <?php endif; ?>
@@ -2430,7 +2422,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     <input type="submit" value="Submit">
                     &nbsp &nbsp &nbsp &nbsp;
                     <?php
-                    $module_underground_id = isset($_SESSION['choosen_module_underground']) ? $_SESSION['choosen_module_underground'] : 0;
+                    $module_underground_id = $_SESSION['choosen_module_underground'] ?? 0;
                     $upload_dir = '/var/www/html/QC_production/uploads/edit_module_underground/module_underground_' . $module_underground_id . '/';
                     $base_url   = '/QC_production/uploads/edit_module_underground/' . 'module_underground_' . $module_underground_id . '/';
 
@@ -2460,14 +2452,14 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $modul
                     ?>
 
                     <?php if ($file_exists): ?>
-                        <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 73_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>
                     <label for="image73_low_file"> Frontside Images:</label>
                     <input type="file" name="image73_low_file" accept="image/png">
                     <?php if ($file_exists2): ?>
-                        <a href="<?php echo htmlspecialchars($file_url2); ?>" target="_blank">
+                        <a href="<?php echo htmlspecialchars($file_url2 ?? ''); ?>" target="_blank">
                             <img src="pixmaps/icon.png" alt="Image 74_Low File" style="height: 20px;">
                         </a>
                     <?php endif; ?>

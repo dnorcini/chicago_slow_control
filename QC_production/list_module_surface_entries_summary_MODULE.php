@@ -4,28 +4,28 @@ echo ('<BR>');
 
 // Categories
 echo ('<b>Ampifier grades<b>');
-$types = array(
-    'charizard' => array(
+$types = [
+    'charizard' => [
         "query" => "SELECT COUNT(*) AS count FROM MODULE_SURFACE WHERE (grade_A = 'Science' AND grade_B = 'Science' AND grade_C = 'Science' AND grade_D = 'Science')",
         "color" => "red",
         "note" => "4 Science grade amps"
-    ),
-    'charmeleon' => array(
+    ],
+    'charmeleon' => [
         "query" => "SELECT COUNT(*) AS count FROM MODULE_SURFACE WHERE ((grade_A = 'Science') + (grade_B = 'Science') + (grade_C = 'Science') + (grade_D = 'Science')) = 3",
         "color" => "orange",
         "note" => "3 Science grade amps"
-    ),
-    'charmander' => array(
+    ],
+    'charmander' => [
         "query" => "SELECT COUNT(*) AS count FROM MODULE_SURFACE WHERE ((grade_A = 'Science') + (grade_B = 'Science') + (grade_C = 'Science') + (grade_D = 'Science')) BETWEEN 1 AND 2",
         "color" => "yellow",
         "note" => "1 or 2 Science grade amps"
-    ),
-    'geodude' => array(
+    ],
+    'geodude' => [
         "query" => "SELECT COUNT(*) AS count FROM MODULE_SURFACE WHERE (grade_A != 'Science' AND grade_B != 'Science' AND grade_C != 'Science' AND grade_D != 'Science')",
         "color" => "gray",
         "note" => "0 Science grade amps"
-    )
-);
+    ]
+];
 
 echo ('<TR>');
 foreach ($types as $type => $details) {
@@ -36,6 +36,7 @@ foreach ($types as $type => $details) {
 }
 echo ('</TR>');
 echo ('<TR>');
+$good_module_surface_count = 0;
 foreach ($types as $type => $details) {
     // Execute the query
     $result = mysql_query($details['query']);
@@ -67,7 +68,7 @@ echo ('<TH align="left">'); echo ('C Operational'); echo ('</TH>');
 echo ('<TH align="left">'); echo ('C Failed'); echo ('</TH>');
 echo ('</TR>');
 
-$grades_u1 = array("Science", "Engineering", "Operational", "Failed");
+$grades_u1 = ["Science", "Engineering", "Operational", "Failed"];
 foreach ($grades_u1 as $grade) {
     $query = "SELECT COUNT(*) FROM MODULE_SURFACE WHERE grade_C = '$grade'";
     $result = mysql_query($query);

@@ -32,7 +32,7 @@ class PlotMark {
 
     //--------------
     // CONSTRUCTOR
-    function __construct() {
+    public function __construct() {
         $this->title = new Text();
         $this->title->Hide();
         $this->csimareas = '';
@@ -40,7 +40,7 @@ class PlotMark {
     }
     //---------------
     // PUBLIC METHODS
-    function SetType($aType,$aFileName='',$aScale=1.0) {
+    public function SetType($aType,$aFileName='',$aScale=1.0) {
         $this->type = $aType;
         if( $aType == MARK_IMG && $aFileName=='' ) {
             JpGraphError::RaiseL(23003);//('A filename must be specified if you set the mark type to MARK_IMG.');
@@ -49,81 +49,77 @@ class PlotMark {
         $this->iScale = $aScale;
     }
 
-    function SetCallback($aFunc) {
+    public function SetCallback($aFunc) {
         $this->iFormatCallback = $aFunc;
     }
 
-    function SetCallbackYX($aFunc) {
+    public function SetCallbackYX($aFunc) {
         $this->iFormatCallback2 = $aFunc;
     }
 
-    function GetType() {
+    public function GetType() {
         return $this->type;
     }
 
-    function SetColor($aColor) {
+    public function SetColor($aColor) {
         $this->color=$aColor;
     }
 
-    function SetFillColor($aFillColor) {
+    public function SetFillColor($aFillColor) {
         $this->fill_color = $aFillColor;
     }
 
-    function SetWeight($aWeight) {
+    public function SetWeight($aWeight) {
         $this->weight = $aWeight;
     }
 
     // Synonym for SetWidth()
-    function SetSize($aWidth) {
+    public function SetSize($aWidth) {
         $this->width=$aWidth;
     }
 
-    function SetWidth($aWidth) {
+    public function SetWidth($aWidth) {
         $this->width=$aWidth;
     }
 
-    function SetDefaultWidth() {
-        switch( $this->type ) {
-            case MARK_CIRCLE:
-            case MARK_FILLEDCIRCLE:
-                $this->width=4;
-                break;
-            default:
-                $this->width=7;
-        }
+    public function SetDefaultWidth() {
+        $this->width = match ($this->type) {
+            MARK_CIRCLE, MARK_FILLEDCIRCLE => 4,
+            default => 7,
+        };
     }
 
-    function GetWidth() {
+    public function GetWidth() {
         return $this->width;
     }
 
-    function Hide($aHide=true) {
+    public function Hide($aHide=true) {
         $this->show = !$aHide;
     }
 
-    function Show($aShow=true) {
+    public function Show($aShow=true) {
         $this->show = $aShow;
     }
 
-    function SetCSIMAltVal($aY,$aX='') {
+    public function SetCSIMAltVal($aY,$aX='') {
         $this->yvalue=$aY;
         $this->xvalue=$aX;
     }
 
-    function SetCSIMTarget($aTarget,$aWinTarget='') {
+    public function SetCSIMTarget($aTarget,$aWinTarget='') {
         $this->csimtarget=$aTarget;
         $this->csimwintarget=$aWinTarget;
     }
 
-    function SetCSIMAlt($aAlt) {
+    public function SetCSIMAlt($aAlt) {
         $this->csimalt=$aAlt;
     }
 
-    function GetCSIMAreas(){
+    public function GetCSIMAreas(){
         return $this->csimareas;
     }
 
-    function AddCSIMPoly($aPts) {
+    public function AddCSIMPoly($aPts) {
         $coords = round($aPts[0]).", ".round($aPts[1]);
         $n = count($aPts)/2;
         for( $i=1; $i < $n; ++$i){
@@ -145,7 +141,7 @@ class PlotMark {
         }
     }
 
-    function AddCSIMCircle($x,$y,$r) {
+    public function AddCSIMCircle($x,$y,$r) {
         $x = round($x); $y=round($y); $r=round($r);
         $this->csimareas="";
         if( !empty($this->csimtarget) ) {
@@ -163,20 +159,20 @@ class PlotMark {
         }
     }
      
-    function Stroke($img,$x,$y) {
+    public function Stroke($img,$x,$y) {
         if( !$this->show ) return;
 
         if( $this->iFormatCallback != '' || $this->iFormatCallback2 != '' ) {
 
             if( $this->iFormatCallback != '' ) {
                 $f = $this->iFormatCallback;
-                list($width,$color,$fcolor) = call_user_func($f,$this->yvalue);
+                [$width, $color, $fcolor] = call_user_func($f,$this->yvalue);
                 $filename = $this->iFileName;
                 $imgscale = $this->iScale;
             }
             else {
                 $f = $this->iFormatCallback2;
-                list($width,$color,$fcolor,$filename,$imgscale) = call_user_func($f,$this->yvalue,$this->xvalue);
+                [$width, $color, $fcolor, $filename, $imgscale] = call_user_func($f,$this->yvalue,$this->xvalue);
                 if( $filename=="" ) $filename = $this->iFileName;
                 if( $imgscale=="" ) $imgscale = $this->iScale;
             }
@@ -228,7 +224,7 @@ class PlotMark {
                         $this->imgdata_pushpins = new ImgData_PushPins();
                     }
                     $this->markimg = $this->imgdata_pushpins->GetImg($this->type,$filename);
-                    list($anchor_x,$anchor_y) = $this->imgdata_pushpins->GetAnchor();
+                    [$anchor_x, $anchor_y] = $this->imgdata_pushpins->GetAnchor();
                     break;
 
                 case MARK_IMG_SQUARE:
@@ -237,7 +233,7 @@ class PlotMark {
                         $this->imgdata_squares = new ImgData_Squares();
                     }
                     $this->markimg = $this->imgdata_squares->GetImg($this->type,$filename);
-                    list($anchor_x,$anchor_y) = $this->imgdata_squares->GetAnchor();
+                    [$anchor_x, $anchor_y] = $this->imgdata_squares->GetAnchor();
                     break;
 
                 case MARK_IMG_STAR:
@@ -246,7 +242,7 @@ class PlotMark {
                         $this->imgdata_stars = new ImgData_Stars();
                     }
                     $this->markimg = $this->imgdata_stars->GetImg($this->type,$filename);
-                    list($anchor_x,$anchor_y) = $this->imgdata_stars->GetAnchor();
+                    [$anchor_x, $anchor_y] = $this->imgdata_stars->GetAnchor();
                     break;
 
                 case MARK_IMG_BEVEL:
@@ -255,7 +251,7 @@ class PlotMark {
                         $this->imgdata_bevels = new ImgData_Bevels();
                     }
                     $this->markimg = $this->imgdata_bevels->GetImg($this->type,$filename);
-                    list($anchor_x,$anchor_y) = $this->imgdata_bevels->GetAnchor();
+                    [$anchor_x, $anchor_y] = $this->imgdata_bevels->GetAnchor();
                     break;
 
                 case MARK_IMG_DIAMOND:
@@ -264,7 +260,7 @@ class PlotMark {
                         $this->imgdata_diamonds = new ImgData_Diamonds();
                     }
                     $this->markimg = $this->imgdata_diamonds->GetImg($this->type,$filename);
-                    list($anchor_x,$anchor_y) = $this->imgdata_diamonds->GetAnchor();
+                    [$anchor_x, $anchor_y] = $this->imgdata_diamonds->GetAnchor();
                     break;
 
                 case MARK_IMG_BALL:
@@ -276,7 +272,7 @@ class PlotMark {
                         $this->imgdata_balls = new ImgData_Balls();
                     }
                     $this->markimg = $this->imgdata_balls->GetImg($this->type,$filename);
-                    list($anchor_x,$anchor_y) = $this->imgdata_balls->GetAnchor();
+                    [$anchor_x, $anchor_y] = $this->imgdata_balls->GetAnchor();
                     break;
             }
 
@@ -287,7 +283,7 @@ class PlotMark {
             $dh = round($imgscale * $h );
 
             // Do potential rotation
-            list($x,$y) = $img->Rotate($x,$y);
+            [$x, $y] = $img->Rotate($x,$y);
 
             $dx = round($x-$dw*$anchor_x);
             $dy = round($y-$dh*$anchor_y);
@@ -445,18 +441,18 @@ class PlotMark {
 //========================================================================
 class ImgData {
     protected $name = '';  // Each subclass gives a name
-    protected $an = array();  // Data array names
-    protected $colors = array(); // Available colors
-    protected $index  = array(); // Index for colors
+    protected $an = [];  // Data array names
+    protected $colors = []; // Available colors
+    protected $index  = []; // Index for colors
     protected $maxidx = 0 ;  // Max color index
     protected $anchor_x=0.5, $anchor_y=0.5 ;    // Where is the center of the image
     
-    function __construct() {
+    public function __construct() {
         // Empty
     }
     
     // Create a GD image from the data and return a GD handle
-    function GetImg($aMark,$aIdx) {
+    public function GetImg($aMark,$aIdx) {
         $n = $this->an[$aMark];
         if( is_string($aIdx) ) {
             if( !in_array($aIdx,$this->colors) ) {
@@ -473,28 +469,26 @@ class ImgData {
         return Image::CreateFromString(base64_decode($this->{$n}[$idx][1]));
     }
     
-    function GetAnchor() {
-        return array($this->anchor_x,$this->anchor_y);
+    public function GetAnchor() {
+        return [$this->anchor_x,$this->anchor_y];
     }
 }
 
 
 // Keep a global flag cache to reduce memory usage
-$_gFlagCache=array(
+$_gFlagCache=[
 1 => null,
 2 => null,
 3 => null,
 4 => null,
-);
+];
 // Only supposed to b called as statics
 class FlagCache {
     
-    static function GetFlagImgByName($aSize,$aName) {
+    public static function GetFlagImgByName($aSize,$aName) {
         global $_gFlagCache;
         require_once('jpgraph_flags.php');
-        if( $_gFlagCache[$aSize] === null ) {
-            $_gFlagCache[$aSize] = new FlagImages($aSize);
-        }
+        $_gFlagCache[$aSize] ??= new FlagImages($aSize);
         $f = $_gFlagCache[$aSize];
         $idx = $f->GetIdxByName($aName,$aFullName);
         return $f->GetImgByIdx($idx);

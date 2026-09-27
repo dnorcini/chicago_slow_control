@@ -7,14 +7,14 @@ session_start();
 $req_priv = "basic";
 include("db_login.php");
 include("page_setup.php");
-include("aux/make_data_plot.php");
+// include("aux/make_data_plot.php");
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 
-$plot_type_array = array(
+$plot_type_array = [
     "Summary",
     "CCDs",
-);
+];
 
 if (empty($_SESSION['ccd_choose_type']))
   $_SESSION['ccd_choose_type'] = $plot_type_array[0];
@@ -41,7 +41,7 @@ if ($_SESSION['ccd_choose_type'] == "Summary")
 
 else if ($_SESSION['ccd_choose_type'] == "CCDs")
   {
-    $temp = $_SESSION['choosen_ccd'];
+    $temp = $_SESSION['choosen_ccd'] ?? null;
 
     if (isset($_POST['go']))
     {

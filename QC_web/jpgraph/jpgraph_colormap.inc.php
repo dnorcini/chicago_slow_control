@@ -19,78 +19,78 @@ class ColorMap {
     const EPSILON = 1.0e-8;
     private $rgb = null;
     private $imap = 0;
-    private $irange = array(0,0), $irange_dist = 0 ;
+    private $irange = [0,0], $irange_dist = 0 ;
     private $inumcolors = 64;
     private $inullcolor = 'gray';
     private $isinit = false;
-    private $icolor_buckets = array();
-    private $ipredefmaps = array(
+    private $icolor_buckets = [];
+    private $ipredefmaps = [
 
     	/* Standard colors */
 
         /* HEAT */
-        0 => array('black','darkred','orange','yellow','white'),
+        0 => ['black','darkred','orange','yellow','white'],
 
         /* BW */
-        1 => array('black','gray','white'),
+        1 => ['black','gray','white'],
 
         /* RAINBOW */
-        2 => array('darkred','red','orange','yellow','green','blue','darkblue','indigo','violet'),
+        2 => ['darkred','red','orange','yellow','green','blue','darkblue','indigo','violet'],
 
         /* BLUERED1 */
-        3 => array('navy','blue','black','red','darkred'),
+        3 => ['navy','blue','black','red','darkred'],
 
         /* BLUERED2 */
-        4 => array('navy','blue','yellow','red','darkred'),
+        4 => ['navy','blue','yellow','red','darkred'],
 
         /* GREENRED1 */
-        5 => array('darkgreen','green','black','red','darkred'),
+        5 => ['darkgreen','green','black','red','darkred'],
 
         /* GREENRED2 */
-        6 => array('darkgreen','green','yellow','red','darkred'),
+        6 => ['darkgreen','green','yellow','red','darkred'],
 
         /* GREENBLUE1 */
-        7 => array('darkblue','blue','black','green','darkgreen'),
+        7 => ['darkblue','blue','black','green','darkgreen'],
 
         /* GREENBLUE2 */
-        8 => array('darkblue','blue','yellow', 'green','darkgreen'),
+        8 => ['darkblue','blue','yellow', 'green','darkgreen'],
 
 	    /* BLUEGREENRED */
-        9 => array('blue','darkgreen','green','red','darkred'),
+        9 => ['blue','darkgreen','green','red','darkred'],
 
 
         /* Colormaps inspired from "ColorBrewer" research page. */
         /* See: http://www.personal.psu.edu/cab38/ColorBrewer/ColorBrewer.html */
 
         /* Center white colors */
-        10 => array('#b35806','#e08214','#fdb863','#fee0b6','#f7f7f7','#d8daeb','#b2abd2','#8073ac','#542788'),
+        10 => ['#b35806','#e08214','#fdb863','#fee0b6','#f7f7f7','#d8daeb','#b2abd2','#8073ac','#542788'],
 
-        11 => array('#8c510a','#bf812d','#dfc27d','#f6e8c3','#f5f5f5','#c7eae5','#80cdc1','#35978f','#01665e'),
+        11 => ['#8c510a','#bf812d','#dfc27d','#f6e8c3','#f5f5f5','#c7eae5','#80cdc1','#35978f','#01665e'],
 
-        12 => array('#b2182b','#d6604d','#f4a582','#fddbc7','#f7f7f7','#d1e5f0','#92c5de','#4393c3','#2166ac'),
+        12 => ['#b2182b','#d6604d','#f4a582','#fddbc7','#f7f7f7','#d1e5f0','#92c5de','#4393c3','#2166ac'],
 
-        13 => array('#b2182b','#d6604d','#f4a582','#fddbc7','#ffffff','#e0e0e0','#bababa','#878787','#4d4d4d'),
+        13 => ['#b2182b','#d6604d','#f4a582','#fddbc7','#ffffff','#e0e0e0','#bababa','#878787','#4d4d4d'],
 
-		14 => array('#d73027','#f46d43','#fdae61','#fee08b','#ffffdf','#d9ef8b','#a6d96a','#66bd63','#1a9850'),
+		14 => ['#d73027','#f46d43','#fdae61','#fee08b','#ffffdf','#d9ef8b','#a6d96a','#66bd63','#1a9850'],
 
 		/* Sequential */
-		15 => array('#fff7fb','#ece7f2','#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858'),
+		15 => ['#fff7fb','#ece7f2','#d0d1e6','#a6bddb','#74a9cf','#3690c0','#0570b0','#045a8d','#023858'],
 
-		16 => array('#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#006d2c','#00441b'),
+		16 => ['#f7fcfd','#e5f5f9','#ccece6','#99d8c9','#66c2a4','#41ae76','#238b45','#006d2c','#00441b'],
 
-		17 => array('#ffffd9','#edf8b0','#c7e9b4','#7fcdbb','#41b6c3','#1d91c0','#225ea8','#253494','#081d58'),
+		17 => ['#ffffd9','#edf8b0','#c7e9b4','#7fcdbb','#41b6c3','#1d91c0','#225ea8','#253494','#081d58'],
 
-		18 => array('#fff7ec','#fee8c8','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#b30000','#7f0000'),
+		18 => ['#fff7ec','#fee8c8','#fdd49e','#fdbb84','#fc8d59','#ef6548','#d7301f','#b30000','#7f0000'],
 
-		19 => array('#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#b00026'),
+		19 => ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#b00026'],
 
-		20 => array('#ffffe5','#fff7bc','#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#993404','#662506'),
+		20 => ['#ffffe5','#fff7bc','#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#993404','#662506'],
 
-		21 => array('#f7fcfd','#e0ecf4','#bfd3e6','#9ebcda','#8c96c6','#8c6bb1','#88419d','#810f7c','#4d004b')
+		21 => ['#f7fcfd','#e0ecf4','#bfd3e6','#9ebcda','#8c96c6','#8c6bb1','#88419d','#810f7c','#4d004b']
 
-    );
+    ];
 
-    private $icurrmap = array(), $icurrmap_num = -1;
+    private $icurrmap = [], $icurrmap_num = -1;
 
     public function __construct() {
         $this->SetMap(0);
@@ -132,7 +132,7 @@ class ColorMap {
     }
     
     public function GetCurrMap() {
-    	return array($this->imap, $this->icurrmap);
+    	return [$this->imap, $this->icurrmap];
     }
     
     public function SetRange($aMin,$aMax) {
@@ -245,7 +245,7 @@ class ColorMap {
                 $r = round($this->lip($rgb1[0],$rgb2[0],$v));
                 $g = round($this->lip($rgb1[1],$rgb2[1],$v));
                 $b = round($this->lip($rgb1[2],$rgb2[2],$v));
-                $this->icolor_buckets[$k++] = array($r,$g,$b);
+                $this->icolor_buckets[$k++] = [$r,$g,$b];
                 $v += $step;
             }
         }

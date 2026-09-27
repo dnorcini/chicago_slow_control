@@ -44,7 +44,7 @@ session_start();
             Name: <?php echo $sur_name; ?>
         </td>
         <td style="width: 300px; white-space: nowrap;">
-            Status (underground testing): <?php echo htmlspecialchars($udg_status); ?>
+            Status (underground testing): <?php echo htmlspecialchars($udg_status ?? ''); ?>
         </td>
         <td style="width: 300px; white-space: nowrap;">
             Underground Entry Last updated: <?php echo date("G:i:s M d, Y", $last_update); ?> (ET)
@@ -52,18 +52,18 @@ session_start();
     </tr>
     <tr>
         <td style="width: 300px; white-space: nowrap;">
-            Pitch adaptor ID: <?php echo htmlspecialchars($sur_pitch_adaptor_id); ?>
+            Pitch adaptor ID: <?php echo htmlspecialchars($sur_pitch_adaptor_id ?? ''); ?>
         </td>
         <td style="width: 300px; white-space: nowrap;">
-            UW Activation [days]: <?php echo htmlspecialchars($sur_activation); ?>
+            UW Activation [days]: <?php echo htmlspecialchars($sur_activation ?? ''); ?>
         </td>
     </tr>
     <tr>
         <td style="width: 300px; white-space: nowrap;">
-            Packaging humidity [%]: <?php echo htmlspecialchars($sur_humidity); ?>
+            Packaging humidity [%]: <?php echo htmlspecialchars($sur_humidity ?? ''); ?>
         </td>
         <td style="width: 300px; white-space: nowrap;">
-            Packaging radon [Bq/m^3]: <?php echo htmlspecialchars($sur_radon); ?>
+            Packaging radon [Bq/m^3]: <?php echo htmlspecialchars($sur_radon ?? ''); ?>
         </td>
     </tr>
 </table>
@@ -79,7 +79,7 @@ session_start();
                 <?php if (!empty($sur_die_A)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
                         DIE ID
-                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($sur_die_A); ?>">
+                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($sur_die_A ?? ''); ?>">
                         <input type="submit" value="A" style="font-size: 14pt;">
                     </form>
                 <?php else: ?>
@@ -92,7 +92,7 @@ session_start();
                 <?php if (!empty($sur_die_B)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
                         DIE ID
-                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($sur_die_B); ?>">
+                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($sur_die_B ?? ''); ?>">
                         <input type="submit" value="B" style="font-size: 14pt;">
                     </form>
                 <?php else: ?>
@@ -105,7 +105,7 @@ session_start();
                 <?php if (!empty($sur_die_C)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
                         DIE ID
-                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($sur_die_C); ?>">
+                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($sur_die_C ?? ''); ?>">
                         <input type="submit" value="C" style="font-size: 14pt;">
                     </form>
                 <?php else: ?>
@@ -118,7 +118,7 @@ session_start();
                 <?php if (!empty($sur_die_D)): ?>
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" style="display:inline;">
                         DIE ID
-                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($sur_die_D); ?>">
+                        <input type="hidden" name="go" value="<?php echo htmlspecialchars($sur_die_D ?? ''); ?>">
                         <input type="submit" value="A" style="font-size: 14pt;">
                     </form>
                 <?php else: ?>
@@ -203,13 +203,13 @@ if (isset($_POST['go'])) {
                         <?php echo "ch" . $count . " (ext" . $count_plus . ") - " . $label; ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'trace_high_saturation_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'trace_high_saturation_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'trace_high_comments_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'trace_high_comments_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'trace_high_reference_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'trace_high_reference_' . $amp} ?? ''); ?>
                     </td>
                 </tr>
         <?php
@@ -287,16 +287,16 @@ if (isset($_POST['go'])) {
                         <?php echo "ch" . $count . " (ext" . $count_plus . ") - " . $label; ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image1_high_tracks_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image1_high_tracks_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image1_high_defects_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image1_high_defects_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image1_high_noise_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image1_high_noise_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image1_high_comments_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image1_high_comments_' . $amp} ?? ''); ?>
                     </td>
 
                 </tr>
@@ -385,13 +385,13 @@ if (isset($_POST['go'])) {
                         <?php echo "ch" . $count . " (ext" . $count_plus . ") - " . $label; ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image2_high_column_defects_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image2_high_column_defects_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image2_high_noise_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image2_high_noise_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image2_high_comments_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image2_high_comments_' . $amp} ?? ''); ?>
                     </td>
                 </tr>
         <?php
@@ -472,12 +472,12 @@ if (isset($_POST['go'])) {
             foreach ($typeMap3 as $info): ?>
                 <tr>
                     <td align="center"><?= "ch{$count} (ext{$count_plus}) - {$info['label']}" ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_res_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_res_e_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_gain_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_dark_current_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_comments_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_reference_' . $amp}) ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_res_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_res_e_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_gain_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_dark_current_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_comments_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'high_reference_' . $amp} ?? '') ?></td>
                 </tr>
 
 
@@ -531,7 +531,7 @@ if (isset($_POST['go'])) {
 
                         if (file_exists($path)) {
                             echo '<a href="' . htmlspecialchars($url . $fname) . '" target="_blank">'
-                                . '<img src="' . htmlspecialchars($f['icon']) . '" alt="' . htmlspecialchars($f['label'] . ' ' . $info['label']) . '" style="height:20px; width:auto;">'
+                                . '<img src="' . htmlspecialchars($f['icon'] ?? '') . '" alt="' . htmlspecialchars($f['label'] . ' ' . $info['label']) . '" style="height:20px; width:auto;">'
                                 . '</a>';
                         }
                         echo '<label>' . htmlspecialchars($f['label'] . ' ' . $info['label']) . '</label>&nbsp;&nbsp;&nbsp;';
@@ -576,28 +576,28 @@ if (isset($_POST['go'])) {
                         <?php echo "ch" . $count . " (ext" . $count_plus . ") - " . $label; ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_high_pixel_defects_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_high_pixel_defects_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_high_column_defects_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_high_column_defects_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_high_region_defect_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_high_region_defect_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_high_noise_overscan_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_high_noise_overscan_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_high_cti_code_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_high_cti_code_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_high_cti_visual_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_high_cti_visual_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_high_sharpness_tracks_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_high_sharpness_tracks_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_high_comments_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_high_comments_' . $amp} ?? ''); ?>
                     </td>
                 </tr>
         <?php
@@ -685,12 +685,12 @@ if (isset($_POST['go'])) {
             foreach ($typeMap3 as $info): ?>
                 <tr>
                     <td align="center"><?= "ch{$count} (ext{$count_plus}) - {$info['label']}" ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_res_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_res_e_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_gain_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_dark_current_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_comments_' . $amp}) ?></td>
-                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_reference_' . $amp}) ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_res_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_res_e_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_gain_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_dark_current_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_comments_' . $amp} ?? '') ?></td>
+                    <td align="center"><?= htmlspecialchars(${$info['prefix'] . 'low_reference_' . $amp} ?? '') ?></td>
                 </tr>
 
             <?php endforeach; ?>
@@ -740,7 +740,7 @@ if (isset($_POST['go'])) {
 
                         if (file_exists($path)) {
                             echo '<a href="' . htmlspecialchars($url . $fname) . '" target="_blank">'
-                                . '<img src="' . htmlspecialchars($f['icon']) . '" alt="' . htmlspecialchars($f['label'] . ' ' . $info['label']) . '" style="height:20px; width:auto;">'
+                                . '<img src="' . htmlspecialchars($f['icon'] ?? '') . '" alt="' . htmlspecialchars($f['label'] . ' ' . $info['label']) . '" style="height:20px; width:auto;">'
                                 . '</a>';
                         }
                         echo '<label>' . htmlspecialchars($f['label'] . ' ' . $info['label']) . '</label>&nbsp;&nbsp;&nbsp;';
@@ -780,19 +780,19 @@ if (isset($_POST['go'])) {
                         <?php echo "ch" . $count . " (ext" . $count_plus . ") - " . $label; ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_low_defects_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_low_defects_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_low_cti_visual_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_low_cti_visual_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_low_peak1_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_low_peak1_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_low_peak2_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_low_peak2_' . $amp} ?? ''); ?>
                     </td>
                     <td align="center">
-                        <?php echo htmlspecialchars(${$prefix . 'image4_low_comments_' . $amp}); ?>
+                        <?php echo htmlspecialchars(${$prefix . 'image4_low_comments_' . $amp} ?? ''); ?>
                     </td>
                 </tr>
         <?php
@@ -855,7 +855,7 @@ if (isset($_POST['go'])) {
 
                         if (file_exists($path)) {
                             echo '<a href="' . htmlspecialchars($url . $fname) . '" target="_blank">'
-                                . '<img src="' . htmlspecialchars($f['icon']) . '" alt="' . htmlspecialchars($f['label'] . ' ' . $info['label']) . '" style="height:20px; width:auto;">'
+                                . '<img src="' . htmlspecialchars($f['icon'] ?? '') . '" alt="' . htmlspecialchars($f['label'] . ' ' . $info['label']) . '" style="height:20px; width:auto;">'
                                 . '</a>';
                         }
                         echo '<label>' . htmlspecialchars($f['label'] . ' ' . $info['label']) . '</label>&nbsp;&nbsp;&nbsp;';

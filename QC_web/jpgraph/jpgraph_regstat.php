@@ -21,8 +21,8 @@ class Spline {
     private $y2;   // 2:nd derivate of ydata
     private $n=0;
 
-    function __construct($xdata,$ydata) {
-        $this->y2 = array();
+    public function __construct($xdata,$ydata) {
+        $this->y2 = [];
         $this->xdata = $xdata;
         $this->ydata = $ydata;
 
@@ -60,22 +60,22 @@ class Spline {
     }
 
     // Return the two new data vectors
-    function Get($num=50) {
+    public function Get($num=50) {
         $n = $this->n ;
         $step = ($this->xdata[$n-1]-$this->xdata[0]) / ($num-1);
-        $xnew=array();
-        $ynew=array();
+        $xnew=[];
+        $ynew=[];
         $xnew[0] = $this->xdata[0];
         $ynew[0] = $this->ydata[0];
         for( $j=1; $j < $num; ++$j ) {
             $xnew[$j] = $xnew[0]+$j*$step;
             $ynew[$j] = $this->Interpolate($xnew[$j]);
         }
-        return array($xnew,$ynew);
+        return [$xnew,$ynew];
     }
 
     // Return a single interpolated Y-value from an x value
-    function Interpolate($xpoint) {
+    public function Interpolate($xpoint) {
 
         $max = $this->n-1;
         $min = 0;
@@ -117,11 +117,11 @@ class Bezier {
      * computed from control points data sets, based on Paul Bourke algorithm :
      * http://local.wasp.uwa.edu.au/~pbourke/geometry/bezier/index2.html
      */
-    private $datax = array();
-    private $datay = array();
+    private $datax = [];
+    private $datay = [];
     private $n=0;
 
-    function __construct($datax, $datay, $attraction_factor = 1) {
+    public function __construct($datax, $datay, $attraction_factor = 1) {
         // Adding control point multiple time will raise their attraction power over the curve
         $this->n = count($datax);
         if( $this->n !== count($datay) ) {
@@ -148,19 +148,19 @@ class Bezier {
      * @param $steps Number of new points to return
      * @return array($datax, $datay)
      */
-    function Get($steps) {
-        $datax = array();
-        $datay = array();
+    public function Get($steps) {
+        $datax = [];
+        $datay = [];
         for ($i = 0; $i < $steps; $i++) {
-            list($datumx, $datumy) = $this->GetPoint((double) $i / (double) $steps);
+            [$datumx, $datumy] = $this->GetPoint((double) $i / (double) $steps);
             $datax[$i] = $datumx;
             $datay[$i] = $datumy;
         }
-         
+
         $datax[] = end($this->datax);
         $datay[] = end($this->datay);
-         
-        return array($datax, $datay);
+
+        return [$datax, $datay];
     }
 
     /**
@@ -171,7 +171,7 @@ class Bezier {
      * @param $mu Position on the bezier curve
      * @return array($x, $y)
      */
-    function GetPoint($mu) {
+    public function GetPoint($mu) {
         $n = $this->n - 1;
         $k = 0;
         $kn = 0;
@@ -182,7 +182,7 @@ class Bezier {
         $newy = 0.0;
 
         $muk = 1.0;
-        $munk = (double) pow(1-$mu,(double) $n);
+        $munk = (double) (1 - $mu) ** (double) $n;
 
         for ($k = 0; $k <= $n; $k++) {
             $nn = $n;
@@ -207,7 +207,7 @@ class Bezier {
             $newy += $this->datay[$k] * $blend;
         }
 
-        return array($newx, $newy);
+        return [$newx, $newy];
     }
 }
 

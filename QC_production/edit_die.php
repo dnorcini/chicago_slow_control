@@ -123,8 +123,8 @@ if (isset($_POST['id'])) {
     }
 
     // Allowed file types
-    $allowed_types = array('image/png', 'image/jpeg', 'application/pdf');
-    $allowed_logs = array('text/plain');
+    $allowed_types = ['image/png', 'image/jpeg', 'application/pdf'];
+    $allowed_logs = ['text/plain'];
 
     // ======================
     // Upload Trace and Image Files
@@ -139,18 +139,10 @@ if (isset($_POST['id'])) {
     }
 
     // Ensure the session arrays are initialized if not already
-    if (!isset($_SESSION['file_url_' . $die_id])) {
-        $_SESSION['file_url_' . $die_id] = [];
-    }
-    if (!isset($_SESSION['file_exists_' . $die_id])) {
-        $_SESSION['file_exists_' . $die_id] = [];
-    }
-    if (!isset($_SESSION['log_url_' . $die_id])) {
-        $_SESSION['log_url_' . $die_id] = [];
-    }
-    if (!isset($_SESSION['log_exists_' . $die_id])) {
-        $_SESSION['log_exists_' . $die_id] = [];
-    }
+    $_SESSION['file_url_' . $die_id] ??= [];
+    $_SESSION['file_exists_' . $die_id] ??= [];
+    $_SESSION['log_url_' . $die_id] ??= [];
+    $_SESSION['log_exists_' . $die_id] ??= [];
 
     // Loop through all file fields (trace and image files)
     foreach ($file_fields as $file_field) {
@@ -235,7 +227,7 @@ if (isset($_POST['id'])) {
     // ======================
 
     // Include all relevant form fields to update
-    $fields = array('name', 'status', 'wafer_id', 'wafer_position', 'activation', 'humidity', 'radon', 'tester', 'test_date', 'test_time', 'chamber', 'temp', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_L1', 'grade_L2', 'grade_U1', 'grade_U2', 'notes', 'notes_L1', 'notes_L2', 'notes_U1', 'notes_U2', 'reviewer');
+    $fields = ['name', 'status', 'wafer_id', 'wafer_position', 'activation', 'humidity', 'radon', 'tester', 'test_date', 'test_time', 'chamber', 'temp', 'feedthru_position', 'ACM', 'script', 'image_dir', 'grade_L1', 'grade_L2', 'grade_U1', 'grade_U2', 'notes', 'notes_L1', 'notes_L2', 'notes_U1', 'notes_U2', 'reviewer'];
     $checkboxes = ['check_L1', 'check_L2', 'check_U1', 'check_U2'];
     $fields = array_merge($fields, $checkboxes);
     $fields = array_merge($fields, $trace_fields);
@@ -243,11 +235,11 @@ if (isset($_POST['id'])) {
 
     // Iterate over each checkbox to set them to 0 if not set in POST
     foreach ($checkboxes as $checkbox) {
-        $_POST[$checkbox] = isset($_POST[$checkbox]) ? $_POST[$checkbox] : 0;
+        $_POST[$checkbox] ??= 0;
     }
 
     // Initialize an array to hold the parts of the query
-    $query_parts = array();
+    $query_parts = [];
 
     // Loop through regular form fields and construct query parts
     foreach ($fields as $field) {
@@ -267,7 +259,7 @@ if (isset($_POST['id'])) {
     foreach ($amplifiers as $amp) {
         foreach ($trace_fields as $base_field) {
             $field_name = $base_field . $amp; // E.g., trace_saturation_L1
-            $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
+            $dynamic_fields[$field_name] = $_POST[$field_name] ?? '';
             if (!empty($dynamic_fields[$field_name])) {
                 $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
             }
@@ -277,7 +269,7 @@ if (isset($_POST['id'])) {
         foreach ($image_numbers as $number_field) {
             foreach ($image_fields as $base_field) {
                 $field_name = 'image' . $number_field . $base_field . $amp; // E.g., image1_tracks_L1
-                $dynamic_fields[$field_name] = isset($_POST[$field_name]) ? $_POST[$field_name] : '';
+                $dynamic_fields[$field_name] = $_POST[$field_name] ?? '';
                 if (!empty($dynamic_fields[$field_name])) {
                     $query_parts[] = "`$field_name` = '" . mysql_real_escape_string($dynamic_fields[$field_name]) . "'";
                 }
@@ -315,8 +307,8 @@ function generate_dropdown($name, $options, $selected_value)
 // File existence check
 function check_and_update_file_session($file_field, $upload_dir, $base_url, $die_id)
 {
-    $upload_dir = isset($_SESSION['upload_dir']) ? $_SESSION['upload_dir'] : '';
-    $base_url = isset($_SESSION['base_url']) ? $_SESSION['base_url'] : '';
+    $upload_dir = $_SESSION['upload_dir'] ?? '';
+    $base_url = $_SESSION['base_url'] ?? '';
 
     // Construct the file name based on the file field
     $file_name = $file_field . '.png';
@@ -337,8 +329,8 @@ function check_and_update_file_session($file_field, $upload_dir, $base_url, $die
 // Log existence check
 function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_id)
 {
-    $upload_dir = isset($_SESSION['upload_dir']) ? $_SESSION['upload_dir'] : '';
-    $base_url = isset($_SESSION['base_url']) ? $_SESSION['base_url'] : '';
+    $upload_dir = $_SESSION['upload_dir'] ?? '';
+    $base_url = $_SESSION['base_url'] ?? '';
 
     // Construct the log name based on the log field
     $log_name = $log_field . '.log';
@@ -422,7 +414,7 @@ function check_and_update_log_session($log_field, $upload_dir, $base_url, $die_i
                 Packaging radon [Bq/m^3]: <input type="text" name="radon" value="<?php echo $radon; ?>" size="10">
             </td>
             <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
-                Current Location: <?php echo htmlspecialchars($current_location); ?>
+                Current Location: <?php echo htmlspecialchars($current_location ?? ''); ?>
             </td>
         </tr>
     </table>
@@ -591,7 +583,7 @@ include("aux/history_section.php"); ?>
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current die_id
-                $die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
+                $die_id = $_SESSION['choosen_die'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
                 $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id . '/';
@@ -635,7 +627,7 @@ include("aux/history_section.php"); ?>
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Trace File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -644,7 +636,7 @@ include("aux/history_section.php"); ?>
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Trace Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -699,7 +691,7 @@ include("aux/history_section.php"); ?>
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current die_id
-                $die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
+                $die_id = $_SESSION['choosen_die'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
                 $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id . '/';
@@ -743,7 +735,7 @@ include("aux/history_section.php"); ?>
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image1 File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -752,7 +744,7 @@ include("aux/history_section.php"); ?>
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image1 Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -815,7 +807,7 @@ include("aux/history_section.php"); ?>
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current die_id
-                $die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
+                $die_id = $_SESSION['choosen_die'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
                 $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id . '/';
@@ -859,7 +851,7 @@ include("aux/history_section.php"); ?>
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image2 File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -868,7 +860,7 @@ include("aux/history_section.php"); ?>
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image2 Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -931,7 +923,7 @@ include("aux/history_section.php"); ?>
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current die_id
-                $die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
+                $die_id = $_SESSION['choosen_die'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
                 $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id . '/';
@@ -975,7 +967,7 @@ include("aux/history_section.php"); ?>
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image3 File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -984,7 +976,7 @@ include("aux/history_section.php"); ?>
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image3 Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1035,7 +1027,7 @@ include("aux/history_section.php"); ?>
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current die_id
-                $die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
+                $die_id = $_SESSION['choosen_die'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
                 $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id . '/';
@@ -1079,7 +1071,7 @@ include("aux/history_section.php"); ?>
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image4 File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1088,7 +1080,7 @@ include("aux/history_section.php"); ?>
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image4 Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1137,7 +1129,7 @@ include("aux/history_section.php"); ?>
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current die_id
-                $die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
+                $die_id = $_SESSION['choosen_die'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
                 $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id . '/';
@@ -1181,7 +1173,7 @@ include("aux/history_section.php"); ?>
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image5 File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1190,7 +1182,7 @@ include("aux/history_section.php"); ?>
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image5 Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1251,7 +1243,7 @@ include("aux/history_section.php"); ?>
                 &nbsp &nbsp &nbsp &nbsp;
                 <?php
                 // Retrieve the current die_id
-                $die_id = isset($_SESSION['choosen_die']) ? $_SESSION['choosen_die'] : 0;
+                $die_id = $_SESSION['choosen_die'] ?? 0;
 
                 $upload_dir = '/var/www/html/QC_production/uploads/edit_die/die_' . $die_id . '/';
                 $base_url   = '/QC_production/uploads/edit_die/' . 'die_' . $die_id . '/';
@@ -1295,7 +1287,7 @@ include("aux/history_section.php"); ?>
                 ?>
 
                 <?php if ($file_exists): ?>
-                    <a href="<?php echo htmlspecialchars($file_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($file_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon.png" alt="Image6 File" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>
@@ -1304,7 +1296,7 @@ include("aux/history_section.php"); ?>
                 &nbsp; &nbsp; &nbsp; &nbsp;
 
                 <?php if ($log_exists): ?>
-                    <a href="<?php echo htmlspecialchars($log_url); ?>" target="_blank">
+                    <a href="<?php echo htmlspecialchars($log_url ?? ''); ?>" target="_blank">
                         <img src="pixmaps/icon2.png" alt="Image6 Log" style="height: 20px; width: auto;">
                     </a>
                 <?php endif; ?>

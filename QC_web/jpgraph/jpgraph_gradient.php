@@ -32,12 +32,12 @@ class Gradient {
     private $img=null, $numcolors=100;
     //---------------
     // CONSTRUCTOR
-    function __construct(&$img) {
+    public function __construct(&$img) {
         $this->img = $img;
     }
 
 
-    function SetNumColors($aNum) {
+    public function SetNumColors($aNum) {
         $this->numcolors=$aNum;
     }
     //---------------
@@ -49,7 +49,7 @@ class Gradient {
     // $from_color Starting color in gradient
     // $to_color End color in the gradient
     // $style  Which way is the gradient oriented?
-    function FilledRectangle($xl,$yt,$xr,$yb,$from_color,$to_color,$style=1) {
+    public function FilledRectangle($xl,$yt,$xr,$yb,$from_color,$to_color,$style=1) {
         $this->img->SetLineWeight(1);
         switch( $style ) {
             case GRAD_VER:
@@ -172,8 +172,8 @@ class Gradient {
                 $from_color = $this->img->rgb->Color($from_color);
                 $adj = 1.4;
                 $m = ($adj-1.0)*(255-min(255,min($from_color[0],min($from_color[1],$from_color[2]))));
-                $from_color2 = array(min(255,$from_color[0]+$m),
-                min(255,$from_color[1]+$m), min(255,$from_color[2]+$m));
+                $from_color2 = [min(255,$from_color[0]+$m),
+                min(255,$from_color[1]+$m), min(255,$from_color[2]+$m)];
 
                 $this->GetColArray($from_color2,$to_color,$steps1,$colors,$this->numcolors);
                 $n = count($colors);
@@ -219,8 +219,8 @@ class Gradient {
                 $from_color = $this->img->rgb->Color($from_color);
                 $adj = 1.4;
                 $m = ($adj-1.0)*(255-min(255,min($from_color[0],min($from_color[1],$from_color[2]))));
-                $from_color = array(min(255,$from_color[0]+$m),
-                min(255,$from_color[1]+$m), min(255,$from_color[2]+$m));
+                $from_color = [min(255,$from_color[0]+$m),
+                min(255,$from_color[1]+$m), min(255,$from_color[2]+$m)];
 
                 $steps = abs($xr-$xl)-$steps1-$steps2;
                 $this->GetColArray($to_color,$from_color,$steps,$colors,$this->numcolors);
@@ -332,7 +332,7 @@ class Gradient {
     // Please note that this is NOT a generic gradient polygon fill
     // routine. It assumes that the bottom is flat (like a drawing
     // of a mountain)
-    function FilledFlatPolygon($pts,$from_color,$to_color) {
+    public function FilledFlatPolygon($pts,$from_color,$to_color) {
         if( count($pts) == 0 ) return;
 
         $maxy=$pts[1];
@@ -345,7 +345,7 @@ class Gradient {
             $maxy = max($maxy,$y);
         }
 
-        $colors = array();
+        $colors = [];
         $this->GetColArray($from_color,$to_color,abs($maxy-$miny)+1,$colors,$this->numcolors);
         for($i=$miny, $idx=0; $i <= $maxy; ++$i ) {
             $colmap[$i] = $colors[$idx++];
@@ -354,8 +354,8 @@ class Gradient {
         $n = count($pts)/2 ;
         $idx = 0 ;
         while( $idx < $n-1 ) {
-            $p1 = array(round($pts[$idx*2]),round($pts[$idx*2+1]));
-            $p2 = array(round($pts[++$idx*2]),round($pts[$idx*2+1]));
+            $p1 = [round($pts[$idx*2]),round($pts[$idx*2+1])];
+            $p2 = [round($pts[++$idx*2]),round($pts[$idx*2+1])];
 
             // Find the largest rectangle we can fill
             $y = max($p1[1],$p2[1]) ;
@@ -396,7 +396,7 @@ class Gradient {
     // PRIVATE METHODS
     // Add to the image color map the necessary colors to do the transition
     // between the two colors using $numcolors intermediate colors
-    function GetColArray($from_color,$to_color,$arr_size,&$colors,$numcols=100) {
+    public function GetColArray($from_color,$to_color,$arr_size,&$colors,$numcols=100) {
         if( $arr_size==0 ) {
             return;
         }

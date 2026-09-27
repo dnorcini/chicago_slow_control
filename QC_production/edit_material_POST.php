@@ -4,13 +4,13 @@
 // --------------------
 if (!empty($_POST['assay_action']) && $_POST['assay_action'] === "add_assay") {
     // Read form fields from $_POST and trim whitespace
-    $material = trim(isset($_POST['assay_material']) ? $_POST['assay_material'] : "");
-    $manufacturer = trim(isset($_POST['assay_manufacturer']) ? $_POST['assay_manufacturer'] : "");
-    $description = trim(isset($_POST['assay_description']) ? $_POST['assay_description'] : "");
-    $liaison = trim(isset($_POST['assay_liaison']) ? $_POST['assay_liaison'] : "");
-    $date = trim(isset($_POST['assay_date']) ? $_POST['assay_date'] : "");
-    $remarks = trim(isset($_POST['assay_remarks']) ? $_POST['assay_remarks'] : "");
-    $docdb = trim(isset($_POST['assay_docdb']) ? $_POST['assay_docdb'] : "");
+    $material = trim($_POST['assay_material'] ?? "");
+    $manufacturer = trim($_POST['assay_manufacturer'] ?? "");
+    $description = trim($_POST['assay_description'] ?? "");
+    $liaison = trim($_POST['assay_liaison'] ?? "");
+    $date = trim($_POST['assay_date'] ?? "");
+    $remarks = trim($_POST['assay_remarks'] ?? "");
+    $docdb = trim($_POST['assay_docdb'] ?? "");
 
     // SQL-injection protection, Example: O'Reilly becomes O\'Reilly
     $material_esc = mysql_real_escape_string($material);
@@ -296,14 +296,14 @@ if (!empty($_POST['assay_action']) && $_POST['assay_action'] === "upload_files" 
     $types = $_FILES['assay_files']['type'];
 
     if (!is_array($names)) {
-        $names = array($names);
-        $tmps  = array($tmps);
-        $errs  = array($errs);
-        $sizes = array($sizes);
-        $types = array($types);
+        $names = [$names];
+        $tmps  = [$tmps];
+        $errs  = [$errs];
+        $sizes = [$sizes];
+        $types = [$types];
     }
 
-    $skipped = array();
+    $skipped = [];
     for ($i = 0; $i < count($names); $i++) {
         if ($names[$i] === '' && (int)$errs[$i] === UPLOAD_ERR_NO_FILE) {
             continue;

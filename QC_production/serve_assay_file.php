@@ -36,7 +36,7 @@ $f = mysql_fetch_assoc($r);
 $upload_dir = "/var/www/html/QC_production/uploads/edit_assay/";
 $stored = (string)$f['Stored_Name'];
 
-if ($stored === '' || $stored !== basename($stored) || strpos($stored, "\0") !== false) {
+if ($stored === '' || $stored !== basename($stored) || str_contains($stored, "\0")) {
     http_response_code(400);
     exit("Bad stored filename");
 }
@@ -70,7 +70,7 @@ while (ob_get_level()) {
 
 $orig = trim((string)$f['Orig_Name']);
 $download_name = ($orig !== '') ? $orig : $stored;
-$download_name = str_replace(array("\r", "\n"), ' ', $download_name);
+$download_name = str_replace(["\r", "\n"], ' ', $download_name);
 $download_name = str_replace('"', "'", $download_name);
 
 header('X-Content-Type-Options: nosniff');

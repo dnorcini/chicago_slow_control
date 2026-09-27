@@ -51,17 +51,17 @@ class Image {
 
     protected $expired=true;
     protected $lastx=0, $lasty=0;
-    protected $obs_list=array();
+    protected $obs_list=[];
     protected $font_size=12,$font_family=FF_DEFAULT, $font_style=FS_NORMAL;
     protected $font_file='';
     protected $text_halign="left",$text_valign="bottom";
     protected $use_anti_aliasing=false;
     protected $quality=null;
-    protected $colorstack=array(),$colorstackidx=0;
+    protected $colorstack=[],$colorstackidx=0;
     protected $canvascolor = 'white' ;
     protected $langconv = null ;
     protected $iInterlace=false;
-    protected $bbox_cache = array(); // STore the last found tetx bounding box
+    protected $bbox_cache = []; // STore the last found tetx bounding box
     protected $ff_font0;
     protected $ff_font0_bold;
     protected $ff_font1;
@@ -72,7 +72,7 @@ class Image {
 
     //---------------
     // CONSTRUCTOR
-    function __construct($aWidth=0,$aHeight=0,$aFormat=DEFAULT_GFORMAT,$aSetAutoMargin=true) {
+    public function __construct($aWidth=0,$aHeight=0,$aFormat=DEFAULT_GFORMAT,$aSetAutoMargin=true) {
 
         $this->original_width  = $aWidth;
         $this->original_height = $aHeight;
@@ -88,20 +88,20 @@ class Image {
         $this->ttf = new TTF();
         $this->langconv = new LanguageConv();
 
-        $this->ff_font0 =  imageloadfont(dirname(__FILE__) . "/fonts/FF_FONT0.gdf");
-        $this->ff_font1 =  imageloadfont(dirname(__FILE__) . "/fonts/FF_FONT1.gdf");
-        $this->ff_font2 =  imageloadfont(dirname(__FILE__) . "/fonts/FF_FONT2.gdf");
-        $this->ff_font1_bold =  imageloadfont(dirname(__FILE__) . "/fonts/FF_FONT1-Bold.gdf");
-        $this->ff_font2_bold =  imageloadfont(dirname(__FILE__) . "/fonts/FF_FONT2-Bold.gdf");
+        $this->ff_font0 =  imageloadfont(__DIR__ . "/fonts/FF_FONT0.gdf");
+        $this->ff_font1 =  imageloadfont(__DIR__ . "/fonts/FF_FONT1.gdf");
+        $this->ff_font2 =  imageloadfont(__DIR__ . "/fonts/FF_FONT2.gdf");
+        $this->ff_font1_bold =  imageloadfont(__DIR__ . "/fonts/FF_FONT1-Bold.gdf");
+        $this->ff_font2_bold =  imageloadfont(__DIR__ . "/fonts/FF_FONT2-Bold.gdf");
     }
 
     // Enable interlacing in images
-    function SetInterlace($aFlg=true) {
+    public function SetInterlace($aFlg=true) {
         $this->iInterlace=$aFlg;
     }
 
     // Should we use anti-aliasing. Note: This really slows down graphics!
-    function SetAntiAliasing($aFlg=true) {
+    public function SetAntiAliasing($aFlg=true) {
         $this->use_anti_aliasing = $aFlg;
         if( function_exists('imageantialias') ) {
             imageantialias($this->img,$aFlg);
@@ -111,11 +111,11 @@ class Image {
         }
     }
 
-    function GetAntiAliasing() {
+    public function GetAntiAliasing() {
         return $this->use_anti_aliasing ;
     }
 
-    function CreateRawCanvas($aWidth=0,$aHeight=0) {
+    public function CreateRawCanvas($aWidth=0,$aHeight=0) {
 
         $aWidth  *= SUPERSAMPLING_SCALE;
         $aHeight *= SUPERSAMPLING_SCALE;
@@ -142,16 +142,16 @@ class Image {
         }
     }
 
-    function CloneCanvasH() {
+    public function CloneCanvasH() {
         $oldimage = $this->img;
         $this->CreateRawCanvas($this->width,$this->height);
         imagecopy($this->img,$oldimage,0,0,0,0,$this->width,$this->height);
         return $oldimage;
     }
 
-    function CreateImgCanvas($aWidth=0,$aHeight=0) {
+    public function CreateImgCanvas($aWidth=0,$aHeight=0) {
 
-        $old = array($this->img,$this->width,$this->height);
+        $old = [$this->img,$this->width,$this->height];
 
         $aWidth = round($aWidth);
         $aHeight = round($aHeight);
@@ -178,7 +178,7 @@ class Image {
         return $old ;
     }
 
-    function CopyCanvasH($aToHdl,$aFromHdl,$aToX,$aToY,$aFromX,$aFromY,$aWidth,$aHeight,$aw=-1,$ah=-1) {
+    public function CopyCanvasH($aToHdl,$aFromHdl,$aToX,$aToY,$aFromX,$aFromY,$aWidth,$aHeight,$aw=-1,$ah=-1) {
         if( $aw === -1 ) {
             $aw = $aWidth;
             $ah = $aHeight;
@@ -190,11 +190,11 @@ class Image {
         $f($aToHdl,$aFromHdl,$aToX,$aToY,$aFromX,$aFromY, $aWidth,$aHeight,$aw,$ah);
     }
 
-    function Copy($fromImg,$toX,$toY,$fromX,$fromY,$toWidth,$toHeight,$fromWidth=-1,$fromHeight=-1) {
+    public function Copy($fromImg,$toX,$toY,$fromX,$fromY,$toWidth,$toHeight,$fromWidth=-1,$fromHeight=-1) {
         $this->CopyCanvasH($this->img,$fromImg,$toX,$toY,$fromX,$fromY,$toWidth,$toHeight,$fromWidth,$fromHeight);
     }
 
-    function CopyMerge($fromImg,$toX,$toY,$fromX,$fromY,$toWidth,$toHeight,$fromWidth=-1,$fromHeight=-1,$aMix=100) {
+    public function CopyMerge($fromImg,$toX,$toY,$fromX,$fromY,$toWidth,$toHeight,$fromWidth=-1,$fromHeight=-1,$aMix=100) {
         if( $aMix == 100 ) {
             $this->CopyCanvasH($this->img,$fromImg,
             $toX,$toY,$fromX,$fromY,$toWidth,$toHeight,$fromWidth,$fromHeight);
@@ -219,21 +219,17 @@ class Image {
         }
     }
 
-    static function GetWidth($aImg=null) {
-        if( $aImg === null ) {
-            $aImg = $this->img;
-        }
+    public static function GetWidth($aImg=null) {
+        $aImg ??= $this->img;
         return imagesx($aImg);
     }
 
-    static function GetHeight($aImg=null) {
-        if( $aImg === null ) {
-            $aImg = $this->img;
-        }
+    public static function GetHeight($aImg=null) {
+        $aImg ??= $this->img;
         return imagesy($aImg);
     }
 
-    static function CreateFromString($aStr) {
+    public static function CreateFromString($aStr) {
         $img = imagecreatefromstring($aStr);
         if( $img === false ) {
             JpGraphError::RaiseL(25085);
@@ -242,20 +238,20 @@ class Image {
         return $img;
     }
 
-    function SetCanvasH($aHdl) {
+    public function SetCanvasH($aHdl) {
         $this->img = $aHdl;
         $this->rgb->img = $aHdl;
     }
 
-    function SetCanvasColor($aColor) {
+    public function SetCanvasColor($aColor) {
         $this->canvascolor = $aColor ;
     }
 
-    function SetAlphaBlending($aFlg=true) {
+    public function SetAlphaBlending($aFlg=true) {
         ImageAlphaBlending($this->img,$aFlg);
     }
 
-    function SetAutoMargin() {
+    public function SetAutoMargin() {
         $min_bm=5;
         $lm = min(40,$this->width/7);
         $rm = min(20,$this->width/10);
@@ -267,7 +263,7 @@ class Image {
     //---------------
     // PUBLIC METHODS
 
-    function SetFont($family,$style=FS_NORMAL,$size=10) {
+    public function SetFont($family,$style=FS_NORMAL,$size=10) {
         $this->font_family=$family;
         $this->font_style=$style;
         $this->font_size=$size*SUPERSAMPLING_SCALE;
@@ -289,7 +285,7 @@ class Image {
     }
 
     // Get the specific height for a text string
-    function GetTextHeight($txt="",$angle=0) {
+    public function GetTextHeight($txt="",$angle=0) {
         $tmp = preg_split('/\n/',$txt);
         $n = count($tmp);
         $m=0;
@@ -322,13 +318,13 @@ class Image {
     }
 
     // Estimate font height
-    function GetFontHeight($angle=0) {
+    public function GetFontHeight($angle=0) {
         $txt = "XOMg";
         return $this->GetTextHeight($txt,$angle);
     }
 
     // Approximate font width with width of letter "O"
-    function GetFontWidth($angle=0) {
+    public function GetFontWidth($angle=0) {
         $txt = 'O';
         return $this->GetTextWidth($txt,$angle);
     }
@@ -336,7 +332,7 @@ class Image {
     // Get actual width of text in absolute pixels. Note that the width is the
     // texts projected with onto the x-axis. Call with angle=0 to get the true
     // etxt width.
-    function GetTextWidth($txt,$angle=0) {
+    public function GetTextWidth($txt,$angle=0) {
 
         $tmp = preg_split('/\n/',$txt);
         $n = count($tmp);
@@ -383,7 +379,7 @@ class Image {
 
 
     // Draw text with a box around it
-    function StrokeBoxedText($x,$y,$txt,$dir=0,$fcolor="white",$bcolor="black",
+    public function StrokeBoxedText($x,$y,$txt,$dir=0,$fcolor="white",$bcolor="black",
                              $shadowcolor=false,$paragraph_align="left",
                              $xmarg=6,$ymarg=4,$cornerradius=0,$dropwidth=3) {
 
@@ -454,8 +450,8 @@ class Image {
         $debug=false;
         $this->StrokeText($x, $y, $txt, $dir, $paragraph_align,$debug);
 
-        $bb = array($x-$xmarg,$y+$height-$ymarg,$x+$width,$y+$height-$ymarg,
-                    $x+$width,$y-$ymarg,$x-$xmarg,$y-$ymarg);
+        $bb = [$x-$xmarg,$y+$height-$ymarg,$x+$width,$y+$height-$ymarg,
+                    $x+$width,$y-$ymarg,$x-$xmarg,$y-$ymarg];
         $this->SetTextAlign($h,$v);
 
         $this->SetAngle($olda);
@@ -468,7 +464,7 @@ class Image {
     // Draw text with a box around it. This time the box will be rotated
     // with the text. The previous method will just make a larger enough non-rotated
     // box to hold the text inside.
-    function StrokeBoxedText2($x,$y,$txt,$dir=0,$fcolor="white",$bcolor="black",
+    public function StrokeBoxedText2($x,$y,$txt,$dir=0,$fcolor="white",$bcolor="black",
                              $shadowcolor=false,$paragraph_align="left",
                              $xmarg=6,$ymarg=4,$cornerradius=0,$dropwidth=3) {
 
@@ -606,10 +602,10 @@ class Image {
         $debug=false;
         $this->StrokeText($x, $y, $txt, $dir, $paragraph_align,$debug);
 
-        $bb = array($x-$xmarg, $y+$height-$ymarg,
+        $bb = [$x-$xmarg, $y+$height-$ymarg,
                     $x+$width, $y+$height-$ymarg,
                     $x+$width, $y-$ymarg,
-                    $x-$xmarg, $y-$ymarg);
+                    $x-$xmarg, $y-$ymarg];
 
         $this->SetTextAlign($h,$v);
         $this->SetAngle($olda);
@@ -621,12 +617,12 @@ class Image {
     }
 
     // Set text alignment
-    function SetTextAlign($halign,$valign="bottom") {
+    public function SetTextAlign($halign,$valign="bottom") {
         $this->text_halign=$halign;
         $this->text_valign=$valign;
     }
 
-    function _StrokeBuiltinFont($x,$y,$txt,$dir,$paragraph_align,&$aBoundingBox,$aDebug=false) {
+    public function _StrokeBuiltinFont($x,$y,$txt,$dir,$paragraph_align,&$aBoundingBox,$aDebug=false) {
 
         if( is_numeric($dir) && $dir!=90 && $dir!=0)
         JpGraphError::RaiseL(25091);//(" Internal font does not support drawing text at arbitrary angle. Use TTF fonts instead.");
@@ -654,7 +650,7 @@ class Image {
 
         if( $dir==90 ) {
             imagestringup($this->img,$use_font,$x,$y,$txt,$this->current_color);
-            $aBoundingBox = array(round($x),round($y),round($x),round($y-$w),round($x+$h),round($y-$w),round($x+$h),round($y));
+            $aBoundingBox = [round($x),round($y),round($x),round($y-$w),round($x+$h),round($y-$w),round($x+$h),round($y)];
             if( $aDebug ) {
                 // Draw bounding box
                 $this->PushColor('green');
@@ -684,7 +680,7 @@ class Image {
             }
             if( $aDebug ) {
                 // Draw the bounding rectangle and the bounding box
-                $p1 = array(round($x),round($y),round($x),round($y-$h),round($x+$w),round($y-$h),round($x+$w),round($y));
+                $p1 = [round($x),round($y),round($x),round($y-$h),round($x+$w),round($y-$h),round($x+$w),round($y)];
 
                 // Draw bounding box
                 $this->PushColor('green');
@@ -692,11 +688,11 @@ class Image {
                 $this->PopColor();
 
             }
-            $aBoundingBox=array(round($x),round($y),round($x),round($y-$h),round($x+$w),round($y-$h),round($x+$w),round($y));
+            $aBoundingBox=[round($x),round($y),round($x),round($y-$h),round($x+$w),round($y-$h),round($x+$w),round($y)];
         }
     }
 
-    function AddTxtCR($aTxt) {
+    public function AddTxtCR($aTxt) {
         // If the user has just specified a '\n'
         // instead of '\n\t' we have to add '\r' since
         // the width will be too muchy otherwise since when
@@ -709,7 +705,7 @@ class Image {
         return implode("\n\r",$e);
     }
 
-    function NormAngle($a) {
+    public function NormAngle($a) {
         // Normalize angle in degrees
         // Normalize angle to be between 0-360
         while( $a > 360 )
@@ -721,7 +717,7 @@ class Image {
         return $a;
     }
 
-    function imagettfbbox_fixed($size, $angle, $fontfile, $text) {
+    public function imagettfbbox_fixed($size, $angle, $fontfile, $text) {
 
 
         if( ! USE_LIBRARY_IMAGETTFBBOX ) {
@@ -749,13 +745,13 @@ class Image {
         $a = $angle*M_PI/180;
         $ca = cos($a);
         $sa = sin($a);
-        $ret = array();
+        $ret = [];
 
         // We always add 1 pixel to the left since the left edge of the bounding
         // box is sometimes coinciding with the first pixel of the text
         //$bbox[0] -= 1;
         //$bbox[6] -= 1;
-        
+
         // For roatated text we need to add extra width for rotated
         // text since the kerning and stroking of the TTF is not the same as for
         // text at a 0 degree angle
@@ -812,12 +808,12 @@ class Image {
     }
 
     // Deprecated
-    function GetTTFBBox($aTxt,$aAngle=0) {
+    public function GetTTFBBox($aTxt,$aAngle=0) {
         $bbox = $this->imagettfbbox_fixed($this->font_size,$aAngle,$this->font_file,$aTxt);
          return $bbox;
     }
 
-    function GetBBoxTTF($aTxt,$aAngle=0) {
+    public function GetBBoxTTF($aTxt,$aAngle=0) {
         // Normalize the bounding box to become a minimum
         // enscribing rectangle
 
@@ -833,55 +829,55 @@ class Image {
 
         if( $aAngle >= 0 ) {
             if(  $aAngle <= 90 ) { //<=0
-                $bbox = array($bbox[6],$bbox[1],$bbox[2],$bbox[1],
-                              $bbox[2],$bbox[5],$bbox[6],$bbox[5]);
+                $bbox = [$bbox[6],$bbox[1],$bbox[2],$bbox[1],
+                              $bbox[2],$bbox[5],$bbox[6],$bbox[5]];
             }
             elseif(  $aAngle <= 180 ) { //<= 2
-                $bbox = array($bbox[4],$bbox[7],$bbox[0],$bbox[7],
-                              $bbox[0],$bbox[3],$bbox[4],$bbox[3]);
+                $bbox = [$bbox[4],$bbox[7],$bbox[0],$bbox[7],
+                              $bbox[0],$bbox[3],$bbox[4],$bbox[3]];
             }
             elseif(  $aAngle <= 270 )  { //<= 3
-                $bbox = array($bbox[2],$bbox[5],$bbox[6],$bbox[5],
-                              $bbox[6],$bbox[1],$bbox[2],$bbox[1]);
+                $bbox = [$bbox[2],$bbox[5],$bbox[6],$bbox[5],
+                              $bbox[6],$bbox[1],$bbox[2],$bbox[1]];
             }
             else {
-                $bbox = array($bbox[0],$bbox[3],$bbox[4],$bbox[3],
-                              $bbox[4],$bbox[7],$bbox[0],$bbox[7]);
+                $bbox = [$bbox[0],$bbox[3],$bbox[4],$bbox[3],
+                              $bbox[4],$bbox[7],$bbox[0],$bbox[7]];
             }
         }
         elseif(  $aAngle < 0 ) {
             if( $aAngle <= -270 ) { // <= -3
-                $bbox = array($bbox[6],$bbox[1],$bbox[2],$bbox[1],
-                              $bbox[2],$bbox[5],$bbox[6],$bbox[5]);
+                $bbox = [$bbox[6],$bbox[1],$bbox[2],$bbox[1],
+                              $bbox[2],$bbox[5],$bbox[6],$bbox[5]];
             }
             elseif( $aAngle <= -180 ) { // <= -2
-                $bbox = array($bbox[0],$bbox[3],$bbox[4],$bbox[3],
-                              $bbox[4],$bbox[7],$bbox[0],$bbox[7]);
+                $bbox = [$bbox[0],$bbox[3],$bbox[4],$bbox[3],
+                              $bbox[4],$bbox[7],$bbox[0],$bbox[7]];
             }
             elseif( $aAngle <= -90 ) { // <= -1
-                $bbox = array($bbox[2],$bbox[5],$bbox[6],$bbox[5],
-                              $bbox[6],$bbox[1],$bbox[2],$bbox[1]);
+                $bbox = [$bbox[2],$bbox[5],$bbox[6],$bbox[5],
+                              $bbox[6],$bbox[1],$bbox[2],$bbox[1]];
             }
             else {
-                $bbox = array($bbox[0],$bbox[3],$bbox[4],$bbox[3],
-                              $bbox[4],$bbox[7],$bbox[0],$bbox[7]);
+                $bbox = [$bbox[0],$bbox[3],$bbox[4],$bbox[3],
+                              $bbox[4],$bbox[7],$bbox[0],$bbox[7]];
             }
         }
         return $bbox;
     }
 
-    function GetBBoxHeight($aTxt,$aAngle=0) {
+    public function GetBBoxHeight($aTxt,$aAngle=0) {
         $box = $this->GetBBoxTTF($aTxt,$aAngle);
         return abs($box[7]-$box[1]);
     }
 
-    function GetBBoxWidth($aTxt,$aAngle=0) {
+    public function GetBBoxWidth($aTxt,$aAngle=0) {
         $box = $this->GetBBoxTTF($aTxt,$aAngle);
         return $box[2]-$box[0]+1;
     }
 
 
-    function _StrokeTTF($x,$y,$txt,$dir,$paragraph_align,&$aBoundingBox,$debug=false) {
+    public function _StrokeTTF($x,$y,$txt,$dir,$paragraph_align,&$aBoundingBox,$debug=false) {
 
         // Setup default inter line margin for paragraphs to be
         // 3% of the font height.
@@ -908,7 +904,7 @@ class Image {
 
             if( $this->text_valign != 'basepoint' ) {
                 // Align x,y ot lower left corner of bbox
-                
+
 
                 if( $this->text_halign=='right' ) {
                     $x -= $width;
@@ -941,7 +937,7 @@ class Image {
 
             // Calculate and return the co-ordinates for the bounding box
             $box = $this->imagettfbbox_fixed($this->font_size,$dir,$this->font_file,$txt);
-            $p1 = array();
+            $p1 = [];
 
             for($i=0; $i < 4; ++$i) {
                 $p1[] = round($box[$i*2]+$x);
@@ -955,8 +951,8 @@ class Image {
             if( $debug ) {
             // Draw the bounding rectangle and the bounding box
 
-                $p = array();
-                $p1 = array();
+                $p = [];
+                $p1 = [];
 
                 for($i=0; $i < 4; ++$i) {
                     $p[] =  $bbox[$i*2]+$x ;
@@ -1022,7 +1018,7 @@ class Image {
             $standardbox = $this->GetTTFBBox('Gg',$dir);
             $yadj = $standardbox[1];
             $xadj = $standardbox[0];
-            $aBoundingBox = array();
+            $aBoundingBox = [];
             for($i=0; $i < $nl; ++$i) {
                 $wl = $this->GetTextWidth($tmp[$i]);
                 $bbox = $this->GetTTFBBox($tmp[$i],$dir);
@@ -1050,7 +1046,7 @@ class Image {
                 if( $debug  ) {
                     // Draw the bounding rectangle around each line
                     $box=@ImageTTFBBox($this->font_size,$dir,$this->font_file,$tmp[$i]);
-                    $p = array();
+                    $p = [];
                     for($j=0; $j < 4; ++$j) {
                         $p[] = $bbox[$j*2]+$xl;
                         $p[] = $bbox[$j*2+1]+$yl-($h-$fh)+$fh*$i;
@@ -1082,7 +1078,7 @@ class Image {
         }
     }
 
-    function StrokeText($x,$y,$txt,$dir=0,$paragraph_align="left",$debug=false) {
+    public function StrokeText($x,$y,$txt,$dir=0,$paragraph_align="left",$debug=false) {
 
         $x = round($x);
         $y = round($y);
@@ -1106,7 +1102,7 @@ class Image {
         return $boundingbox;
     }
 
-    function SetMargin($lm,$rm,$tm,$bm) {
+    public function SetMargin($lm,$rm,$tm,$bm) {
 
         $this->left_margin=$lm;
         $this->right_margin=$rm;
@@ -1124,11 +1120,11 @@ class Image {
         }
     }
 
-    function SetTransparent($color) {
+    public function SetTransparent($color) {
         imagecolortransparent ($this->img,$this->rgb->allocate($color));
     }
 
-    function SetColor($color,$aAlpha=0) {
+    public function SetColor($color,$aAlpha=0) {
         $this->current_color_name = $color;
         $this->current_color=$this->rgb->allocate($color,$aAlpha);
         if( $this->current_color == -1 ) {
@@ -1139,7 +1135,7 @@ class Image {
         return $this->current_color;
     }
 
-    function PushColor($color) {
+    public function PushColor($color) {
         if( $color != "" ) {
             $this->colorstack[$this->colorstackidx]=$this->current_color_name;
             $this->colorstack[$this->colorstackidx+1]=$this->current_color;
@@ -1151,7 +1147,7 @@ class Image {
         }
     }
 
-    function PopColor() {
+    public function PopColor() {
         if( $this->colorstackidx < 1 ) {
             JpGraphError::RaiseL(25098);//(" Negative Color stack index. Unmatched call to PopColor()");
         }
@@ -1160,26 +1156,26 @@ class Image {
     }
 
 
-    function SetLineWeight($weight) {
+    public function SetLineWeight($weight) {
         $old = $this->line_weight;
         imagesetthickness($this->img,$weight);
         $this->line_weight = $weight;
         return $old;
     }
 
-    function SetStartPoint($x,$y) {
+    public function SetStartPoint($x,$y) {
         $this->lastx=round($x);
         $this->lasty=round($y);
     }
 
-    function Arc($cx,$cy,$w,$h,$s,$e) {
+    public function Arc($cx,$cy,$w,$h,$s,$e) {
         // GD Arc doesn't like negative angles
         while( $s < 0) $s += 360;
         while( $e < 0) $e += 360;
         imagearc($this->img,round($cx),round($cy),round($w),round($h),$s,$e,$this->current_color);
     }
 
-    function FilledArc($xc,$yc,$w,$h,$s,$e,$style='') {
+    public function FilledArc($xc,$yc,$w,$h,$s,$e,$style='') {
         $s = round($s);
         $e = round($e);
         while( $s < 0 ) $s += 360;
@@ -1192,11 +1188,11 @@ class Image {
         }
     }
 
-    function FilledCakeSlice($cx,$cy,$w,$h,$s,$e) {
+    public function FilledCakeSlice($cx,$cy,$w,$h,$s,$e) {
         $this->CakeSlice($cx,$cy,$w,$h,$s,$e,$this->current_color_name);
     }
 
-    function CakeSlice($xc,$yc,$w,$h,$s,$e,$fillcolor="",$arccolor="") {
+    public function CakeSlice($xc,$yc,$w,$h,$s,$e,$fillcolor="",$arccolor="") {
         $s = round($s); $e = round($e);
         $w = round($w); $h = round($h);
         $xc = round($xc); $yc = round($yc);
@@ -1230,32 +1226,32 @@ class Image {
         }
     }
 
-    function Ellipse($xc,$yc,$w,$h) {
+    public function Ellipse($xc,$yc,$w,$h) {
         $this->Arc($xc,$yc,$w,$h,0,360);
     }
 
-    function Circle($xc,$yc,$r) {
+    public function Circle($xc,$yc,$r) {
         imageellipse($this->img,round($xc),round($yc),$r*2,$r*2,$this->current_color);
 //        $this->DrawImageSmoothArc($this->img,round($xc),round($yc),$r*2+1,$r*2+1,0,360,$this->current_color);
 //        $this->imageSmoothCircle($this->img, round($xc),round($yc), $r*2+1, $this->current_color);
     }
 
-    function FilledCircle($xc,$yc,$r) {
+    public function FilledCircle($xc,$yc,$r) {
         imagefilledellipse($this->img,round($xc),round($yc),2*$r,2*$r,$this->current_color);
 //        $this->DrawImageSmoothArc($this->img, round($xc), round($yc), 2*$r, 2*$r, 0, 360, $this->current_color);
     }
 
     // Linear Color InterPolation
-    function lip($f,$t,$p) {
+    public function lip($f,$t,$p) {
         $p = round($p,1);
         $r = $f[0] + ($t[0]-$f[0])*$p;
         $g = $f[1] + ($t[1]-$f[1])*$p;
         $b = $f[2] + ($t[2]-$f[2])*$p;
-        return array($r,$g,$b);
+        return [$r,$g,$b];
     }
 
     // Set line style dashed, dotted etc
-    function SetLineStyle($s) {
+    public function SetLineStyle($s) {
         if( is_numeric($s) ) {
             if( $s<1 || $s>4 ) {
                 JpGraphError::RaiseL(25101,$s);//(" Illegal numeric argument to SetLineStyle(): ($s)");
@@ -1279,7 +1275,7 @@ class Image {
     }
 
     // Same as Line but take the line_style into account
-    function StyleLine($x1,$y1,$x2,$y2,$aStyle='', $from_grid_class = false) {
+    public function StyleLine($x1,$y1,$x2,$y2,$aStyle='', $from_grid_class = false) {
         if( $this->line_weight <= 0 ) return;
 
         if( $aStyle === '' ) {
@@ -1307,27 +1303,22 @@ class Image {
                  $this->SetAntiAliasing(false);
             }
 
-            switch( $aStyle ) {
-                case 2: // Dotted
-                    $this->$dashed_line_method($x1,$y1,$x2,$y2,2,6);
-                    break;
-                case 3: // Dashed
-                    $this->$dashed_line_method($x1,$y1,$x2,$y2,5,9);
-                    break;
-                case 4: // Longdashes
-                    $this->$dashed_line_method($x1,$y1,$x2,$y2,9,13);
-                    break;
-                default:
-                    JpGraphError::RaiseL(25104,$this->line_style);//(" Unknown line style: $this->line_style ");
-                    break;
-            }
+            match ($aStyle) {
+                // Dotted
+                2 => $this->$dashed_line_method($x1,$y1,$x2,$y2,2,6),
+                // Dashed
+                3 => $this->$dashed_line_method($x1,$y1,$x2,$y2,5,9),
+                // Longdashes
+                4 => $this->$dashed_line_method($x1,$y1,$x2,$y2,9,13),
+                default => JpGraphError::RaiseL(25104,$this->line_style),
+            };
             if( $oldaa ) {
                 $this->SetAntiAliasing(true);
             }
         }
     }
 
-    function DashedLine($x1,$y1,$x2,$y2,$dash_length=1,$dash_space=4) {
+    public function DashedLine($x1,$y1,$x2,$y2,$dash_length=1,$dash_space=4) {
 
         if( $this->line_weight <= 0 ) return;
 
@@ -1337,7 +1328,7 @@ class Image {
         if( $this->use_anti_aliasing ) {
 //            JpGraphError::RaiseL(25129); // Anti-alias can not be used with dashed lines. Please disable anti-alias or use solid lines.
         }
-        
+
         $x1 = round($x1);
         $x2 = round($x2);
         $y1 = round($y1);
@@ -1355,7 +1346,7 @@ class Image {
         $this->lasty = $y2;
     }
 
-    function DashedLineForGrid($x1,$y1,$x2,$y2,$dash_length=1,$dash_space=4) {
+    public function DashedLineForGrid($x1,$y1,$x2,$y2,$dash_length=1,$dash_space=4) {
 
         if( $this->line_weight <= 0 ) return;
 
@@ -1365,12 +1356,12 @@ class Image {
         if( $this->use_anti_aliasing ) {
 //            JpGraphError::RaiseL(25129); // Anti-alias can not be used with dashed lines. Please disable anti-alias or use solid lines.
         }
-        
+
         $x1 = round($x1);
         $x2 = round($x2);
         $y1 = round($y1);
         $y2 = round($y2);
-        
+
         /*
         $dash_length *= $this->scale;
         $dash_space  *= $this->scale;
@@ -1388,7 +1379,7 @@ class Image {
         $this->lasty = $y2;
     }
 
-    function Line($x1,$y1,$x2,$y2) {
+    public function Line($x1,$y1,$x2,$y2) {
 
         if( $this->line_weight <= 0 ) return;
 
@@ -1403,7 +1394,7 @@ class Image {
         $this->lasty=$y2;
     }
 
-    function Polygon($p,$closed=FALSE,$fast=FALSE) {
+    public function Polygon($p,$closed=FALSE,$fast=FALSE) {
 
         if( $this->line_weight <= 0 ) return;
 
@@ -1432,7 +1423,7 @@ class Image {
         }
     }
 
-    function FilledPolygon($pts) {
+    public function FilledPolygon($pts) {
         $n=count($pts);
         if( $n == 0 ) {
             JpGraphError::RaiseL(25105);//('NULL data specified for a filled polygon. Check that your data is not NULL.');
@@ -1447,15 +1438,15 @@ class Image {
         imagesetthickness($this->img,$old);
     }
 
-    function Rectangle($xl,$yu,$xr,$yl) {
-        $this->Polygon(array($xl,$yu,$xr,$yu,$xr,$yl,$xl,$yl,$xl,$yu));
+    public function Rectangle($xl,$yu,$xr,$yl) {
+        $this->Polygon([$xl,$yu,$xr,$yu,$xr,$yl,$xl,$yl,$xl,$yu]);
     }
 
-    function FilledRectangle($xl,$yu,$xr,$yl) {
-        $this->FilledPolygon(array($xl,$yu,$xr,$yu,$xr,$yl,$xl,$yl));
+    public function FilledRectangle($xl,$yu,$xr,$yl) {
+        $this->FilledPolygon([$xl,$yu,$xr,$yu,$xr,$yl,$xl,$yl]);
     }
 
-    function FilledRectangle2($xl,$yu,$xr,$yl,$color1,$color2,$style=1) {
+    public function FilledRectangle2($xl,$yu,$xr,$yl,$color1,$color2,$style=1) {
         // Fill a rectangle with lines of two colors
         if( $style===1 ) {
             // Horizontal stripe
@@ -1484,7 +1475,7 @@ class Image {
         }
     }
 
-    function ShadowRectangle($xl,$yu,$xr,$yl,$fcolor=false,$shadow_width=4,$shadow_color='darkgray',$useAlpha=true) {
+    public function ShadowRectangle($xl,$yu,$xr,$yl,$fcolor=false,$shadow_width=4,$shadow_color='darkgray',$useAlpha=true) {
         // This is complicated by the fact that we must also handle the case where
         // the reactangle has no fill color
         $xl = floor($xl);
@@ -1496,7 +1487,7 @@ class Image {
         $this->SetLineWeight(1);
         $this->SetLineStyle('solid');
         $basecolor = $this->rgb->Color($shadow_color);
-        $shadow_color = array($basecolor[0],$basecolor[1],$basecolor[2],);
+        $shadow_color = [$basecolor[0],$basecolor[1],$basecolor[2],];
         for( $i=0; $i < $shadow_width; ++$i ) {
             $this->SetColor($shadow_color,$shadowAlpha);
             $this->Line($xr-$shadow_width+$i,   $yu+$shadow_width,
@@ -1518,7 +1509,7 @@ class Image {
         }
     }
 
-    function FilledRoundedRectangle($xt,$yt,$xr,$yl,$r=5) {
+    public function FilledRoundedRectangle($xt,$yt,$xr,$yl,$r=5) {
         if( $r==0 ) {
             $this->FilledRectangle($xt,$yt,$xr,$yl);
             return;
@@ -1549,7 +1540,7 @@ class Image {
 
     }
 
-    function RoundedRectangle($xt,$yt,$xr,$yl,$r=5) {
+    public function RoundedRectangle($xt,$yt,$xr,$yl,$r=5) {
 
         if( $r==0 ) {
             $this->Rectangle($xt,$yt,$xr,$yl);
@@ -1573,12 +1564,12 @@ class Image {
         $this->Arc($xr-$r,$yl-$r,$r*2,$r*2,0,90);
     }
 
-    function FilledBevel($x1,$y1,$x2,$y2,$depth=2,$color1='white@0.4',$color2='darkgray@0.4') {
+    public function FilledBevel($x1,$y1,$x2,$y2,$depth=2,$color1='white@0.4',$color2='darkgray@0.4') {
         $this->FilledRectangle($x1,$y1,$x2,$y2);
         $this->Bevel($x1,$y1,$x2,$y2,$depth,$color1,$color2);
     }
 
-    function Bevel($x1,$y1,$x2,$y2,$depth=2,$color1='white@0.4',$color2='black@0.5') {
+    public function Bevel($x1,$y1,$x2,$y2,$depth=2,$color1='white@0.4',$color2='black@0.5') {
         $this->PushColor($color1);
         for( $i=0; $i < $depth; ++$i ) {
             $this->Line($x1+$i,$y1+$i,$x1+$i,$y2-$i);
@@ -1594,27 +1585,27 @@ class Image {
         $this->PopColor();
     }
 
-    function StyleLineTo($x,$y) {
+    public function StyleLineTo($x,$y) {
         $this->StyleLine($this->lastx,$this->lasty,$x,$y);
         $this->lastx=$x;
         $this->lasty=$y;
     }
 
-    function LineTo($x,$y) {
+    public function LineTo($x,$y) {
         $this->Line($this->lastx,$this->lasty,$x,$y);
         $this->lastx=$x;
         $this->lasty=$y;
     }
 
-    function Point($x,$y) {
+    public function Point($x,$y) {
         imagesetpixel($this->img,round($x),round($y),$this->current_color);
     }
 
-    function Fill($x,$y) {
+    public function Fill($x,$y) {
         imagefill($this->img,round($x),round($y),$this->current_color);
     }
 
-    function FillToBorder($x,$y,$aBordColor) {
+    public function FillToBorder($x,$y,$aBordColor) {
         $bc = $this->rgb->allocate($aBordColor);
         if( $bc == -1 ) {
             JpGraphError::RaiseL(25106);//('Image::FillToBorder : Can not allocate more colors');
@@ -1622,12 +1613,12 @@ class Image {
         imagefilltoborder($this->img,round($x),round($y),$bc,$this->current_color);
     }
 
-    function SetExpired($aFlg=true) {
+    public function SetExpired($aFlg=true) {
         $this->expired = $aFlg;
     }
 
     // Generate image header
-    function Headers() {
+    public function Headers() {
 
         // In case we are running from the command line with the client version of
         // PHP we can't send any headers.
@@ -1655,12 +1646,12 @@ class Image {
     }
 
     // Adjust image quality for formats that allow this
-    function SetQuality($q) {
+    public function SetQuality($q) {
         $this->quality = $q;
     }
 
     // Stream image to browser or to file
-    function Stream($aFile="") {
+    public function Stream($aFile="") {
         $this->DoSupersampling();
 
         $func="image".$this->img_format;
@@ -1685,7 +1676,7 @@ class Image {
     }
 
     // Do SuperSampling using $scale
-    function DoSupersampling() {
+    public function DoSupersampling() {
         if (SUPERSAMPLING_SCALE <= 1) {
             return $this->img;
         }
@@ -1698,13 +1689,13 @@ class Image {
 
     // Clear resources used by image (this is normally not used since all resources are/should be
     // returned when the script terminates
-    function Destroy() {
+    public function Destroy() {
         imagedestroy($this->img);
     }
 
     // Specify image format. Note depending on your installation
     // of PHP not all formats may be supported.
-    function SetImgFormat($aFormat,$aQuality=75) {
+    public function SetImgFormat($aFormat,$aQuality=75) {
         $this->quality = $aQuality;
         $aFormat = strtolower($aFormat);
         $tst = true;
@@ -1744,7 +1735,7 @@ class Image {
     /**
     * Draw Line
     */
-    function DrawLine($im, $x1, $y1, $x2, $y2, $weight, $color) {
+    public function DrawLine($im, $x1, $y1, $x2, $y2, $weight, $color) {
         if ($weight == 1) {
             return imageline($im,$x1,$y1,$x2,$y2,$color);
         }
@@ -1753,7 +1744,7 @@ class Image {
 
         $dist_x = $weight * (sin($angle)) / 2;
         $dist_y = $weight * (cos($angle)) / 2;
-        
+
         $p1x=ceil(($x1 + $dist_x));
         $p1y=ceil(($y1 + $dist_y));
         $p2x=ceil(($x2 + $dist_x));
@@ -1763,7 +1754,7 @@ class Image {
         $p4x=ceil(($x1 - $dist_x));
         $p4y=ceil(($y1 - $dist_y));
 
-        $array=array($p1x,$p1y,$p2x,$p2y,$p3x,$p3y,$p4x,$p4y);
+        $array=[$p1x,$p1y,$p2x,$p2y,$p3x,$p3y,$p4x,$p4y];
         imagefilledpolygon ( $im, $array, (count($array)/2), $color );
 
         // for antialias
@@ -1779,13 +1770,13 @@ class Image {
           return imageline($this->img,$x1,$y1,$x2,$y2,$this->current_color);
         }
 
-        $pts = array();
+        $pts = [];
 
         $weight /= 2;
 
         if ($y2 - $y1 == 0) {
             // x line
-            $pts = array();
+            $pts = [];
             $pts[] = $x1; $pts[] = $y1 - $weight;
             $pts[] = $x1; $pts[] = $y1 + $weight;
             $pts[] = $x2; $pts[] = $y2 + $weight;
@@ -1793,19 +1784,19 @@ class Image {
 
         } elseif ($x2 - $x1 == 0) {
             // y line
-            $pts = array();
+            $pts = [];
             $pts[] = $x1 - $weight; $pts[] = $y1;
             $pts[] = $x1 + $weight; $pts[] = $y1;
             $pts[] = $x2 + $weight; $pts[] = $y2;
             $pts[] = $x2 - $weight; $pts[] = $y2;
 
         } else {
-            
+
             var_dump($x1, $x2, $y1, $y2);
-            $length = sqrt(pow($x2 - $x1, 2) + pow($y2 - $y1, 2));
+            $length = sqrt(($x2 - $x1) ** 2 + ($y2 - $y1) ** 2);
             var_dump($length);exit;
             exit;
-  
+
 /*
             $lean = ($y2 - $y1) / ($x2 - $x1);
             $lean2 = -1 / $lean;
@@ -1835,14 +1826,14 @@ class Image {
     }
 
 
-    function DrawImageSmoothArc($im, $xc, $yc, $w, $h, $s, $e, $color, $style = null) {
+    public function DrawImageSmoothArc($im, $xc, $yc, $w, $h, $s, $e, $color, $style = null) {
         $tmp = $s;
         $s = (360 - $e) / 180 * M_PI;
         $e = (360 - $tmp) / 180 * M_PI;
         return imageSmoothArc($im, round($xc), round($yc), round($w), round($h), $this->CreateColorForImageSmoothArc($color), $s, $e);
     }
 
-    function CreateColorForImageSmoothArc($color) {
+    public function CreateColorForImageSmoothArc($color) {
         $alpha = $color >> 24 & 0xFF; 
         $red   = $color >> 16 & 0xFF;
         $green = $color >> 8 & 0xFF;
@@ -1850,10 +1841,10 @@ class Image {
 
 //var_dump($alpha, $red, $green, $blue);exit;
 
-        return array($red, $green, $blue, $alpha);
+        return [$red, $green, $blue, $alpha];
     }
 
-    function imageSmoothCircle( &$img, $cx, $cy, $cr, $color ) {
+    public function imageSmoothCircle( &$img, $cx, $cy, $cr, $color ) {
         $ir = $cr;
         $ix = 0;
         $iy = $ir;
@@ -1892,7 +1883,7 @@ class Image {
             $filled = 0;
             for ( $xx = $ix - 0.45; $xx < $ix + 0.5; $xx += 0.2 ) {
                 for ( $yy = $iy - 0.45; $yy < $iy + 0.5; $yy += 0.2 ) {
-                    if ( sqrt( pow( $xx, 2 ) + pow( $yy, 2 ) ) < $cr ) $filled += 4;
+                    if ( sqrt( $xx ** 2 + $yy ** 2 ) < $cr ) $filled += 4;
                 }
             }
             $draw = imageColorExactAlpha( $img, $color[ 'R' ], $color[ 'G' ], $color[ 'B' ], ( 100 - $filled ) );
@@ -1907,9 +1898,9 @@ class Image {
         }
     }
 
-    function __get($name) {
+    public function __get($name) {
 
-        if (strpos($name, 'raw_') !== false) {
+        if (str_contains($name, 'raw_')) {
             // if $name == 'raw_left_margin' , return $this->_left_margin;
             $variable_name = '_' . str_replace('raw_', '', $name);
             return $this->$variable_name;
@@ -1924,7 +1915,7 @@ class Image {
         } 
     }
 
-    function __set($name, $value) {
+    public function __set($name, $value) {
         $this->{'_'.$name} = $value;
     }
 
@@ -1938,32 +1929,32 @@ class Image {
 class RotImage extends Image {
     public $a=0;
     public $dx=0,$dy=0,$transx=0,$transy=0;
-    private $m=array();
+    private $m=[];
 
-    function __construct($aWidth,$aHeight,$a=0,$aFormat=DEFAULT_GFORMAT,$aSetAutoMargin=true) {
+    public function __construct($aWidth,$aHeight,$a=0,$aFormat=DEFAULT_GFORMAT,$aSetAutoMargin=true) {
         parent::__construct($aWidth,$aHeight,$aFormat,$aSetAutoMargin);
         $this->dx=$this->left_margin+$this->plotwidth/2;
         $this->dy=$this->top_margin+$this->plotheight/2;
         $this->SetAngle($a);
     }
 
-    function SetCenter($dx,$dy) {
+    public function SetCenter($dx,$dy) {
         $old_dx = $this->dx;
         $old_dy = $this->dy;
         $this->dx=$dx;
         $this->dy=$dy;
         $this->SetAngle($this->a);
-        return array($old_dx,$old_dy);
+        return [$old_dx,$old_dy];
     }
 
-    function SetTranslation($dx,$dy) {
-        $old = array($this->transx,$this->transy);
+    public function SetTranslation($dx,$dy) {
+        $old = [$this->transx,$this->transy];
         $this->transx = $dx;
         $this->transy = $dy;
         return $old;
     }
 
-    function UpdateRotMatrice()  {
+    public function UpdateRotMatrice()  {
         $a = $this->a;
         $a *= M_PI/180;
         $sa=sin($a); $ca=cos($a);
@@ -1976,97 +1967,97 @@ class RotImage extends Image {
         $this->m[1][2] = $this->dy*(1-$ca) - $sa*$this->dx ;
     }
 
-    function SetAngle($a) {
+    public function SetAngle($a) {
         $tmp = $this->a;
         $this->a = $a;
         $this->UpdateRotMatrice();
         return $tmp;
     }
 
-    function Circle($xc,$yc,$r) {
-        list($xc,$yc) = $this->Rotate($xc,$yc);
+    public function Circle($xc,$yc,$r) {
+        [$xc, $yc] = $this->Rotate($xc,$yc);
         parent::Circle($xc,$yc,$r);
     }
 
-    function FilledCircle($xc,$yc,$r) {
-        list($xc,$yc) = $this->Rotate($xc,$yc);
+    public function FilledCircle($xc,$yc,$r) {
+        [$xc, $yc] = $this->Rotate($xc,$yc);
         parent::FilledCircle($xc,$yc,$r);
     }
 
 
-    function Arc($xc,$yc,$w,$h,$s,$e) {
-        list($xc,$yc) = $this->Rotate($xc,$yc);
+    public function Arc($xc,$yc,$w,$h,$s,$e) {
+        [$xc, $yc] = $this->Rotate($xc,$yc);
         $s += $this->a;
         $e += $this->a;
         parent::Arc($xc,$yc,$w,$h,$s,$e);
     }
 
-    function FilledArc($xc,$yc,$w,$h,$s,$e,$style='') {
-        list($xc,$yc) = $this->Rotate($xc,$yc);
+    public function FilledArc($xc,$yc,$w,$h,$s,$e,$style='') {
+        [$xc, $yc] = $this->Rotate($xc,$yc);
         $s += $this->a;
         $e += $this->a;
         parent::FilledArc($xc,$yc,$w,$h,$s,$e);
     }
 
-    function SetMargin($lm,$rm,$tm,$bm) {
+    public function SetMargin($lm,$rm,$tm,$bm) {
         parent::SetMargin($lm,$rm,$tm,$bm);
         $this->dx=$this->left_margin+$this->plotwidth/2;
         $this->dy=$this->top_margin+$this->plotheight/2;
         $this->UpdateRotMatrice();
     }
 
-    function Rotate($x,$y) {
+    public function Rotate($x,$y) {
         // Optimization. Ignore rotation if Angle==0 || Angle==360
         if( $this->a == 0 || $this->a == 360 ) {
-            return array($x + $this->transx, $y + $this->transy );
+            return [$x + $this->transx, $y + $this->transy ];
         }
         else {
             $x1=round($this->m[0][0]*$x + $this->m[0][1]*$y,1) + $this->m[0][2] + $this->transx;
             $y1=round($this->m[1][0]*$x + $this->m[1][1]*$y,1) + $this->m[1][2] + $this->transy;
-            return array($x1,$y1);
+            return [$x1,$y1];
         }
     }
 
-    function CopyMerge($fromImg,$toX,$toY,$fromX,$fromY,$toWidth,$toHeight,$fromWidth=-1,$fromHeight=-1,$aMix=100) {
-        list($toX,$toY) = $this->Rotate($toX,$toY);
+    public function CopyMerge($fromImg,$toX,$toY,$fromX,$fromY,$toWidth,$toHeight,$fromWidth=-1,$fromHeight=-1,$aMix=100) {
+        [$toX, $toY] = $this->Rotate($toX,$toY);
         parent::CopyMerge($fromImg,$toX,$toY,$fromX,$fromY,$toWidth,$toHeight,$fromWidth,$fromHeight,$aMix);
 
     }
 
-    function ArrRotate($pnts) {
+    public function ArrRotate($pnts) {
         $n = count($pnts)-1;
         for($i=0; $i < $n; $i+=2) {
-            list ($x,$y) = $this->Rotate($pnts[$i],$pnts[$i+1]);
+            [$x, $y] = $this->Rotate($pnts[$i],$pnts[$i+1]);
             $pnts[$i] = $x; $pnts[$i+1] = $y;
         }
         return $pnts;
     }
 
-    function DashedLine($x1,$y1,$x2,$y2,$dash_length=1,$dash_space=4) {
-        list($x1,$y1) = $this->Rotate($x1,$y1);
-        list($x2,$y2) = $this->Rotate($x2,$y2);
+    public function DashedLine($x1,$y1,$x2,$y2,$dash_length=1,$dash_space=4) {
+        [$x1, $y1] = $this->Rotate($x1,$y1);
+        [$x2, $y2] = $this->Rotate($x2,$y2);
         parent::DashedLine($x1,$y1,$x2,$y2,$dash_length,$dash_space);
     }
 
-    function Line($x1,$y1,$x2,$y2) {
-        list($x1,$y1) = $this->Rotate($x1,$y1);
-        list($x2,$y2) = $this->Rotate($x2,$y2);
+    public function Line($x1,$y1,$x2,$y2) {
+        [$x1, $y1] = $this->Rotate($x1,$y1);
+        [$x2, $y2] = $this->Rotate($x2,$y2);
         parent::Line($x1,$y1,$x2,$y2);
     }
 
-    function Rectangle($x1,$y1,$x2,$y2) {
+    public function Rectangle($x1,$y1,$x2,$y2) {
         // Rectangle uses Line() so it will be rotated through that call
         parent::Rectangle($x1,$y1,$x2,$y2);
     }
 
-    function FilledRectangle($x1,$y1,$x2,$y2) {
+    public function FilledRectangle($x1,$y1,$x2,$y2) {
         if( $y1==$y2 || $x1==$x2 )
         $this->Line($x1,$y1,$x2,$y2);
         else
-        $this->FilledPolygon(array($x1,$y1,$x2,$y1,$x2,$y2,$x1,$y2));
+        $this->FilledPolygon([$x1,$y1,$x2,$y1,$x2,$y2,$x1,$y2]);
     }
 
-    function Polygon($pnts,$closed=FALSE,$fast=FALSE) {
+    public function Polygon($pnts,$closed=FALSE,$fast=FALSE) {
         // Polygon uses Line() so it will be rotated through that call unless
         // fast drawing routines are used in which case a rotate is needed
         if( $fast ) {
@@ -2077,17 +2068,17 @@ class RotImage extends Image {
         }
     }
 
-    function FilledPolygon($pnts) {
+    public function FilledPolygon($pnts) {
         parent::FilledPolygon($this->ArrRotate($pnts));
     }
 
-    function Point($x,$y) {
-        list($xp,$yp) = $this->Rotate($x,$y);
+    public function Point($x,$y) {
+        [$xp, $yp] = $this->Rotate($x,$y);
         parent::Point($xp,$yp);
     }
 
-    function StrokeText($x,$y,$txt,$dir=0,$paragraph_align="left",$debug=false) {
-        list($xp,$yp) = $this->Rotate($x,$y);
+    public function StrokeText($x,$y,$txt,$dir=0,$paragraph_align="left",$debug=false) {
+        [$xp, $yp] = $this->Rotate($x,$y);
         return parent::StrokeText($xp,$yp,$txt,$dir,$paragraph_align,$debug);
     }
 }
@@ -2101,7 +2092,7 @@ class ImgStreamCache {
     private $cache_dir, $timeout=0;  // Infinite timeout
     //---------------
     // CONSTRUCTOR
-    function __construct($aCacheDir=CACHE_DIR) {
+    public function __construct($aCacheDir=CACHE_DIR) {
         $this->cache_dir = $aCacheDir;
     }
 
@@ -2112,12 +2103,12 @@ class ImgStreamCache {
     // timeout value it will be overwritten with a newer version.
     // If timeout is set to 0 this is the same as infinite large timeout and if
     // timeout is set to -1 this is the same as infinite small timeout
-    function SetTimeout($aTimeout) {
+    public function SetTimeout($aTimeout) {
         $this->timeout=$aTimeout;
     }
 
     // Output image to browser and also write it to the cache
-    function PutAndStream($aImage,$aCacheFileName,$aInline,$aStrokeFileName) {
+    public function PutAndStream($aImage,$aCacheFileName,$aInline,$aStrokeFileName) {
 
         // Check if we should always stroke the image to a file
         if( _FORCE_IMGTOFILE ) {
@@ -2199,7 +2190,7 @@ class ImgStreamCache {
             if( CACHE_FILE_GROUP != '' ) {
                 $res = @chgrp($aCacheFileName,CACHE_FILE_GROUP);
             }
-            if( CACHE_FILE_MOD != '' ) {
+            if( CACHE_FILE_MOD != 0 ) {
                 $res = @chmod($aCacheFileName,CACHE_FILE_MOD);
             }
             if( !$res ) {
@@ -2226,7 +2217,7 @@ class ImgStreamCache {
         }
     }
 
-    function IsValid($aCacheFileName) {
+    public function IsValid($aCacheFileName) {
         $aCacheFileName = $this->cache_dir.$aCacheFileName;
         if ( USE_CACHE && file_exists($aCacheFileName) ) {
             $diff=time()-filemtime($aCacheFileName);
@@ -2242,7 +2233,7 @@ class ImgStreamCache {
         }
     }
 
-    function StreamImgFile($aImage,$aCacheFileName) {
+    public function StreamImgFile($aImage,$aCacheFileName) {
         $aCacheFileName = $this->cache_dir.$aCacheFileName;
         if ( $fh = @fopen($aCacheFileName, 'rb') ) {
             $lock = flock($fh, LOCK_SH);
@@ -2260,7 +2251,7 @@ class ImgStreamCache {
     // Check if a given image is in cache and in that case
     // pass it directly on to web browser. Return false if the
     // image file doesn't exist or exists but is to old
-    function GetAndStream($aImage,$aCacheFileName) {
+    public function GetAndStream($aImage,$aCacheFileName) {
         if( $this->Isvalid($aCacheFileName) ) {
             $this->StreamImgFile($aImage,$aCacheFileName);
         }
@@ -2272,8 +2263,8 @@ class ImgStreamCache {
     //---------------
     // PRIVATE METHODS
     // Create all necessary directories in a path
-    function MakeDirs($aFile) {
-        $dirs = array();
+    public function MakeDirs($aFile) {
+        $dirs = [];
         // In order to better work when open_basedir is enabled
         // we do not create directories in the root path
         while ( $aFile != '/' && !(file_exists($aFile)) ) {

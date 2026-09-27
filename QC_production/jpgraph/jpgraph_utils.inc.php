@@ -17,12 +17,12 @@
 class FuncGenerator {
     private $iFunc='',$iXFunc='',$iMin,$iMax,$iStepSize;
 
-    function __construct($aFunc,$aXFunc='') {
+    public function __construct($aFunc,$aXFunc='') {
         $this->iFunc = $aFunc;
         $this->iXFunc = $aXFunc;
     }
 
-    function E($aXMin,$aXMax,$aSteps=50) {
+    public function E($aXMin,$aXMax,$aSteps=50) {
         $this->iMin = $aXMin;
         $this->iMax = $aXMax;
         $this->iStepSize = ($aXMax-$aXMin)/$aSteps;
@@ -41,7 +41,7 @@ class FuncGenerator {
         if( empty($xa) || empty($ya) )
         JpGraphError::RaiseL(24002);//('FuncGenerator : Syntax error in function specification ');
 
-        return array($xa,$ya);
+        return [$xa,$ya];
     }
 }
 
@@ -71,14 +71,14 @@ class DateScaleUtils {
 
     private static $starthour,$startmonth, $startday, $startyear;
     private static $endmonth, $endyear, $endday;
-    private static $tickPositions=array(),$minTickPositions=array();
+    private static $tickPositions=[],$minTickPositions=[];
     private static $iUseWeeks = true;
 
-    static function UseWeekFormat($aFlg) {
+    public static function UseWeekFormat($aFlg) {
         self::$iUseWeeks = $aFlg;
     }
 
-    static function doYearly($aType,$aMinor=false) {
+    public static function doYearly($aType,$aMinor=false) {
         $i=0; $j=0;
         $m = self::$startmonth;
         $y = self::$startyear;
@@ -133,7 +133,7 @@ class DateScaleUtils {
         }
     }
 
-    static function doDaily($aType,$aMinor=false) {
+    public static function doDaily($aType,$aMinor=false) {
         $m = self::$startmonth;
         $y = self::$startyear;
         $d = self::$startday;
@@ -180,7 +180,7 @@ class DateScaleUtils {
         }
     }
 
-    static function doWeekly($aType,$aMinor=false) {
+    public static function doWeekly($aType,$aMinor=false) {
         $hpd = 3600*24;
         $hpw = 3600*24*7;
         // Find out week number of min date
@@ -226,7 +226,7 @@ class DateScaleUtils {
         }
     }
 
-    static function doMonthly($aType,$aMinor=false) {
+    public static function doMonthly($aType,$aMinor=false) {
         $monthcount=0;
         $m = self::$startmonth;
         $y = self::$startyear;
@@ -314,15 +314,15 @@ class DateScaleUtils {
             self::$tickPositions[$i++] = mktime(0 ,0 ,0, self::$startmonth + 1, 1, self::$startyear);
         }
 
-        return array(self::$tickPositions,self::$minTickPositions);
+        return [self::$tickPositions,self::$minTickPositions];
     }
 
-    static function GetTicks($aData,$aType=1,$aMinor=false,$aEndPoints=false) {
+    public static function GetTicks($aData,$aType=1,$aMinor=false,$aEndPoints=false) {
         $n = count($aData);
         return self::GetTicksFromMinMax($aData[0],$aData[$n-1],$aType,$aMinor,$aEndPoints);
     }
 
-    static function GetAutoTicks($aMin,$aMax,$aMaxTicks=10,$aMinor=false) {
+    public static function GetAutoTicks($aMin,$aMax,$aMaxTicks=10,$aMinor=false) {
         $diff = $aMax - $aMin;
         $spd = 3600*24;
         $spw = $spd*7;
@@ -337,11 +337,11 @@ class DateScaleUtils {
         // Decision table for suitable scales
         // First value: Main decision point
         // Second value: Array of formatting depending on divisor for wanted max number of ticks. <divisor><formatting><format-string>,..
-        $tt = array(
-            array($spw, array(1,DSUTILS_DAY1,'d M',2,DSUTILS_DAY2,'d M',-1,DSUTILS_DAY4,'d M')),
-            array($spm, array(1,DSUTILS_DAY1,'d M',2,DSUTILS_DAY2,'d M',4,DSUTILS_DAY4,'d M',7,DSUTILS_WEEK1,$w,-1,DSUTILS_WEEK2,$w)),
-            array($spy, array(1,DSUTILS_DAY1,'d M',2,DSUTILS_DAY2,'d M',4,DSUTILS_DAY4,'d M',7,DSUTILS_WEEK1,$w,14,DSUTILS_WEEK2,$w,30,DSUTILS_MONTH1,'M',60,DSUTILS_MONTH2,'M',-1,DSUTILS_MONTH3,'M')),
-            array(-1, array(30,DSUTILS_MONTH1,'M-Y',60,DSUTILS_MONTH2,'M-Y',90,DSUTILS_MONTH3,'M-Y',180,DSUTILS_MONTH6,'M-Y',352,DSUTILS_YEAR1,'Y',704,DSUTILS_YEAR2,'Y',-1,DSUTILS_YEAR5,'Y')));
+        $tt = [
+            [$spw, [1,DSUTILS_DAY1,'d M',2,DSUTILS_DAY2,'d M',-1,DSUTILS_DAY4,'d M']],
+            [$spm, [1,DSUTILS_DAY1,'d M',2,DSUTILS_DAY2,'d M',4,DSUTILS_DAY4,'d M',7,DSUTILS_WEEK1,$w,-1,DSUTILS_WEEK2,$w]],
+            [$spy, [1,DSUTILS_DAY1,'d M',2,DSUTILS_DAY2,'d M',4,DSUTILS_DAY4,'d M',7,DSUTILS_WEEK1,$w,14,DSUTILS_WEEK2,$w,30,DSUTILS_MONTH1,'M',60,DSUTILS_MONTH2,'M',-1,DSUTILS_MONTH3,'M']],
+            [-1, [30,DSUTILS_MONTH1,'M-Y',60,DSUTILS_MONTH2,'M-Y',90,DSUTILS_MONTH3,'M-Y',180,DSUTILS_MONTH6,'M-Y',352,DSUTILS_YEAR1,'Y',704,DSUTILS_YEAR2,'Y',-1,DSUTILS_YEAR5,'Y']]];
 
         $ntt = count($tt);
         $nd = floor($diff/$spd);
@@ -353,15 +353,15 @@ class DateScaleUtils {
                     if( $nd/$t[3*$j] <= $aMaxTicks || $j==$n-1) {
                         $type = $t[3*$j+1];
                         $fs = $t[3*$j+2];
-                        list($tickPositions,$minTickPositions) = self::GetTicksFromMinMax($aMin,$aMax,$type,$aMinor);
-                        return array($fs,$tickPositions,$minTickPositions,$type);
+                        [$tickPositions, $minTickPositions] = self::GetTicksFromMinMax($aMin,$aMax,$type,$aMinor);
+                        return [$fs,$tickPositions,$minTickPositions,$type];
                     }
                 }
             }
         }
     }
 
-    static function GetTicksFromMinMax($aMin,$aMax,$aType,$aMinor=false,$aEndPoints=false) {
+    public static function GetTicksFromMinMax($aMin,$aMax,$aType,$aMinor=false,$aEndPoints=false) {
         self::$starthour = date('G',$aMin);
         self::$startmonth = date('n',$aMin);
         self::$startday = date('j',$aMin);
@@ -397,7 +397,7 @@ class DateScaleUtils {
             $tickPositions[$i] = $aData[$n-1];
         }
 
-        return array(self::$tickPositions,self::$minTickPositions);
+        return [self::$tickPositions,self::$minTickPositions];
     }
 }
 
@@ -417,23 +417,23 @@ Class ReadFileData {
     // Returns:
     // The number of data values read on success, FALSE on failure
     //----------------------------------------------------------------------------
-    static function FromCSV($aFile,&$aData,$aSepChar=',',$aMaxLineLength=1024) {
+    public static function FromCSV($aFile,&$aData,$aSepChar=',',$aMaxLineLength=1024) {
         $rh = @fopen($aFile,'r');
         if( $rh === false ) {
                 return false;
         }
-        $tmp = array();
-        $lineofdata = fgetcsv($rh, 1000, ',');
+        $tmp = [];
+        $lineofdata = fgetcsv($rh, 1000, ',', escape: '\\');
         while ( $lineofdata !== FALSE) {
             $tmp = array_merge($tmp,$lineofdata);
-            $lineofdata = fgetcsv($rh, $aMaxLineLength, $aSepChar);
+            $lineofdata = fgetcsv($rh, $aMaxLineLength, $aSepChar, escape: '\\');
         }
         fclose($rh);
 
         // Now make sure that all data is numeric. By default
         // all data is read as strings
         $n = count($tmp);
-        $aData = array();
+        $aData = [];
         $cnt=0;
         for($i=0; $i < $n; ++$i) {
             if( $tmp[$i] !== "" ) {
@@ -463,18 +463,18 @@ Class ReadFileData {
     // Returns:
     // The number of lines read on success, FALSE on failure
     //----------------------------------------------------------------------------
-    static function FromCSV2($aFile, &$aData, $aOptions = array()) {
-        $aDefaults = array(
+    public static function FromCSV2($aFile, &$aData, $aOptions = []) {
+        $aDefaults = [
             'separator'     => ',',
             'enclosure'     => chr(34),
             'escape'        => chr(92),
             'readlength'    => 1024,
             'ignore_first'  => false,
             'first_as_key'  => false
-            );
+            ];
 
         $aOptions = array_merge(
-            $aDefaults, is_array($aOptions) ? $aOptions : array());
+            $aDefaults, is_array($aOptions) ? $aOptions : []);
 
         if( $aOptions['first_as_key'] ) {
             $aOptions['ignore_first'] =  true;
@@ -486,11 +486,12 @@ Class ReadFileData {
             return false;
         }
 
-        $aData  = array();
+        $aData  = [];
         $aLine  = fgetcsv($rh,
                           $aOptions['readlength'],
                           $aOptions['separator'],
-                          $aOptions['enclosure']
+                          $aOptions['enclosure'],
+                          escape: '\\'
                           /*, $aOptions['escape']     # PHP >= 5.3 only */
                           );
 
@@ -524,7 +525,8 @@ Class ReadFileData {
             $aLine = fgetcsv($rh,
                              $aOptions['readlength'],
                              $aOptions['separator'],
-                             $aOptions['enclosure']
+                             $aOptions['enclosure'],
+                             escape: '\\'
                              /*, $aOptions['escape']     # PHP >= 5.3 only*/
                 );
         }
@@ -539,7 +541,7 @@ Class ReadFileData {
     }
 
     // Read data from two columns in a plain text file
-    static function From2Col($aFile, $aCol1, $aCol2, $aSepChar=' ') {
+    public static function From2Col($aFile, $aCol1, $aCol2, $aSepChar=' ') {
         $lines = @file($aFile,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
         if( $lines === false ) {
                 return false;
@@ -561,7 +563,7 @@ Class ReadFileData {
     }
 
     // Read data from one columns in a plain text file
-    static function From1Col($aFile, $aCol1) {
+    public static function From1Col($aFile, $aCol1) {
         $lines = @file($aFile,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
         if( $lines === false ) {
                 return false;
@@ -573,12 +575,12 @@ Class ReadFileData {
         return count($lines);
     }
 
-    static function FromMatrix($aFile,$aSepChar=' ') {
+    public static function FromMatrix($aFile,$aSepChar=' ') {
         $lines = @file($aFile,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
         if( $lines === false ) {
                 return false;
         }
-        $mat = array();
+        $mat = [];
         $reg = '/'.$aSepChar.'/';
         foreach( $lines as $line => $datarow ) {
                 $row = preg_split($reg,trim($datarow));
@@ -598,7 +600,7 @@ define('__LR_EPSILON', 1.0e-8);
 // Class LinearRegression
 //=============================================================================
 class LinearRegression {
-        private $ix=array(),$iy=array();
+        private $ix=[],$iy=[];
         private $ib=0, $ia=0;
         private $icalculated=false;
         public $iDet=0, $iCorr=0, $iStdErr=0;
@@ -657,27 +659,27 @@ class LinearRegression {
         public function GetAB() {
                 if( $this->icalculated == false )
                         $this->Calc();
-                return array($this->ia, $this->ib);
+                return [$this->ia, $this->ib];
         }
 
         public function GetStat() {
                 if( $this->icalculated == false )
                         $this->Calc();
-                return array($this->iStdErr, $this->iCorr, $this->iDet);
+                return [$this->iStdErr, $this->iCorr, $this->iDet];
         }
 
         public function GetY($aMinX, $aMaxX, $aStep=1) {
                 if( $this->icalculated == false )
                         $this->Calc();
 
-                $yy = array();
+                $yy = [];
                 $i = 0;
                 for( $x=$aMinX; $x <= $aMaxX; $x += $aStep ) {
                         $xx[$i  ] = $x;
                         $yy[$i++] = $this->ia + $this->ib * $x;
                 }
 
-                return array($xx,$yy);
+                return [$xx,$yy];
         }
 
 }

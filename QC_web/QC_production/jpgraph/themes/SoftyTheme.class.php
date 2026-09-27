@@ -10,8 +10,8 @@ class SoftyTheme extends Theme
     protected $axis_color       = '#000000';
     protected $grid_color       = '#CCCCCC';
 
-    function GetColorList() {
-        return array(
+    public function GetColorList() {
+        return [
             '#CFE7FB',
             '#F9D76F',
             '#B9D566',
@@ -39,10 +39,10 @@ class SoftyTheme extends Theme
             '#9D080D',
             '#A186BE',
             */
-        );
+        ];
     }
 
-    function SetupGraph($graph) {
+    public function SetupGraph($graph) {
 
         // graph
         $graph->SetFrame(false);
@@ -62,7 +62,7 @@ class SoftyTheme extends Theme
         $graph->xaxis->SetColor($this->axis_color, $this->font_color);    
         $graph->xaxis->SetTickSide(SIDE_BOTTOM);
         $graph->xaxis->SetLabelMargin(10);
-                
+
         // yaxis
         $graph->yaxis->title->SetColor($this->font_color);  
         $graph->yaxis->SetColor($this->axis_color, $this->font_color);    
@@ -112,7 +112,7 @@ class SoftyTheme extends Theme
     }
 
 
-    function SetupPieGraph($graph) {
+    public function SetupPieGraph($graph) {
 
         // graph
         $graph->SetFrame(false);
@@ -126,7 +126,7 @@ class SoftyTheme extends Theme
     }
 
 
-    function PreStrokeApply($graph) {
+    public function PreStrokeApply($graph) {
         if ($graph->legend->HasItems()) {
             $img = $graph->img;
             $graph->SetMargin($img->left_margin, $img->right_margin, $img->top_margin, $img->height * 0.25);
@@ -134,9 +134,9 @@ class SoftyTheme extends Theme
         }
     }
 
-    function ApplyPlot($plot) {
+    public function ApplyPlot($plot) {
 
-        switch (get_class($plot))
+        switch ($plot::class)
         { 
             case 'BarPlot':
             {

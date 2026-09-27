@@ -13,7 +13,7 @@ function make_unique($in_array)
   // Takes and array of strings in $in_array, finds all of the
   // unique values and returns them using $out_array.  
   // $out_array will have size between 1 and count($in_array).
-  $out_array = array();
+  $out_array = [];
 
   $in_array = array_values($in_array);
 
@@ -31,7 +31,7 @@ function make_unique($in_array)
 
 function make_new_zero_array($array_size)
 {
-  $out_array = array();
+  $out_array = [];
   for ($i = 0; $i < $array_size; $i++)
     $out_array[] = 0;
   return ($out_array);
@@ -39,7 +39,7 @@ function make_new_zero_array($array_size)
 
 function make_new_ones_array($array_size)
 {
-  $out_array = array();
+  $out_array = [];
   for ($i = 0; $i < $array_size; $i++)
     $out_array[] = 1;
   return ($out_array);
@@ -47,7 +47,7 @@ function make_new_ones_array($array_size)
 
 function make_new_index_array($array_size)
 {
-  $out_array = array();
+  $out_array = [];
   for ($i = 0; $i < $array_size; $i++)
     $out_array[] = $i;
   return ($out_array);
@@ -56,7 +56,7 @@ function make_new_index_array($array_size)
 function make_new_data_array_dx($x0, $x1, $dxN)
 {
   $N = ($x1 - $x0) * $dxN + 1;
-  $out_array = array();
+  $out_array = [];
   for ($i = 0; $i < $N; $i++)
     $out_array[] = $x0 + $i / $dxN;
   return ($out_array);
@@ -65,7 +65,7 @@ function make_new_data_array_dx($x0, $x1, $dxN)
 function make_new_data_array_N($x0, $x1, $N)
 {
   $dxN = 1.0 * ($N - 1) / ($x1 - $x0);
-  $out_array = array();
+  $out_array = [];
   for ($i = 0; $i < $N; $i++)
     $out_array[] = $x0 + $i / $dxN;
   return ($out_array);
@@ -109,20 +109,15 @@ function DateTimeCallback($aVal)
 function str_to_delay($in_str)
 {
   sscanf($in_str, "%d%s", $t_val, $t_type);
-  if ($t_type{
-    0} == "y")
+  if ($t_type[0] == "y")
     return ($t_val * 3600 * 24 * 365);
-  if ($t_type{
-    0} == "d")
+  if ($t_type[0] == "d")
     return ($t_val * 3600 * 24);
-  if ($t_type{
-    0} == "h")
+  if ($t_type[0] == "h")
     return ($t_val * 3600);
-  if ($t_type{
-    0} == "m")
+  if ($t_type[0] == "m")
     return ($t_val * 60);
-  if ($t_type{
-    0} == "s")
+  if ($t_type[0] == "s")
     return ($t_val);
 }
 
@@ -137,7 +132,7 @@ function reduce_array($in_array, $n)
     return ($in_array);
 
   $ratio = intval($n_in / $n);
-  $out_array = array();
+  $out_array = [];
   for ($i = 0; $i < $n_in; $i += $ratio) {
     $out_array[] = $in_array[$i];
   }
@@ -223,8 +218,8 @@ function linear_regression($x, $y)
 
   $sumx = 1.0 * array_sum($x);
   $sumy = 1.0 * array_sum($y);
-  $sumxx = 1.0 * array_sum(array_map("mult_ab", $x, $x));
-  $sumxy = 1.0 * array_sum(array_map("mult_ab", $x, $y));
+  $sumxx = 1.0 * array_sum(array_map(mult_ab(...), $x, $x));
+  $sumxy = 1.0 * array_sum(array_map(mult_ab(...), $x, $y));
 
   $slope = ($n * $sumxy -  $sumx * $sumy) / ($n * $sumxx - $sumx * $sumx);
 
@@ -236,7 +231,7 @@ function linear_regression($x, $y)
   $y_fit_min = $slope * $x_min + $y_intercept;
   $y_fit_max = $slope * $x_max + $y_intercept;
 
-  $output = array($y_fit_min, $y_fit_max, $slope, $y_intercept);
+  $output = [$y_fit_min, $y_fit_max, $slope, $y_intercept];
   return ($output);
 }
 
@@ -290,7 +285,7 @@ function find_y($x, $x_array, $y_array)
   $y_array = array_keys($xy_array);
 
   $ind = $x_array;
-  array_walk($ind, 'geq', $x);
+  array_walk($ind, geq(...), $x);
   $ind = array_filter($ind);
   $ind = array_keys($ind);
   $ind = $ind[0];
@@ -330,7 +325,7 @@ function range_SI_units($units_in, $n)
   if ($n == 0)
     return ($units_in);
 
-  $SI_prefix = array(
+  $SI_prefix = [
     8 => 'y',
     7 => 'z',
     6 => 'a',
@@ -348,7 +343,7 @@ function range_SI_units($units_in, $n)
     -6 => 'E',
     -7 => 'Z',
     -8 => 'Y'
-  );
+  ];
   $SI_flip = array_flip($SI_prefix);
 
   if (strlen($units_in) == 1)
@@ -405,7 +400,7 @@ function string_to_array($string, $separator, $value = NULL)
     $splitter = explode($separator, $string);
     $index = array_shift($splitter); // get first element
     $function = __FUNCTION__;
-    return array($index => $function(implode($separator, $splitter), $separator, $value));
+    return [$index => $function(implode($separator, $splitter), $separator, $value)];
   }
   return $value;
 }
@@ -475,7 +470,7 @@ function check_access($user_privs, $req_privs, $allowed_host_array)
   $have_priv = 0;
   $req_privs = explode(",", $req_privs);
   foreach ($req_privs as $priv) {
-    if (strpos($user_privs, $priv) === false)
+    if (!str_contains($user_privs, $priv))
       return (0);
     else
       for ($i = 0; $i < count($allowed_host_array[0]); $i++) {

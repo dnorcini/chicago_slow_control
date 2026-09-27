@@ -8,16 +8,16 @@ if (!$result) {
     die("Could not query the database <br>" . mysql_error());
 }
 // STEP 2 define php arrays here
-$component_name = array();
-$component_detector_parts = array();
-$component_material = array();
-$component_geant4_id = array();
-$component_cad_name = array();
-$component_volumn = array();
-$component_surface = array();
-$component_reference = array();
-$component_docdb = array();
-$component_note = array();
+$component_name = [];
+$component_detector_parts = [];
+$component_material = [];
+$component_geant4_id = [];
+$component_cad_name = [];
+$component_volumn = [];
+$component_surface = [];
+$component_reference = [];
+$component_docdb = [];
+$component_note = [];
 
 // STEP 3 assign sql results to php arrays
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {

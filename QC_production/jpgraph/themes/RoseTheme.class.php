@@ -10,8 +10,8 @@ class RoseTheme extends Theme
     private $axis_color       = '#CC0000';
     private $grid_color       = '#CC3333';
 
-    function GetColorList() {
-        return array(
+    public function GetColorList() {
+        return [
             '#FF0000',
             '#FF99FF',
             '#AA0099',
@@ -30,10 +30,10 @@ class RoseTheme extends Theme
             '#DD7711',
             '#AA6600',
             '#EE5500',
-        );
+        ];
     }
 
-    function SetupGraph($graph) {
+    public function SetupGraph($graph) {
 
         // graph
         /*
@@ -59,7 +59,7 @@ class RoseTheme extends Theme
         $graph->xaxis->SetColor($this->axis_color, $this->font_color);    
         $graph->xaxis->SetTickSide(SIDE_BOTTOM);
         $graph->xaxis->SetLabelMargin(10);
-                
+
         // yaxis
         $graph->yaxis->title->SetColor($this->font_color);  
         $graph->yaxis->SetColor($this->axis_color, $this->font_color);    
@@ -83,7 +83,7 @@ class RoseTheme extends Theme
     }
 
 
-    function SetupPieGraph($graph) {
+    public function SetupPieGraph($graph) {
 
         // graph
         $graph->SetFrame(false);
@@ -108,7 +108,7 @@ class RoseTheme extends Theme
     }
 
 
-    function PreStrokeApply($graph) {
+    public function PreStrokeApply($graph) {
         if ($graph->legend->HasItems()) {
             $img = $graph->img;
             $height = $img->height;
@@ -116,9 +116,9 @@ class RoseTheme extends Theme
         }
     }
 
-    function ApplyPlot($plot) {
+    public function ApplyPlot($plot) {
 
-        switch (get_class($plot))
+        switch ($plot::class)
         { 
             case 'GroupBarPlot':
             {

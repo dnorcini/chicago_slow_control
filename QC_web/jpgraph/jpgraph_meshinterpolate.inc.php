@@ -24,7 +24,7 @@ function doMeshInterpolate( &$aData, $aFactor ) {
  *
  */
 class MeshInterpolate {
-    private $data = array();
+    private $data = [];
 
    /**
     * Calculate the mid points of the given rectangle which has its top left
@@ -35,11 +35,11 @@ class MeshInterpolate {
     * @param $col Top left corner of square to work with
     * $param $aFactor In how many subsquare should we split this square. A value of 1 indicates that no action
     */
-    function IntSquare( $aRow, $aCol, $aFactor ) {
+    public function IntSquare( $aRow, $aCol, $aFactor ) {
         if ( $aFactor <= 1 )
             return;
 
-        $step = pow( 2, $aFactor-1 );
+        $step = 2 ** ($aFactor - 1);
 
         $v0 = $this->data[$aRow][$aCol];
         $v1 = $this->data[$aRow][$aCol + $step];
@@ -69,14 +69,14 @@ class MeshInterpolate {
      * @param  $aInNbr Interpolation factor
      * @return the interpolated matrice
      */
-    function Linear( &$aData, $aIntFactor ) {
-        $step = pow( 2, $aIntFactor-1 );
+    public function Linear( &$aData, $aIntFactor ) {
+        $step = 2 ** ($aIntFactor - 1);
 
         $orig_cols = count( $aData[0] );
         $orig_rows = count( $aData );
         // Number of new columns/rows
         // N = (a-1) * 2^(f-1) + 1
-        $p = pow( 2, $aIntFactor-1 );
+        $p = 2 ** ($aIntFactor - 1);
         $new_cols = $p * ( $orig_cols - 1 ) + 1;
         $new_rows = $p * ( $orig_rows - 1 ) + 1;
 

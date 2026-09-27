@@ -10,10 +10,10 @@ include("aux/make_data_plot.php");
 
 
 
-$plot_type_array = array(
+$plot_type_array = [
 			"DIEs",
 			"MODULE_SURFACE"
-			);
+			];
 
 
 if (empty($_SESSION['choose_type']))
@@ -39,7 +39,7 @@ echo ('</TABLE>');
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 
 //ADD ALL PARAMETERS TO SAME ARRAY
-$die_parameter_names = array(
+$die_parameter_names = [
     "Activation",
     "Temp",
     "Image1_Noise_L1",
@@ -90,9 +90,9 @@ $die_parameter_names = array(
     "Image6_Noise_Overscan_L2",
     "Image6_Noise_Overscan_U1",
     "Image6_Noise_Overscan_U2"
-);
+];
 
-    $module_surface_parameter_names = array(
+    $module_surface_parameter_names = [
     "Image1_High_Noise_A",
     "Image1_High_Noise_B",
     "Image1_High_Noise_C",
@@ -133,7 +133,7 @@ $die_parameter_names = array(
     "Image3_Low_Dark_Current_B",
     "Image3_Low_Dark_Current_C",
     "Image3_Low_Dark_Current_D",
-    );
+    ];
 
 if ($_SESSION['choose_type'] == "DIEs")
   {
@@ -149,8 +149,8 @@ if ($_SESSION['choose_type'] == "DIEs")
 	  die ("Could not query the database <br />" . mysql_error());
 	
 	$text_version = "";
-	$die_id  = array();
-	$value = array();
+	$die_id  = [];
+	$value = [];
 
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	  {
@@ -209,8 +209,8 @@ if ($_SESSION['choose_type'] == "MODULE_SURFACE")
 	  module_surface ("Could not query the database <br />" . mysql_error());
 	
 	$text_version = "";
-	$module_surface_id  = array();
-	$value = array();
+	$module_surface_id  = [];
+	$value = [];
 
 	while ($row = mysql_fetch_array($result, MYSQL_ASSOC))
 	  {

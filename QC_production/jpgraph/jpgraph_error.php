@@ -8,7 +8,7 @@
  // Copyright (c) Asial Corporation. All rights reserved.
  //========================================================================
  */
-   
+
 //===================================================
 // CLASS ErrorPlot
 // Description: Error plot with min/max value for
@@ -16,10 +16,10 @@
 //===================================================
 class ErrorPlot extends Plot {
     private $errwidth=2;
-    
+
     //---------------
     // CONSTRUCTOR
-    function __construct($datay,$datax=false) {
+    public function __construct($datay,$datax=false) {
         parent::__construct($datay,$datax);
         $this->numpoints /= 2;
     }
@@ -27,7 +27,7 @@ class ErrorPlot extends Plot {
     // PUBLIC METHODS
 
     // Gets called before any axis are stroked
-    function PreStrokeAdjust($graph) {
+    public function PreStrokeAdjust($graph) {
         if( $this->center ) {
             $a=0.5; $b=0.5;
             ++$this->numpoints;
@@ -40,7 +40,7 @@ class ErrorPlot extends Plot {
     }
 
     // Method description
-    function Stroke($img,$xscale,$yscale) {
+    public function Stroke($img,$xscale,$yscale) {
         $numpoints=count($this->coords[0])/2;
         $img->SetColor($this->color);
         $img->SetLineWeight($this->weight);
@@ -88,7 +88,7 @@ class ErrorLinePlot extends ErrorPlot {
     public $line=null;
     //---------------
     // CONSTRUCTOR
-    function __construct($datay,$datax=false) {
+    public function __construct($datay,$datax=false) {
         parent::__construct($datay,$datax);
         // Calculate line coordinates as the average of the error limits
         $n = count($datay);
@@ -100,13 +100,13 @@ class ErrorLinePlot extends ErrorPlot {
 
     //---------------
     // PUBLIC METHODS
-    function Legend($graph) {
+    public function Legend($graph) {
         if( $this->legend != "" )
         $graph->legend->Add($this->legend,$this->color);
         $this->line->Legend($graph);
     }
-     
-    function Stroke($img,$xscale,$yscale) {
+
+    public function Stroke($img,$xscale,$yscale) {
         parent::Stroke($img,$xscale,$yscale);
         $this->line->Stroke($img,$xscale,$yscale);
     }
@@ -122,8 +122,8 @@ class LineErrorPlot extends ErrorPlot {
     //---------------
     // CONSTRUCTOR
     // Data is (val, errdeltamin, errdeltamax)
-    function __construct($datay,$datax=false) {
-        $ly=array(); $ey=array();
+    public function __construct($datay,$datax=false) {
+        $ly=[]; $ey=[];
         $n = count($datay);
         if( $n % 3 != 0 ) {
             JpGraphError::RaiseL(4002);
@@ -140,13 +140,13 @@ class LineErrorPlot extends ErrorPlot {
 
     //---------------
     // PUBLIC METHODS
-    function Legend($graph) {
+    public function Legend($graph) {
         if( $this->legend != "" )
         $graph->legend->Add($this->legend,$this->color);
         $this->line->Legend($graph);
     }
-     
-    function Stroke($img,$xscale,$yscale) {
+
+    public function Stroke($img,$xscale,$yscale) {
         parent::Stroke($img,$xscale,$yscale);
         $this->line->Stroke($img,$xscale,$yscale);
     }
