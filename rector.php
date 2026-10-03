@@ -8,7 +8,6 @@ use Rector\Set\ValueObject\LevelSetList;
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/QC_production',
-        __DIR__ . '/QC_web',
     ])
     ->withSkip([
         __DIR__ . '/vendor',

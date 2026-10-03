@@ -7,7 +7,6 @@ session_start();
 $req_priv = "basic";
 include("db_login.php");
 include("page_setup.php");
-// include("aux/make_data_plot.php");
 
 echo ('<TABLE border="1" cellpadding="2" width=100%>');
 

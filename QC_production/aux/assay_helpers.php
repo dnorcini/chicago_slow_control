@@ -7,23 +7,11 @@ function post_esc($key)
 {
     return mysql_real_escape_string($_POST[$key] ?? "");
 }
-function slugify($s)
-{
-    $s = strtolower($s);
-    $s = preg_replace('/[^a-z0-9]+/', '_', $s);
-    $s = trim($s, '_');
-    if ($s === "") $s = "material";
-    if (strlen($s) > 40) $s = substr($s, 0, 40);
-    return $s;
-}
-
 // Recommended: stable per-assay table name
 function detail_table_name_from_row($assay_id, $material)
 {
     $id = (int)$assay_id;
     return "assay_results_" . $id; // stable even if Material changes
-    // Alternative (NOT recommended due to collisions):
-    // return "assay_results_" . slugify($material);
 }
 
 

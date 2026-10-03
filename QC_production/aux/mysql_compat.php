@@ -1,7 +1,7 @@
 <?php
 // Shim layer: ext/mysql was removed in PHP 7. This file re-implements the
 // small subset of mysql_*() functions this app calls, backed by mysqli,
-// so the ~70 call sites across QC_production/QC_web don't need to change
+// so the ~70 call sites across QC_production don't need to change
 // yet. It mirrors the old implicit-single-connection behavior: whichever
 // link mysql_connect() last opened is used by every other mysql_*() call.
 // A real conversion to mysqli_*()/PDO with per-call $link args is left

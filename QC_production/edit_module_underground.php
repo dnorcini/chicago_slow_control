@@ -382,50 +382,6 @@ function generate_dropdown($name, $options, $selected_value)
     }
     echo '</select>';
 }
-
-// File existence check
-function check_and_update_file_session($file_field, $upload_dir, $base_url, $module_underground_id)
-{
-    $upload_dir = $_SESSION['upload_dir'] ?? '';
-    $base_url = $_SESSION['base_url'] ?? '';
-
-    // Construct the file name based on the file field
-    $file_name = $file_field . '.png';
-    $file_path = $upload_dir . $file_name;
-
-    // Check if the file exists on the server
-    if (file_exists($file_path)) {
-        // If the file exists, set the session values
-        $_SESSION['file_url'][$file_field] = $base_url . '/' . $file_name;
-        $_SESSION['file_exists'][$file_field] = true;
-    } else {
-        // If the file does not exist, clear the session values
-        $_SESSION['file_exists'][$file_field] = false;
-        unset($_SESSION['file_url'][$file_field]);
-    }
-}
-
-// Log existence check
-function check_and_update_log_session($log_field, $upload_dir, $base_url, $module_underground_id)
-{
-    $upload_dir = $_SESSION['upload_dir'] ?? '';
-    $base_url = $_SESSION['base_url'] ?? '';
-
-    // Construct the log name based on the log field
-    $log_name = $log_field . '.log';
-    $log_path = $upload_dir . $log_name;
-
-    // Check if the log exists on the server
-    if (log_exists($log_path)) {
-        // If the log exists, set the session values
-        $_SESSION['log_url'][$log_field] = $base_url . '/' . $log_name;
-        $_SESSION['log_exists'][$log_field] = true;
-    } else {
-        // If the log does not exist, clear the session values
-        $_SESSION['log_exists'][$log_field] = false;
-        unset($_SESSION['log_url'][$log_field]);
-    }
-}
 ?>
 
 <!-- HTML Form for Data Input -->
