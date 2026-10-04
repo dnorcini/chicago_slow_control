@@ -2432,16 +2432,4 @@ function generate_dropdown($name, $options, $selected_value)
 <?php
 // script for navigating the input cells via arrow keys
 include("aux/table_navigation.php");
-
-
-if (isset($_POST['run_script'])) {
-    $id_safe = escapeshellarg($id);
-    $output = shell_exec("python3 energypeaks.py --id $id_safe 2>&1");
-}
 ?>
-
-<form method="post">
-    <button type="submit" name="run_script">Update Image</button>
-</form>
-
-<img src="<?php echo $base_url . 'Fe55Energy.png?v=' . time(); ?>" alt="Fe55Energy" width="800">

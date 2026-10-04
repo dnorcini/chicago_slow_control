@@ -49,7 +49,6 @@ echo ('</FORM>');
 // Navigation Links
 nav_link("CCD Quality Control", "ccd_summary.php", "basic");
 nav_link("MATERIAL ASSAYS", "list_material_assays.php", "basic");
-nav_link("DETECTOR", "edit_detector.php", "full");
 nav_link("Users", "users.php", "full");
 
 // Login/Logout

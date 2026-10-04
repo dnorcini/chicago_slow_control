@@ -44,15 +44,6 @@ $sections = [
         "detail_url"  => "edit_module_underground.php",
         "detail_priv" => "full",
     ],
-    [
-        "label"       => "Module Comparison",
-        "list_label"  => NULL,
-        "list_url"    => NULL,
-        "list_priv"   => NULL,
-        "detail_label" => "Surface vs. Underground Comparison",
-        "detail_url"  => "module_comparison.php",
-        "detail_priv" => "full",
-    ],
 ];
 
 echo ('<br>');
