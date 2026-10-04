@@ -67,9 +67,9 @@ QC_Production/backup2lyon.sh
 *.bcf
 QC_production/uploads/edit_assay/*
 
-# composer dependencies (dev tools only)
-vendor/
-
 # runtime temp files and DB dumps
 QC_production/tmp/
 /*.sql
+
+# real DB credentials (template: QC_production/db_config.example.php)
+QC_production/db_config.php
