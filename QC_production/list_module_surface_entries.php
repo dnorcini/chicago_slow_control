@@ -70,22 +70,7 @@ else if ($_SESSION['choose_type'] == "MODULE_SURFACEs") {
         $current_location = ($loc_res && mysql_num_rows($loc_res) > 0) ? mysql_fetch_assoc($loc_res)['location'] : '';
 
         // Logic to calculate tallies based on grades
-        $tallies = "";
-
-        if (!empty($grade_A) && !empty($grade_B) && !empty($grade_C) && !empty($grade_D)) {
-            if ($grade_A == "Science" && $grade_B == "Science" && $grade_C == "Science" && $grade_D == "Science") {
-                $tallies = "Charizard";
-            }
-            elseif (($grade_A == "Science" && $grade_B == "Science") || ($grade_C == "Science" && $grade_D == "Science")) {
-                $tallies = "Charmeleon";
-            }
-            elseif ($grade_A == "Science" || $grade_B == "Science" || $grade_C == "Science" || $grade_D == "Science") {
-                $tallies = "Charmander";
-            }
-            else {
-                $tallies = "Geodude";
-            }
-        }
+        $tallies = grade_tally([$grade_A, $grade_B, $grade_C, $grade_D]);
 
         // Determine the background color based on $tallies value
         $bg_color = "";

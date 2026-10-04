@@ -1040,7 +1040,7 @@ function generate_dropdown($name, $options, $selected_value)
                     <td align="center"><?php echo htmlspecialchars(${'image31_high_res_e_' . $amp} ?? ''); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image31_high_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image31_high_dark_current_' . $amp}; ?>"></td>
-                    <td align="center"><?php echo number_format(${'image31_high_dark_current_' . $amp} / ${'image31_high_gain_' . $amp} * 86400 / 341, 2); ?></td>
+                    <td align="center"><?php echo dark_current_per_day(${'image31_high_dark_current_' . $amp}, ${'image31_high_gain_' . $amp}, 341); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image31_high_comments_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image31_high_reference_' . $amp}; ?>"></td>
                 </tr>
@@ -1121,7 +1121,7 @@ function generate_dropdown($name, $options, $selected_value)
                     <td align="center"><?php echo htmlspecialchars(${'image32_high_res_e_' . $amp} ?? ''); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_gain_<?php echo $amp; ?>" value="<?php echo ${'image32_high_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image32_high_dark_current_' . $amp}; ?>"></td>
-                    <td align="center"><?php echo number_format(${'image32_high_dark_current_' . $amp} / ${'image32_high_gain_' . $amp} * 86400 / 654, 2); ?></td>
+                    <td align="center"><?php echo dark_current_per_day(${'image32_high_dark_current_' . $amp}, ${'image32_high_gain_' . $amp}, 654); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_comments_<?php echo $amp; ?>" value="<?php echo ${'image32_high_comments_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_high_reference_<?php echo $amp; ?>" value="<?php echo ${'image32_high_reference_' . $amp}; ?>"></td>
                 </tr>
@@ -1321,7 +1321,7 @@ function generate_dropdown($name, $options, $selected_value)
                     <td align="center"><?php echo htmlspecialchars(${'image31_low_res_e_' . $amp} ?? ''); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image31_low_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image31_low_dark_current_' . $amp}; ?>"></td>
-                    <td align="center"><?php echo number_format(${'image31_low_dark_current_' . $amp} / ${'image31_low_gain_' . $amp} * 86400 / 371 / 10, 2); ?></td>
+                    <td align="center"><?php echo dark_current_per_day(${'image31_low_dark_current_' . $amp}, ${'image31_low_gain_' . $amp}, 371 * 10); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image31_low_comments_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image31_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image31_low_reference_' . $amp}; ?>"></td>
                 </tr>
@@ -1404,7 +1404,7 @@ function generate_dropdown($name, $options, $selected_value)
                     <td align="center"><?php echo htmlspecialchars(${'image32_low_res_e_' . $amp} ?? ''); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_gain_<?php echo $amp; ?>" value="<?php echo ${'image32_low_gain_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_dark_current_<?php echo $amp; ?>" value="<?php echo ${'image32_low_dark_current_' . $amp}; ?>"></td>
-                    <td align="center"><?php echo number_format(${'image32_low_dark_current_' . $amp} / ${'image32_low_gain_' . $amp} * 86400 / 684 / 10, 2); ?></td>
+                    <td align="center"><?php echo dark_current_per_day(${'image32_low_dark_current_' . $amp}, ${'image32_low_gain_' . $amp}, 684 * 10); ?></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_comments_<?php echo $amp; ?>" value="<?php echo ${'image32_low_comments_' . $amp}; ?>"></td>
                     <td align="center"><input type="text" style="width: 90%;" name="image32_low_reference_<?php echo $amp; ?>" value="<?php echo ${'image32_low_reference_' . $amp}; ?>"></td>
                 </tr>
