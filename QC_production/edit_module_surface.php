@@ -73,7 +73,7 @@ if (isset($_POST['first'])) {
     $_SESSION['choosen_module_surface'] = 1;
 }
 if (isset($_POST['last'])) {
-    include("aux/get_last_die_id.php");
+    include("aux/get_last_table_id.php");
     $_SESSION['choosen_module_surface'] = $last_id;
 }
 if (isset($_POST['prev'])) {
@@ -84,7 +84,7 @@ if (isset($_POST['next'])) {
 }
 
 // Ensure we never go below 1 or above the last MODULE_SURFACE ID
-include("aux/get_last_die_id.php");
+include("aux/get_last_table_id.php");
 if ($_SESSION['choosen_module_surface'] < 1) {
     $_SESSION['choosen_module_surface'] = 1;
 }

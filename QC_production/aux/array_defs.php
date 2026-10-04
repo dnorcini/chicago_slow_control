@@ -63,7 +63,6 @@ $image_fields = [
     'tracks_',
     'noise_',
     'defects_',
-    'saturation_',
     'sharpness_tracks_',
     'cti_code_',
     'cti_visual_',
@@ -72,7 +71,6 @@ $image_fields = [
     'region_defect_',
     'noise_overscan_',
     'res_',
-    'res_e_',
     'gain_',
     'dark_current_',
     'column_defects_',
@@ -81,7 +79,6 @@ $image_fields = [
     'peak2_',
     'sigma_',
     'front_',
-    'testxxx_',
     'cti_back_left_mean_',
     'cti_back_left_rms_',
     'cti_back_left_skewness_',
@@ -102,7 +99,7 @@ $image_fields = [
     'crosstalk_D',
 ];
 
-$image_numbers = ["1_", "2_", "3_", "4_", "5_", "6_", "7_", "98_", "99_"];
+$image_numbers = ["1_", "2_", "3_", "4_", "5_", "6_"];
 $image_numbers_low = ["1_low_", "2_low_", "3_low_", "31_low_", "32_low_", "4_low_", "5_low_", "6_low_", "7_low_"];
 $image_numbers_high = ["1_high_", "2_high_", "3_high_", "31_high_", "32_high_", "4_high_", "5_high_", "6_high_"];
 

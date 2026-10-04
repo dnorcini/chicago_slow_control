@@ -42,12 +42,12 @@
 
 
 <script>
-    (function() {
+    // Runs after the page is parsed: this file is included above the sections it controls.
+    document.addEventListener('DOMContentLoaded', function() {
         const STORAGE_KEY = "visibleSections:v1"; // bump version if you change keys
         const sectionBlocks = Array.from(document.querySelectorAll('.section-block[data-section]'));
         const panel = document.getElementById('section-visibility-panel');
         const grid = document.getElementById('section-checkboxes');
-        const toggleAll = document.getElementById('toggle-all');
         const btnCheckAll = document.getElementById('check-all');
         const btnUncheckAll = document.getElementById('uncheck-all');
 
@@ -107,16 +107,6 @@
                 const show = !!visible[s.key];
                 s.el.classList.toggle('hidden-section', !show);
             }
-            updateMasterCheckbox();
-        }
-
-        function updateMasterCheckbox() {
-            const states = sections.map(s => !!visible[s.key]);
-            const all = states.every(Boolean);
-            const none = states.every(v => !v);
-            // Use the "indeterminate" visual state when mixed
-            toggleAll.indeterminate = !all && !none;
-            toggleAll.checked = all && !toggleAll.indeterminate;
         }
 
         function saveVisibility() {
@@ -133,16 +123,6 @@
                 applyVisibility();
                 saveVisibility();
             }
-        });
-
-        // Master toggle: tri-state aware
-        toggleAll.addEventListener('change', function() {
-            const desired = toggleAll.checked; // when user clicks, checked means "show all"
-            for (const s of sections) visible[s.key] = desired;
-            // Reflect in individual cbs
-            grid.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => cb.checked = desired);
-            applyVisibility();
-            saveVisibility();
         });
 
         // Optional: explicit buttons
@@ -163,7 +143,5 @@
         // Initial paint
         applyVisibility();
 
-        // (Nice to have) Keep scroll position stable if a section collapses/expands near the top
-        // The previous “remember scrollY across reloads” you added will still work fine with this.
-    })();
+    });
 </script>

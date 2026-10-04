@@ -22,7 +22,6 @@ $req_priv = "full";
 include("db_login.php");
 include("page_setup.php");
 include("aux/array_defs.php"); // Import all array definitions
-include("aux/table_navigation.php");
 
 $table = "MODULE_UNDERGROUND2";
 
@@ -71,7 +70,7 @@ if (isset($_POST['first'])) {
     $_SESSION['choosen_module_underground'] = 1;
 }
 if (isset($_POST['last'])) {
-    include("aux/get_last_die_id.php");
+    include("aux/get_last_table_id.php");
     $_SESSION['choosen_module_underground'] = $last_id;
 }
 if (isset($_POST['prev'])) {
@@ -82,7 +81,7 @@ if (isset($_POST['next'])) {
 }
 
 // Ensure we never go below 1 or above the last MODULE_UNDERGROUND ID
-include("aux/get_last_die_id.php");
+include("aux/get_last_table_id.php");
 if ($_SESSION['choosen_module_underground'] < 1) {
     $_SESSION['choosen_module_underground'] = 1;
 }
@@ -149,13 +148,19 @@ if (isset($_POST['id'])) {
     $file_fields[] = 'psd_high_file_D';
 
 
-    // Add image fields dynamically for image1 to 99
-    for ($i = 1; $i <= 100; $i++) {
-        $file_fields[] = 'image' . $i . '_low_file';
-        $log_fields[] = 'image' . $i . '_low_log';
-        $file_fields[] = 'image' . $i . '_high_file';
-        $log_fields[] = 'image' . $i . '_high_log';
-    }
+    // Image upload slots, as named by the file inputs in the forms below
+    $file_fields = array_merge($file_fields, [
+        'image1_high_file', 'image2_high_file', 'image4_high_file',
+        'image31_high_file', 'image31_low_file', 'image32_high_file', 'image32_low_file',
+        'image41_low_file', 'image42_low_file', 'image43_low_file', 'image44_low_file',
+        'image52_low_file', 'image53_low_file', 'image54_low_file', 'image55_low_file',
+        'image62_low_file', 'image63_low_file', 'image64_low_file',
+        'image72_low_file', 'image73_low_file', 'image74_low_file',
+    ]);
+    $log_fields = array_merge($log_fields, [
+        'image2_high_log', 'image4_high_log', 'image4_low_log', 'image42_low_log',
+        'image5_low_log', 'image55_low_log', 'image6_low_log', 'image7_low_log',
+    ]);
 
     // Ensure the session arrays are initialized if not already
     $_SESSION['file_url_' . $module_underground_id] ??= [];

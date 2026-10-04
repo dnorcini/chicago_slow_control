@@ -39,7 +39,7 @@ if (isset($_POST['first']))
   $_SESSION['choosen_ccd'] = 1;
 
 if (isset($_POST['last'])) {
-  include("aux/get_last_ccd_id.php");
+  include("aux/get_last_table_id.php");
   $_SESSION['choosen_ccd'] = $last_id;
 }
 if (isset($_POST['prev']))
@@ -48,7 +48,7 @@ if (isset($_POST['prev']))
 if (isset($_POST['next']))
   $_SESSION['choosen_ccd'] += 1;
 
-include("aux/get_last_ccd_id.php");
+include("aux/get_last_table_id.php");
 if ($_SESSION['choosen_ccd'] < 1)
   $_SESSION['choosen_ccd'] = 1;
 
@@ -681,18 +681,6 @@ echo ('</TABLE>');
 echo ('</div>');
 echo ('<BR>');
 echo ('<BR>');
-
-/////////////////////////////////////////////////////////////
-// file upload and download
-//include("file_upload_download/file_logic.php");
-
-//echo('<strong> Files upload and download </strong>');
-//echo ('<BR>');
-//echo ('<FORM action="'.$_SERVER['PHP_SELF'].'" method="post" enctype="multipart/form-data">');
-//echo ('Upload config file (.ini)');
-//echo ('<input type="file" name="myfile">');
-//echo ('<input type="submit" name="upload">');
-//echo ('</FORM>');
 
 /////////////////////////////////////////////////////////////
 echo ('<div class="section-block" data-section="notes" data-label="Notes">');

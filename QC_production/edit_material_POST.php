@@ -186,7 +186,6 @@ if (!empty($_POST['detail_action']) && !empty($_POST['detail_table_name'])) {
     $action = $_POST['detail_action'];
 
     $nu1  = post_esc("detail_nuclide_1");
-    $nu2  = post_esc("detail_nuclide_2");
     $type = post_esc("detail_type");
     $note = post_esc("detail_note");
 
@@ -273,98 +272,6 @@ LIMIT 1
         if (!$r) die("Could not delete detail row: " . mysql_error() . "<BR>" . h($q));
     }
 }
-// --------------------
-// HANDLE POST: Upload files for an assay (any extension)
-// --------------------
-if (!empty($_POST['assay_action']) && $_POST['assay_action'] === "upload_files" && isset($_POST['assay_id'])) {
-
-    $assay_id = (int)$_POST['assay_id'];
-    $upload_dir = "/var/www/html/QC_production/uploads/edit_assay/";
-
-    if (!is_dir($upload_dir) || !is_writable($upload_dir)) {
-        die("Upload directory missing or not writable: " . h($upload_dir));
-    }
-    if (!isset($_FILES['assay_files'])) {
-        die("No files uploaded.");
-    }
-
-    $max_bytes = 30 * 1024 * 1024; // 30 MB per file
-    $names = $_FILES['assay_files']['name'];
-    $tmps  = $_FILES['assay_files']['tmp_name'];
-    $errs  = $_FILES['assay_files']['error'];
-    $sizes = $_FILES['assay_files']['size'];
-    $types = $_FILES['assay_files']['type'];
-
-    if (!is_array($names)) {
-        $names = [$names];
-        $tmps  = [$tmps];
-        $errs  = [$errs];
-        $sizes = [$sizes];
-        $types = [$types];
-    }
-
-    $skipped = [];
-    for ($i = 0; $i < count($names); $i++) {
-        if ($names[$i] === '' && (int)$errs[$i] === UPLOAD_ERR_NO_FILE) {
-            continue;
-        }
-        if ((int)$errs[$i] !== UPLOAD_ERR_OK) {
-            $skipped[] = $names[$i] . " (upload error " . (int)$errs[$i] . ")";
-            continue;
-        }
-        if ((int)$sizes[$i] > $max_bytes) {
-            $skipped[] = $names[$i] . " (too large)";
-            continue;
-        }
-
-        $orig_name = $names[$i];
-        $ext = strtolower(pathinfo($orig_name, PATHINFO_EXTENSION));
-        if ($ext === '') {
-            $ext = 'bin';
-        }
-        // Restrict extension to safe chars for stored name
-        $ext = preg_replace('/[^a-z0-9]/', '', $ext) ?: 'bin';
-
-        $stored = "assay_" . $assay_id . "_" . time() . "_" . mt_rand(10000, 99999) . "." . $ext;
-        $dest = $upload_dir . $stored;
-
-        if (!is_uploaded_file($tmps[$i])) {
-            $skipped[] = $orig_name . " (not an uploaded file)";
-            continue;
-        }
-        if (!move_uploaded_file($tmps[$i], $dest)) {
-            $skipped[] = $orig_name . " (move failed)";
-            continue;
-        }
-
-        $orig_esc   = mysql_real_escape_string($orig_name);
-        $stored_esc = mysql_real_escape_string($stored);
-        $ext_esc    = mysql_real_escape_string($ext);
-        $mime_esc   = mysql_real_escape_string($types[$i]);
-        $size_int   = (int)$sizes[$i];
-
-        $q = "
-            INSERT INTO `assay_files`
-                (`Assay_ID`,`Orig_Name`,`Stored_Name`,`Ext`,`Mime`,`Size_Bytes`,`Uploaded_At`)
-            VALUES
-                ($assay_id,'$orig_esc','$stored_esc','$ext_esc','$mime_esc',$size_int," . time() . ")
-        ";
-        $r = mysql_query($q);
-        if (!$r) {
-            @unlink($dest);
-            die("Could not insert assay_files: " . mysql_error() . "<BR>" . h($q));
-        }
-    }
-
-    if (!empty($skipped)) {
-        echo '<div style="border:1px solid #ccc; padding:6px; margin:6px 0;">'
-            . '<b>Some files were skipped:</b><br>'
-            . h(implode("; ", $skipped))
-            . '</div>';
-    }
-}
-
-
 // --------------------
 // HANDLE POST: Delete an uploaded file
 // --------------------
