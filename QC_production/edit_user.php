@@ -26,8 +26,6 @@ if ((!str_contains($_SESSION['privileges'], "admin")))
 
 if (isset($_POST['new_user_name']) && (str_contains($_SESSION['privileges'], "admin")))
 {
-    mysql_close($connection);
-    include("master_db_login.php");
     if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
 	$_POST['new_user_name'] = addslashes($_POST['new_user_name']);
     
@@ -40,8 +38,6 @@ if (isset($_POST['new_user_name']) && (str_contains($_SESSION['privileges'], "ad
 
 if (isset($_POST['change']))
 {
-    mysql_close($connection);
-    include("master_db_login.php");
     if (true) // magic_quotes_gpc removed in PHP 5.4+; addslashes() always ran
     {
 	$_POST['realname'] = addslashes($_POST['realname']);

@@ -15,8 +15,6 @@ if ((isset($_POST['del_user'])) && (str_contains($_SESSION['privileges'], "admin
   {
     if (isset($_POST['really_del']))
       {
-	mysql_close($connection);
-	include("master_db_login.php");
 
 	$query = "DELETE FROM `users` WHERE `user_name` = \"".$_POST['del_user']."\"  LIMIT 1";
 	$result = mysql_query($query);

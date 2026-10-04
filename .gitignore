@@ -65,4 +65,11 @@ QC_Production/backup2lyon.sh
 *.log
 *.seq
 *.bcf
-QC_production/uploads/edit_assay/*vendor/
+QC_production/uploads/edit_assay/*
+
+# composer dependencies (dev tools only)
+vendor/
+
+# runtime temp files and DB dumps
+QC_production/tmp/
+/*.sql
