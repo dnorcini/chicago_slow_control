@@ -57,7 +57,6 @@ if (isset($_POST['new'])) {
     $_SESSION['choosen_module_underground'] = $last_id;
 
     // Reset only the problematic section when creating a new module_underground
-    $check_A = $check_B = $check_C = $check_D = 0;
     $grade_A = $grade_B = $grade_C = $grade_D = '';
     $notes_A = $notes_B = $notes_C = $notes_D = '';
     // $channel_A = $channel_B = $channel_C = $channel_D = '';
@@ -250,10 +249,6 @@ if (isset($_POST['id'])) {
     $fields = [
         'name',
         'status',
-        'pitch_adaptor_id',
-        'humidity',
-        'radon',
-        'activation',
         'die_A',
         'die_B',
         'die_C',
@@ -295,30 +290,16 @@ if (isset($_POST['id'])) {
         'channel_D',
         'image5_low_crosstalk_comments'
     ];
-    $checkboxes = ['check_A', 'check_B', 'check_C', 'check_D'];
-    $fields = array_merge($fields, $checkboxes);
     $fields = array_merge($fields, $trace_fields_high);
     $fields = array_merge($fields, $image_fields);
-
-    // Iterate over each checkbox to set them to 0 if not set in POST
-    foreach ($checkboxes as $checkbox) {
-        $_POST[$checkbox] ??= 0;
-    }
 
     // Initialize an array to hold the parts of the query
     $query_parts = [];
 
-    // Loop through regular form fields and construct query parts
+    // Loop through regular form fields and construct query parts (empty values are skipped)
     foreach ($fields as $field) {
-        // Special handling for checkboxes
-        if (in_array($field, $checkboxes)) {
-            // Include the checkbox even if its value is 0
+        if (array_key_exists($field, $_POST) && !empty($_POST[$field])) {
             $query_parts[] = "`$field` = '" . mysql_real_escape_string($_POST[$field]) . "'";
-        } else {
-            // For other fields, keep the existing condition to avoid empty values
-            if (array_key_exists($field, $_POST) && !empty($_POST[$field])) {
-                $query_parts[] = "`$field` = '" . mysql_real_escape_string($_POST[$field]) . "'";
-            }
         }
     }
 
@@ -429,20 +410,6 @@ function generate_dropdown($name, $options, $selected_value)
                 </td>
             </tr>
             <tr>
-                <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
-                    Pitch adaptor ID: <input type="text" name="pitch_adaptor_id" value="<?php echo $pitch_adaptor_id; ?>" size="20">
-                </td>
-                <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
-                    UW Activation [days]: <input type="text" name="activation" value="<?php echo $activation; ?>" size="10">
-                </td>
-            </tr>
-            <tr>
-                <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
-                    Packaging humidity [%]: <input type="text" name="humidity" value="<?php echo $humidity; ?>" size="10">
-                </td>
-                <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
-                    Packaging radon [Bq/m^3]: <input type="text" name="radon" value="<?php echo $radon; ?>" size="10">
-                </td>
                 <td align="left" colspan="1" style="width: 300px; white-space: nowrap;">
                     Current Location: <?php echo htmlspecialchars($current_location ?? ''); ?>
                 </td>
@@ -556,10 +523,8 @@ function generate_dropdown($name, $options, $selected_value)
                     <?php generate_dropdown('grade_A', $grade_array, $grade_A); ?>
                     <!-- <?php echo "Matched?"; ?> -->
                     <!-- <?php generate_dropdown('defects_A', $yes_no_blank_array, $defects_A); ?> -->
-                    <!-- <input type="checkbox" name="check_A" value="1" <?php echo ($check_A == 1) ? 'checked' : ''; ?>> -->
                 </td>
                 <td style="width: 5%;">
-                    <input type="hidden" name="check_A" value="0">
                     <?php echo "ch"; ?>
                     <?php generate_dropdown('channel_A', $channels, $channel_A); ?>
 
@@ -570,11 +535,9 @@ function generate_dropdown($name, $options, $selected_value)
                     <?php generate_dropdown('grade_B', $grade_array, $grade_B); ?>
                     <!-- <?php echo "Matched?"; ?> -->
                     <!-- <?php generate_dropdown('defects_B', $yes_no_blank_array, $defects_B); ?> -->
-                    <!-- <input type="checkbox" name="check_B" value="1" <?php echo ($check_B == 1) ? 'checked' : ''; ?>> -->
 
                 </td>
                 <td style="width: 5%;">
-                    <input type="hidden" name="check_B" value="0">
 
                     <?php echo "ch"; ?>
                     <?php generate_dropdown('channel_B', $channels, $channel_B); ?>
@@ -586,11 +549,9 @@ function generate_dropdown($name, $options, $selected_value)
                     <?php generate_dropdown('grade_C', $grade_array, $grade_C); ?>
                     <!-- <?php echo "Matched?"; ?> -->
                     <!-- <?php generate_dropdown('defects_C', $yes_no_blank_array, $defects_C); ?> -->
-                    <!-- <input type="checkbox" name="check_C" value="1" <?php echo ($check_C == 1) ? 'checked' : ''; ?>> -->
 
                 </td>
                 <td style="width: 5%;">
-                    <input type="hidden" name="check_C" value="0">
                     <?php echo "ch"; ?>
                     <?php generate_dropdown('channel_C', $channels, $channel_C); ?>
 
@@ -601,10 +562,8 @@ function generate_dropdown($name, $options, $selected_value)
                     <?php generate_dropdown('grade_D', $grade_array, $grade_D); ?>
                     <!-- <?php echo "Matched?"; ?> -->
                     <!-- <?php generate_dropdown('defects_D', $yes_no_blank_array, $defects_D); ?> -->
-                    <!-- <input type="checkbox" name="check_D" value="1" <?php echo ($check_D == 1) ? 'checked' : ''; ?>> -->
                 </td>
                 <td style="width: 5%;">
-                    <input type="hidden" name="check_D" value="0">
                     <?php echo "ch"; ?>
                     <?php generate_dropdown('channel_D', $channels, $channel_D); ?>
 

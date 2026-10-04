@@ -21,10 +21,6 @@ $row = mysql_fetch_assoc($result);
 // Fetching all regular fields
 $name = $row['Name'] ?? "";
 $status = $row['Status'] ?? "";
-$pitch_adaptor_id = $row['Pitch_Adaptor_ID'] ?? "";
-$activation = $row['Activation'] ?? "";
-$humidity = $row['Humidity'] ?? "";
-$radon = $row['Radon'] ?? "";
 $die_A = $row['Die_A'] ?? "";
 $die_B = $row['Die_B'] ?? "";
 $die_C = $row['Die_C'] ?? "";
@@ -49,10 +45,6 @@ $notes_A = $row['Notes_A'] ?? "";
 $notes_B = $row['Notes_B'] ?? "";
 $notes_C = $row['Notes_C'] ?? "";
 $notes_D = $row['Notes_D'] ?? "";
-$check_A = $row['Check_A'] ?? "";
-$check_B = $row['Check_B'] ?? "";
-$check_C = $row['Check_C'] ?? "";
-$check_D = $row['Check_D'] ?? "";
 $reviewer = $row['Reviewer'] ?? "";
 $notes = $row['Notes'] ?? "";
 $tester = $row['Tester'] ?? "";
@@ -76,7 +68,6 @@ foreach ($ccds as $amp) {
     ${'trace_high_comments_' . $amp} = $row['Trace_High_Comments_' . $amp] ?? "";
     ${'trace_high_reference_' . $amp} = $row['Trace_High_Reference_' . $amp] ?? "";
 }
-//$trace_file = isset($row['Trace_File']) ? $row['Trace_File'] : "";
 //$trace_log = isset($row['Trace_Log']) ? $row['Trace_Log'] : "";
 $image5_low_crosstalk_AB = $row['Image5_Low_Crosstalk_AB'] ?? "";
 $image5_low_crosstalk_AC = $row['Image5_Low_Crosstalk_AC'] ?? "";
@@ -133,9 +124,6 @@ foreach ($image_numbers_low as $img) {
         ${'image' . $img . 'ctix_comments_' . $amp} = $row['Image' . $capitalized_img . 'CTIx_Comments_' . $amp] ?? "";
         ${'image' . $img . 'ctiy_comments_' . $amp} = $row['Image' . $capitalized_img . 'CTIy_Comments_' . $amp] ?? "";
     }
-
-    // Handling file field separately if needed
-    ${'image' . $img . '_file'} = $row['Image' . $capitalized_img . '_File'] ?? "";
 }
 
 foreach ($image_numbers_high as $img) {
@@ -163,9 +151,6 @@ foreach ($image_numbers_high as $img) {
         ${'image' . $img . 'sigma_' . $amp} = $row['Image' . $capitalized_img . 'Sigma_' . $amp] ?? "";
         ${'image' . $img . 'front_' . $amp} = $row['Image' . $capitalized_img . 'Front_' . $amp] ?? "";
     }
-
-    // Handling file field separately if needed
-    ${'image' . $img . '_file'} = $row['Image' . $capitalized_img . '_File'] ?? "";
 }
 
 if (isset($row['Last_Update'])) {

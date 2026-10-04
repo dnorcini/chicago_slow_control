@@ -55,7 +55,6 @@ foreach ($amplifiers as $amp) {
     ${'trace_comments_' . $amp} = $row['Trace_Comments_' . $amp] ?? "";
     ${'trace_reference_' . $amp} = $row['Trace_Reference_' . $amp] ?? "";
 }
-//$trace_file = isset($row['Trace_File']) ? $row['Trace_File'] : "";
 //$trace_log = isset($row['Trace_Log']) ? $row['Trace_Log'] : "";
 
 // Image fields
@@ -77,7 +76,6 @@ foreach ($image_numbers as $img) {
         ${'image' . $img . 'gain_' . $amp} = $row['Image' . $img . 'Gain_' . $amp] ?? "";
         ${'image' . $img . 'dark_current_' . $amp} = $row['Image' . $img . 'Dark_Current_' . $amp] ?? "";
     }
-    //${'image' . $img . '_file'} = isset($row['Image' . $img . '_File]) ? $row['Image' . $img . '_File'] : "";
 }
 
 if (isset($row['Last_Update'])) {

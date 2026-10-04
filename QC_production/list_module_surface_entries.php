@@ -46,7 +46,6 @@ else if ($_SESSION['choose_type'] == "MODULE_SURFACEs") {
 
     echo ('<TR>');
     echo ('<TH align="left">MODULE_SURFACE ID</TH>');
-    echo ('<TH align="left">Pitch Adaptor ID </TH>');
     echo ('<TH align="left">ACM</TH>');
     echo ('<TH align="left">Test Date</TH>');
     echo ('<TH align="left">Module Name</TH>');
@@ -114,7 +113,6 @@ else if ($_SESSION['choose_type'] == "MODULE_SURFACEs") {
         echo ('</FORM>');
         echo ('</TD>');
 
-        echo ('<TD align="left">' . htmlspecialchars($pitch_adaptor_id ?? '') . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($ACM ?? '') . '</TD>');    
         echo ('<TD align="left">' . htmlspecialchars($test_date ?? '') . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($name ?? '') . '</TD>');

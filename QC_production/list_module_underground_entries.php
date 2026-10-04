@@ -46,7 +46,6 @@ if ($_SESSION['choose_type'] == "Summary") {
 
     echo ('<TR>');
     echo ('<TH align="left">MODULE_UNDERGROUND ID</TH>');
-    echo ('<TH align="left">Pitch Adaptor ID </TH>');
     echo ('<TH align="left">ACM</TH>');
     echo ('<TH align="left">Test Date</TH>');
     echo ('<TH align="left">Module Name</TH>');
@@ -110,7 +109,6 @@ if ($_SESSION['choose_type'] == "Summary") {
         echo ('</FORM>');
         echo ('</TD>');
 
-        echo ('<TD align="left">' . htmlspecialchars($pitch_adaptor_id ?? '') . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($ACM ?? '') . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($test_date ?? '') . '</TD>');
         echo ('<TD align="left">' . htmlspecialchars($name ?? '') . '</TD>');

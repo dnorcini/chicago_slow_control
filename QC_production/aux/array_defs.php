@@ -85,7 +85,6 @@ $image_fields = [
     'sigma_',
     'front_',
     'testxxx_',
-    'file_',
     'cti_back_left_mean_',
     'cti_back_left_rms_',
     'cti_back_left_skewness_',
