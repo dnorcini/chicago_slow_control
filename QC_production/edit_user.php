@@ -105,17 +105,6 @@ if (isset($_POST['change']))
 	  }
       }
     
-    if (!empty($_POST['sms']))
-      {
-	if (strcmp($_POST['sms'], $users_sms[$edit_user]) != 0)
-	  {
-	    $query = "UPDATE `users` SET `sms` = \"".$_POST['sms']."\" WHERE `user_name` = \"".$edit_user."\""; 
-	    $result = mysql_query($query);
-	    if (!$result)
-	      die ("Could not query the database <br />" . mysql_error());
-	  }
-      }
-    
     if (!empty($_POST['privileges']))
       {
 	$_POST['privileges'] = implode(",",$_POST['privileges']);

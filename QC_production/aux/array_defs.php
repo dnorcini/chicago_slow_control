@@ -2,20 +2,17 @@
 // array_defs.php
 // D.Norcini, Hopkins, 2024
 
-// Privilege arrays dynamically populated from DB
+// Privilege names populated from DB
 $privilege_array = [];
-$allowed_host_array = [];
-$query = "SELECT `name`, `allowed_host` FROM `user_privileges` ORDER BY `name`";
+$query = "SELECT `name` FROM `user_privileges` ORDER BY `name`";
 $result = mysql_query($query);
 if (!$result) {
     die("Could not query the database for user privileges <br>" . mysql_error());
 }
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
     $privilege_array[] = $row['name'];
-    $allowed_host_array[] = $row['allowed_host'];
 }
-$allowed_host_array = [$privilege_array, $allowed_host_array];
-$privilege_array = make_unique($privilege_array);
+$privilege_array = array_values(array_unique($privilege_array));
 
 // Define status options
 $status_array = ['Not Tested', 'Tested', 'Failed'];

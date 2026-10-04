@@ -22,8 +22,7 @@ include("aux/guest_login.php");
 
 function nav_link($label, $file, $required_priv)
 {
-    global $allowed_host_array;
-    if (check_access($_SESSION['privileges'], $required_priv, $allowed_host_array)) {
+    if (check_access($_SESSION['privileges'], $required_priv)) {
         $is_current = str_contains($_SERVER['PHP_SELF'], $file);
         echo ('<TH>');
         if ($is_current) {
@@ -84,7 +83,7 @@ echo ('</TR>');
 echo ('</TABLE>');
 echo ('</font>');
 
-if (!check_access($_SESSION['privileges'], $req_priv, $allowed_host_array)) {
+if (!check_access($_SESSION['privileges'], $req_priv)) {
     echo ('<br><br>You do not have clearance to view this page.<br>');
     exit();
 }

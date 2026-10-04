@@ -8,7 +8,7 @@ echo('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www
 echo('<HTML>');
 echo('<head>');
 
-include("aux/get_globals.php"); //for the frontend websettings
+require_once("config.php"); // site title and colours
 include("aux/make_title.php");  
 include("aux/general_fns.php"); // general functions
 include("aux/array_defs.php"); // def arrays of variables to be used

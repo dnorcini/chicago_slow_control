@@ -10,3 +10,10 @@ ALTER TABLE MODULE_SURFACE
   DROP COLUMN Check_A, DROP COLUMN Check_B, DROP COLUMN Check_C, DROP COLUMN Check_D;
 ALTER TABLE MODULE_UNDERGROUND2
   DROP COLUMN Check_A, DROP COLUMN Check_B, DROP COLUMN Check_C, DROP COLUMN Check_D;
+
+-- §2.5 legacy login selects users.shift_status; legacy array_defs selects
+-- user_privileges.allowed_host; legacy reads Title/colours from globals.
+-- targetAPP no longer uses any of them (title/colours are in config.php).
+ALTER TABLE users DROP COLUMN shift_status;
+ALTER TABLE user_privileges DROP COLUMN allowed_host;
+DROP TABLE globals;

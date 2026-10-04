@@ -109,7 +109,7 @@ foreach ($users_user_name as $user_name)
     echo ('</TD>');
 
     echo ('<TD align=left>');
-    if (!isnull($users_email[$user_name]))
+    if (trim($users_email[$user_name] ?? '') !== '')
       echo ('<a href="mailto:'.$users_email[$user_name].'">'.$users_email[$user_name].'</a>');
     echo ('</TD>');
     
@@ -147,8 +147,6 @@ if (str_contains($_SESSION['privileges'], "admin"))
     echo ('<BUTTON type="submit"> New </BUTTON>');
     echo ('</FORM>');
 }
-
-echo ('<br><a href="computing_resources.php">Computing Resources</a>');
 
 echo(' </body>');
 echo ('</HTML>');

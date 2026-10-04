@@ -61,7 +61,7 @@ foreach ($sections as $s) {
 
     // Summary / List column
     echo ('<td>');
-    if ($s['list_url'] && check_access($_SESSION['privileges'], $s['list_priv'], $allowed_host_array))
+    if ($s['list_url'] && check_access($_SESSION['privileges'], $s['list_priv']))
         echo ('<a href="' . $s['list_url'] . '">' . $s['list_label'] . '</a>');
     else
         echo ('&mdash;');
@@ -69,7 +69,7 @@ foreach ($sections as $s) {
 
     // Detail column
     echo ('<td>');
-    if ($s['detail_url'] && check_access($_SESSION['privileges'], $s['detail_priv'], $allowed_host_array))
+    if ($s['detail_url'] && check_access($_SESSION['privileges'], $s['detail_priv']))
         echo ('<a href="' . $s['detail_url'] . '">' . $s['detail_label'] . '</a>');
     else
         echo ('&mdash;');
