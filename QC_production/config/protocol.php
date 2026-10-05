@@ -62,7 +62,7 @@ const METRICS = [
     'crosstalk_comments' => ['type' => 'text', 'col' => 'Crosstalk_comments'],
     'comments'       => ['type' => 'text',   'col' => 'Comments'],
     'reference'      => ['type' => 'text',   'col' => 'Reference'],
-    // test-level values (section 'run'; old names are given per stage)
+    // test-level values (section 'test'; old names are given per stage)
     'test_date'      => ['type' => 'text'],
     'temp'           => ['type' => 'num'],
     'temp_b'         => ['type' => 'num'],
@@ -70,6 +70,7 @@ const METRICS = [
     'vref'           => ['type' => 'num'],
     'eff_resistivity' => ['type' => 'num'],
     'image_dir'      => ['type' => 'text'],
+    'ccd_defect_notes' => ['type' => 'text'],
 ];
 
 // Lists of metrics that several images share
@@ -96,12 +97,11 @@ const STAGES = [
         'item'      => 'ccd',
         'old_table' => 'CCD',
         'positions' => ['U1', 'L1', 'U2', 'L2'],
-        'types'     => ['defects' => 'text'],              // CCD "Defects" is a free-text description
         'cols'      => ['dark_current' => 'Dark_current'],
         'sections'  => [
-            'run'  => ['old' => '', 'once' => ['test_date' => 'Test_date', 'temp' => 'Test_temp', 'vref' => 'Test_vref',
-                                               'eff_resistivity' => 'Eff_resistivity', 'defects' => 'Defects']],
-            'test' => ['old' => '', 'per_pos' => ['charge', 'noise', 'resolution', 'gain', 'dark_current']],
+            'test' => ['old' => '', 'once' => ['test_date' => 'Test_date', 'temp' => 'Test_temp', 'vref' => 'Test_vref',
+                                               'eff_resistivity' => 'Eff_resistivity', 'ccd_defect_notes' => 'Defects']],
+            'amp'  => ['old' => '', 'per_pos' => ['charge', 'noise', 'resolution', 'gain', 'dark_current']],
         ],
     ],
     'die' => [
@@ -109,7 +109,7 @@ const STAGES = [
         'old_table' => 'DIE',
         'positions' => ['U1', 'U2', 'L1', 'L2'],
         'sections'  => [
-            'run'   => ['old' => '', 'once' => ['temp' => 'Temp', 'image_dir' => 'Image_Dir']],
+            'test'  => ['old' => '', 'once' => ['temp' => 'Temp', 'image_dir' => 'Image_Dir']],
             'amp'   => ['old' => '', 'per_pos' => ['grade', 'check', 'notes']],
             'trace' => ['old' => 'Trace',  'per_pos' => ['saturation', 'comments', 'reference']],
             'img1'  => ['old' => 'Image1', 'per_pos' => ['tracks', 'noise', 'defects', 'comments', 'reference']],
@@ -126,7 +126,7 @@ const STAGES = [
         'old_table' => 'MODULE_SURFACE',
         'positions' => ['A', 'B', 'C', 'D'],
         'sections'  => [
-            'run'   => ['old' => '', 'temps' => [
+            'test'  => ['old' => '', 'temps' => [
                             ''     => ['once' => ['image_dir' => 'Image_Dir']],
                             'low'  => ['once' => ['temp' => 'Temp_Low']],
                             'high' => ['once' => ['temp' => 'Temp_High']]]],
@@ -146,7 +146,7 @@ const STAGES = [
         'old_table' => 'MODULE_UNDERGROUND2',
         'positions' => ['A', 'B', 'C', 'D'],
         'sections'  => [
-            'run'   => ['old' => '', 'temps' => [
+            'test'  => ['old' => '', 'temps' => [
                             'low'  => ['once' => ['temp_b' => 'Temp_Low_B', 'temp_c' => 'Temp_Low_C', 'image_dir' => 'Image_Low_Dir']],
                             'high' => ['once' => ['temp_b' => 'Temp_High_B', 'temp_c' => 'Temp_High_C', 'image_dir' => 'Image_High_Dir']]]],
             'amp'   => ['old' => '', 'per_pos' => ['grade', 'defects', 'notes']],
