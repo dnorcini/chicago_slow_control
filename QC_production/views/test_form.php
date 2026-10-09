@@ -130,7 +130,7 @@ $files = function (array $slots) use ($stage, $id): string {
     $pos_label = $b['pos_label'] ?? $P['pos_label'];
     foreach (block_tables($stage, $b) as $t): ?>
 <?php if ($t['title'] !== ''): ?><br><b><?= h($t['title']) ?></b><?php endif ?>
-<table border="1" cellpadding="2"<?= empty($b['wide']) ? '' : ' width="100%"' ?>>
+<table border="1" cellpadding="2">
 <?php if ($t['metrics']): ?>
   <tr><td align="left" style="white-space: nowrap;">Amplifier</td>
 <?php foreach ($t['metrics'] as $m): ?>      <td align="left" style="white-space: nowrap;"><?= h(metric_label($stage, $m)) ?></td>

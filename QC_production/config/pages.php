@@ -25,11 +25,10 @@
 //   'pos_label'     row labels: a sprintf format (%1$s position, %2$d index from 0,
 //                   %3$d index from 1), or position => label. Default: the stage's.
 //   'divisor'       for 'dc_day' (Dark Current [e-/pix/day])
-//   'wide'          true: the grid is as wide as the page
 //   'special'       'history' (history box) or 'layout' (which die sits at each position)
 //
 // Each stage's 'list' is its page in list.php:
-//   'tab'      label of the table tab (the other tab is the summary)
+//   'tab'      what the table lists; its tab reads "List <tab>" (the other tab is the summary)
 //   'columns'  heading => what it shows: 'id' (link to the details page), 'item.name',
 //              'test.acm', a value 'section/temp/pos/metric' (e.g. 'amp//L1/grade'),
 //              'tally' (grade_tally() of the amp grades, coloured), 'location' (history)
@@ -90,8 +89,7 @@ const MODULE_LIST  = ['columns' => ['ID' => 'id', 'ACM' => 'test.acm', 'Test Dat
                       'Grade' => 'tally', 'Current Location' => 'location'],
                       'red' => 'no_channel', 'summary' => ['tally', 'totals'], 'unit' => 'CCD'];
 const MODULE_GRADE = ['key' => 'grade', 'label' => 'Grade', 'title' => 'Preliminary Grade Assessment',
-                      'grid' => 'amp/', 'pos_label' => '%1$s', 'wide' => true,
-                      'fields_after' => [['test.reviewer', 'test.notes']]];
+                      'grid' => 'amp/', 'pos_label' => '%1$s', 'fields_after' => [['test.reviewer', 'test.notes']]];
 const M_CTI_FRONT  = ['cti_front_right_fraction', 'ctix_comments', 'cti_front_above_fraction', 'ctiy_comments'];
 const M_CTI_BACK   = ['cti_back_left_mean', 'cti_back_left_rms', 'cti_back_left_skewness', 'cti_back_left_integral',
                       'cti_back_below_mean', 'cti_back_below_rms', 'cti_back_below_skewness', 'cti_back_below_integral'];
@@ -146,7 +144,7 @@ const PAGES = [
                 ['item.humidity', 'item.radon', 'location']]],
             ['key' => 'history', 'label' => 'History', 'special' => 'history'],
             ['key' => 'grade', 'label' => 'Grade', 'title' => 'Preliminary Grade Assessment', 'grid' => 'amp/',
-             'pos_label' => '%1$s', 'wide' => true, 'fields_after' => [['test.reviewer', 'test.notes']]],
+             'pos_label' => '%1$s', 'fields_after' => [['test.reviewer', 'test.notes']]],
             ['key' => 'testing', 'label' => 'Testing', 'title' => 'Testing', 'fields' => [
                 ['test.tester', 'test.test_date', 'test.test_time', 'test.chamber'],
                 ['test//temp', 'test.feedthru_position', 'test.acm'],

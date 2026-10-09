@@ -11,7 +11,6 @@ $nav = [                                      // label => [page, privilege neede
     'Users'               => ['users.php', 'full', ['users.php', 'edit_user.php']],
 ];
 ?>
-<div class="titlebar"><?= h(SITE_TITLE) ?> QC system</div>
 <table class="nav" border="0" cellpadding="2" width="100%">
 <tr valign="center">
   <th align="left" width="25"><a href="<?= h($here) ?>"><img src="pixmaps/reload.png" alt="Refresh" title="Refresh page" border="0"></a></th>

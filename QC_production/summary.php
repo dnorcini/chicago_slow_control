@@ -15,7 +15,7 @@ page_start();
 ?>
 <br>
 <h2>CCD Quality Control</h2>
-<table border="1" cellpadding="10" cellspacing="0" style="border-collapse:collapse; width:70%;">
+<table border="1" cellpadding="10" cellspacing="0">
 <tr style="background-color:#ddd;">
   <th align="left" width="25%">Table</th>
   <th align="left" width="37%">Summary / List</th>

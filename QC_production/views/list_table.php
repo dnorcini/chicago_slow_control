@@ -31,7 +31,7 @@ $red = fn(array $r) => match ($L['red'] ?? '') {
 };
 ?>
 <table border="1" cellpadding="2" width="100%"><tr>
-<?php foreach (['summary' => 'Summary', 'items' => $L['tab']] as $v => $text): ?>
+<?php foreach (['summary' => 'Summary', 'items' => 'List ' . $L['tab']] as $v => $text): ?>
   <th><?php if ($v === $view): ?><b><?= h($text) ?></b><?php else: ?>
       <a href="<?= h("list.php?stage=$stage" . ($v === 'items' ? '&view=items' : '')) ?>"><?= h($text) ?></a><?php endif ?></th>
 <?php endforeach ?>
