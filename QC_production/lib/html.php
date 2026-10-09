@@ -49,7 +49,7 @@ function page_start(string $title = ''): void {
     echo '<!DOCTYPE html>', "\n";
     echo '<html><head><meta charset="utf-8">';
     echo '<title>' . h(SITE_TITLE . ' QC system' . ($title === '' ? '' : " - $title")) . '</title>';
-    echo '<link rel="stylesheet" href="style.css?v=' . h(APP_VERSION) . '">';
+    echo '<link rel="stylesheet" href="style.css?v=' . filemtime(__DIR__ . '/../style.css') . '">';   // reloaded when it changes
     // Keep the scroll position when a form posts back to the same page (skipped if the URL has an #anchor)
     echo '<script>
     window.addEventListener("beforeunload", () => localStorage.setItem("scrollY", window.scrollY));
@@ -63,9 +63,8 @@ function page_start(string $title = ''): void {
     require __DIR__ . '/../views/header.php';
 }
 
-// The footer (version, PHP, database), then the end of the page.
+// The footer (PHP version), then the end of the page.
 function page_end(): void {
-    echo "\n" . '<div class="footer">' . h(SITE_TITLE . ' QC system ' . APP_VERSION) . ' &middot; PHP ' . h(PHP_VERSION)
-       . ' &middot; database ' . h(db_settings()['database']) . '</div>';
+    echo "\n" . '<div class="footer">PHP ' . h(PHP_VERSION) . '</div>';
     echo "\n</body></html>\n";
 }

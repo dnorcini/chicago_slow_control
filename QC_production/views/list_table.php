@@ -35,11 +35,6 @@ $red = fn(array $r) => match ($L['red'] ?? '') {
   <th><?php if ($v === $view): ?><b><?= h($text) ?></b><?php else: ?>
       <a href="<?= h("list.php?stage=$stage" . ($v === 'items' ? '&view=items' : '')) ?>"><?= h($text) ?></a><?php endif ?></th>
 <?php endforeach ?>
-<?php if (has_priv('full')): ?>
-  <th>Download CSV:
-      <a href="<?= h("export.php?stage=$stage") ?>" title="One row per test, with the old column names (compatible with the old schema)">wide (old columns)</a>
-      &middot; <a href="<?= h("export.php?stage=$stage&format=long") ?>" title="One row per value: easiest for pandas and similar tools">long (one row per value)</a></th>
-<?php endif ?>
 </tr></table>
 
 <?php if ($view === 'summary'): ?>
@@ -91,4 +86,10 @@ $red = fn(array $r) => match ($L['red'] ?? '') {
   </tr>
 <?php endforeach ?>
 </table>
+<?php endif ?>
+
+<?php if (has_priv('full')): ?>
+<p style="font-size: 12px; margin-top: 16px;">Download CSV:
+  <a href="<?= h("export.php?stage=$stage") ?>" title="One row per test, with the old column names (compatible with the old schema)">wide (old columns)</a>
+  &middot; <a href="<?= h("export.php?stage=$stage&format=long") ?>" title="One row per value: easiest for pandas and similar tools">long (one row per value)</a></p>
 <?php endif ?>
