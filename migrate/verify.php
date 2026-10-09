@@ -4,7 +4,7 @@
 // Independent of migrate.php's conversion code: it starts from what is in
 // ccdqc and works back to the old cell.
 //
-//   docker exec -e TARGET_DB_HOST=targetDB ccdqc-target php /var/www/html/migrate/verify.php
+//   docker exec -e DB_HOST=db -e TARGET_DB_HOST=targetDB ccdqc-target php /var/www/html/migrate/verify.php
 //
 // Prints every difference; exits 1 if there is any that the conversion rules
 // (REFACTOR_DB_REDESIGN.md §7) don't explain.

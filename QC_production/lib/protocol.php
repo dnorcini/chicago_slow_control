@@ -47,3 +47,23 @@ function old_column(string $stage, string $prefix, string $temp, string $metric,
     $parts = [$prefix, $temp === '' ? '' : TEMPS[$temp]['col'], $metric_col, $pos];
     return implode('_', array_filter($parts, fn($p) => $p !== ''));
 }
+
+// The stage key from the URL, or a 404 if protocol.php doesn't know it.
+function stage_or_404(string $stage): string {
+    if (isset(STAGES[$stage]))
+        return $stage;
+    http_response_code(404);
+    exit('Unknown stage "' . h($stage) . '". Known stages: ' . implode(', ', array_keys(STAGES)) . "\n");
+}
+
+// One measurement row as text, the way the old columns held it:
+// num_err as "5.94848 +/- 0.00272591", a ticked check as 1 (unticked = no row = 0).
+function format_value(?array $m, string $type): string {
+    if ($m === null)
+        return $type === 'check' ? '0' : '';
+    if ($m['value_text'] !== null)
+        return $m['value_text'];
+    if ($type === 'num_err' && $m['value_err'] !== null)
+        return $m['value_num'] . ' +/- ' . $m['value_err'];
+    return (string)$m['value_num'];
+}

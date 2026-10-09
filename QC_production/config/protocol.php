@@ -2,8 +2,8 @@
 // config/protocol.php
 // The test protocol, written down once: which sections (images), temperatures,
 // positions and metrics each stage has, and the old die_qc column each value
-// came from. Read by migrate/migrate.php now; by the forms, lists and CSV
-// export in item 3. See REFACTOR_DB_REDESIGN.md §6.
+// came from. Read by migrate/migrate.php, export.php, and (item 3) the forms
+// and lists. See REFACTOR_DB_REDESIGN.md §6.
 //
 // Labels, dropdown options, descriptions and upload slots are added in item 3.
 //
@@ -82,7 +82,22 @@ const M_CTI        = ['cti_back_left_mean', 'cti_back_left_rms', 'cti_back_left_
                       'cti_front_right_fraction', 'cti_front_above_fraction'];
 const M_PEAKS_CTI  = ['peak1', 'peak2', ...M_CTI, 'ctix_comments', 'ctiy_comments', 'comments'];
 
+// Old die_qc column names of the item and test_info columns (new => old), used
+// by the CSV export and the migration. Every stage except ccd uses TEST_COLS.
+const TEST_COLS = ['tester' => 'Tester', 'test_date' => 'Test_Date', 'test_time' => 'Test_Time',
+                   'chamber' => 'Chamber', 'acm' => 'ACM', 'feedthru_position' => 'Feedthru_Position',
+                   'script' => 'Script', 'reviewer' => 'Reviewer', 'notes' => 'Notes'];
+const MODULE_COLS = ['id' => 'id', 'name' => 'Name', 'status' => 'Status'];
+
 // Stages (test protocols), in time order. A new testing campaign is a new entry.
+//
+// Each stage:
+//   'item'       which item table it tests (ccd, die, module)
+//   'old_table'  the die_qc table it came from
+//   'item_cols'  item columns in the CSV export (new => old name)
+//   'test_cols'  test_info columns in the CSV export (new => old name)
+//   'positions'  amps/CCDs, in form order
+//   'cols'       metric => old column piece, where this stage differs from METRICS
 //
 // Each section:
 //   'old'     old column prefix ('' for none)
@@ -96,6 +111,16 @@ const STAGES = [
     'ccd' => [
         'item'      => 'ccd',
         'old_table' => 'CCD',
+        'item_cols' => ['id' => 'ID', 'name' => 'Name', 'ccd_type' => 'CCD_Type', 'size' => 'Size', 'status' => 'Status',
+                        'location' => 'Location', 'wafer_id' => 'Wafer_ID', 'wafer_position' => 'Wafer_position',
+                        'production_date' => 'Production_date', 'packager' => 'Packager',
+                        'packaging_date' => 'Packaging_date', 'cable_np' => 'Cable_np', 'jfet_u1' => 'JFET_U1',
+                        'jfet_l1' => 'JFET_L1', 'jfet_u2' => 'JFET_U2', 'jfet_l2' => 'JFET_L2',
+                        'glue_humid' => 'Glue_humid', 'glue_temp' => 'Glue_temp', 'glue_radon' => 'Glue_radon',
+                        'gluing_details' => 'Gluing_details', 'wb_humid' => 'Wb_humid', 'wb_temp' => 'Wb_temp',
+                        'wb_radon' => 'Wb_radon', 'wb_power' => 'Wb_power', 'wb_time' => 'Wb_time',
+                        'wb_date' => 'Wb_date', 'wirebonding_details' => 'Wirebonding_details', 'note' => 'Note'],
+        'test_cols' => ['tester' => 'Tester', 'notes' => 'Test_details'],
         'positions' => ['U1', 'L1', 'U2', 'L2'],
         'cols'      => ['dark_current' => 'Dark_current'],
         'sections'  => [
@@ -107,6 +132,10 @@ const STAGES = [
     'die' => [
         'item'      => 'die',
         'old_table' => 'DIE',
+        'item_cols' => ['id' => 'id', 'name' => 'Name', 'status' => 'Status', 'wafer_id' => 'Wafer_ID',
+                        'wafer_position' => 'Wafer_Position', 'activation' => 'Activation',
+                        'humidity' => 'Humidity', 'radon' => 'Radon'],
+        'test_cols' => TEST_COLS,
         'positions' => ['U1', 'U2', 'L1', 'L2'],
         'sections'  => [
             'test'  => ['old' => '', 'once' => ['temp' => 'Temp', 'image_dir' => 'Image_Dir']],
@@ -124,6 +153,8 @@ const STAGES = [
     'surface' => [
         'item'      => 'module',
         'old_table' => 'MODULE_SURFACE',
+        'item_cols' => MODULE_COLS + ['activation' => 'Activation', 'humidity' => 'Humidity', 'radon' => 'Radon'],
+        'test_cols' => TEST_COLS,
         'positions' => ['A', 'B', 'C', 'D'],
         'sections'  => [
             'test'  => ['old' => '', 'temps' => [
@@ -144,6 +175,8 @@ const STAGES = [
     'underground' => [
         'item'      => 'module',
         'old_table' => 'MODULE_UNDERGROUND2',
+        'item_cols' => MODULE_COLS,
+        'test_cols' => TEST_COLS,
         'positions' => ['A', 'B', 'C', 'D'],
         'sections'  => [
             'test'  => ['old' => '', 'temps' => [

@@ -5,7 +5,7 @@
 // so the script can be run again at any time.
 //
 // Run it in the targetOS container (CLI only):
-//   docker exec -e TARGET_DB_HOST=targetDB ccdqc-target php /var/www/html/migrate/migrate.php
+//   docker exec -e DB_HOST=db -e TARGET_DB_HOST=targetDB ccdqc-target php /var/www/html/migrate/migrate.php
 // Options:
 //   --replace   allowed to overwrite a ccdqc that already holds tests
 //   --list      also print every old column that is not carried over
@@ -26,22 +26,10 @@ const KNOWN_STRAY = [
 // CCD test values where 0.00 means "not entered" (§7 rule 3)
 const CCD_ZERO_IS_EMPTY = ['noise', 'resolution', 'gain', 'dark_current', 'temp', 'vref', 'eff_resistivity'];
 
-// Old item and test columns, copied as they are (§4, §5)
-const TEST_COLS = ['tester' => 'Tester', 'test_date' => 'Test_Date', 'test_time' => 'Test_Time',
-                   'chamber' => 'Chamber', 'acm' => 'ACM', 'feedthru_position' => 'Feedthru_Position',
-                   'script' => 'Script', 'reviewer' => 'Reviewer', 'notes' => 'Notes'];
-const CCD_TEST_COLS = ['tester' => 'Tester', 'notes' => 'Test_details'];
-const CCD_COLS = ['id' => 'ID', 'name' => 'Name', 'ccd_type' => 'CCD_Type', 'size' => 'Size', 'status' => 'Status',
-                  'location' => 'Location', 'wafer_id' => 'Wafer_ID', 'wafer_position' => 'Wafer_position',
-                  'production_date' => 'Production_date', 'packager' => 'Packager', 'packaging_date' => 'Packaging_date',
-                  'cable_np' => 'Cable_np', 'jfet_u1' => 'JFET_U1', 'jfet_l1' => 'JFET_L1', 'jfet_u2' => 'JFET_U2',
-                  'jfet_l2' => 'JFET_L2', 'glue_humid' => 'Glue_humid', 'glue_temp' => 'Glue_temp',
-                  'glue_radon' => 'Glue_radon', 'gluing_details' => 'Gluing_details', 'wb_humid' => 'Wb_humid',
-                  'wb_temp' => 'Wb_temp', 'wb_radon' => 'Wb_radon', 'wb_power' => 'Wb_power', 'wb_time' => 'Wb_time',
-                  'wb_date' => 'Wb_date', 'wirebonding_details' => 'Wirebonding_details', 'note' => 'Note'];
-const DIE_COLS = ['id' => 'id', 'name' => 'Name', 'status' => 'Status', 'wafer_id' => 'Wafer_ID',
-                  'wafer_position' => 'Wafer_Position', 'activation' => 'Activation', 'humidity' => 'Humidity',
-                  'radon' => 'Radon'];
+// Old item and test columns, copied as they are (§4, §5): 'item_cols' and
+// 'test_cols' of each stage in config/protocol.php.
+const CCD_COLS = STAGES['ccd']['item_cols'];
+const DIE_COLS = STAGES['die']['item_cols'];
 
 function fail(string $msg): never { fwrite(STDERR, "STOP: $msg\n"); exit(1); }
 
@@ -172,7 +160,7 @@ $read = [];             // old table => [column => true] read by the migration
 foreach (STAGES as $stage => $S) {
     $table = $S['old_table'];
     $cells = protocol_cells($stage);
-    $test_cols = $stage === 'ccd' ? CCD_TEST_COLS : TEST_COLS;
+    $test_cols = $S['test_cols'];
     foreach ($cells as $c) $read[$table][$c['old']] = true;
     foreach ($test_cols as $o) $read[$table][$o] = true;
 

@@ -14,6 +14,7 @@ require_once __DIR__ . '/lib/html.php';
 require_once __DIR__ . '/lib/protocol.php';
 
 date_default_timezone_set(TIMEZONE);
+ini_set('precision', '-1');                 // floats print with all their digits (6.51817876617341E-5, not ...734E-5)
 
 // Uncaught errors: the details go to the server's error log, the user gets a
 // short message with a reference to find them there. In dev (display_errors
