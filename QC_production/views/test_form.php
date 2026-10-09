@@ -59,7 +59,7 @@ $files = function (array $slots) use ($stage, $id): string {
 <p>There is no <?= h($label) ?> with ID <?= (int)$id ?>.</p>
 <?php return; endif ?>
 
-<?php include __DIR__ . '/../aux/table_selection.php'; ?>
+<?php include __DIR__ . '/section_panel.php'; ?>
 
 <p><b><?= h($label) ?> ID: <?= (int)$id ?> &nbsp; <?= h($item['name']) ?></b>
 <?php if ($test): ?> &nbsp; <small>(test <?= (int)$test['test_number'] ?> of this <?= h(STAGES[$stage]['item']) ?>)</small><?php endif ?></p>
@@ -130,7 +130,7 @@ $files = function (array $slots) use ($stage, $id): string {
     $pos_label = $b['pos_label'] ?? $P['pos_label'];
     foreach (block_tables($stage, $b) as $t): ?>
 <?php if ($t['title'] !== ''): ?><br><b><?= h($t['title']) ?></b><?php endif ?>
-<table border="1" cellpadding="2">
+<table border="1" cellpadding="2"<?= empty($b['wide']) ? '' : ' width="100%"' ?>>
 <?php if ($t['metrics']): ?>
   <tr><td align="left" style="white-space: nowrap;">Amplifier</td>
 <?php foreach ($t['metrics'] as $m): ?>      <td align="left" style="white-space: nowrap;"><?= h(metric_label($stage, $m)) ?></td>
@@ -181,4 +181,25 @@ $files = function (array $slots) use ($stage, $id): string {
 <br>
 <?php endforeach ?>
 
-<?php include __DIR__ . '/../aux/table_navigation.php'; ?>
+<div id="delete_test" style="border-top: 1px solid #999; padding-top: 6px;">
+<?php $confirm = ($msgs['delete_test'] ?? []) === ['confirm']; ?>
+<?php foreach ($confirm ? [] : $msgs['delete_test'] ?? [] as $m): ?><div style="color:red"><?= h($m) ?></div><?php endforeach ?>
+<?php if ($test && $confirm): ?>
+  <form action="<?= h($url($id)) ?>" method="post" style="display:inline"><?= csrf_field() ?>
+    <input type="hidden" name="really_delete_test" value="<?= (int)$test['id'] ?>">
+    <b style="color:red">Really delete the <?= h($stage) ?> test <?= (int)$test['test_number'] ?> of <?= h($item['name'] ?: "$label $id") ?>?
+    This cannot be undone.</b> <input type="submit" value="Yes, delete">
+  </form>
+  <form action="<?= h($url($id)) ?>" method="get" style="display:inline">
+    <input type="hidden" name="stage" value="<?= h($stage) ?>"><input type="hidden" name="id" value="<?= (int)$id ?>">
+    <input type="submit" value="No"></form>
+<?php elseif ($test): ?>
+  <form action="<?= h($url($id)) ?>" method="post"><?= csrf_field() ?>
+    <input type="submit" name="delete_test" value="Delete this <?= h($stage) ?> test"
+           title="Deletes this page's test (not the <?= h($label) ?>). Only possible once all its fields are empty. Uploaded files are kept.">
+    <small>Only possible once every field of this test is empty. The <?= h($label) ?> itself, its other tests and its uploaded files are kept.</small>
+  </form>
+<?php endif ?>
+</div>
+
+<?php include __DIR__ . '/table_navigation.php'; ?>

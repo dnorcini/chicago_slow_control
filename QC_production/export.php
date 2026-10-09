@@ -1,17 +1,26 @@
 <?php
 // export.php
-// CSV export of one stage: one row per test, with the old die_qc column names,
-// so analysis scripts written for the old tables keep working.
-//   web:  export.php?stage=die
-//   CLI:  php export.php --stage=die > die.csv
+// CSV export of one stage, in two formats:
+//   wide (default): one row per test, with the old die_qc column names. This is
+//                   the format compatible with the old schema, so analysis
+//                   scripts written for the old tables keep working.
+//   long:           one row per measured value (id, name, test_number, section,
+//                   temp, pos, metric, value, error, text, and the old column
+//                   name). Easiest for pandas and similar tools.
+//   web:  export.php?stage=die  /  export.php?stage=die&format=long
+//   CLI:  php export.php --stage=die [--format=long] > die.csv
 require __DIR__ . '/bootstrap.php';
 
 if (PHP_SAPI === 'cli') {
-    $stage = stage_or_404(getopt('', ['stage:'])['stage'] ?? '');
+    $opt = getopt('', ['stage:', 'format:']);
+    $stage = stage_or_404($opt['stage'] ?? '');
+    $format = $opt['format'] ?? 'wide';
 } else {
     require_priv('full');                     // same as the details pages
     $stage = stage_or_404($_GET['stage'] ?? '');
+    $format = $_GET['format'] ?? 'wide';
 }
+$format = $format === 'long' ? 'long' : 'wide';
 $P = STAGES[$stage];
 $cells = protocol_cells($stage);
 
@@ -39,9 +48,24 @@ $header = [...array_values($P['item_cols']), ...array_keys($wiring_cols), 'Test_
 
 if (PHP_SAPI !== 'cli') {
     header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="ccdqc_' . $stage . '_' . date('Y-m-d') . '.csv"');
+    header('Content-Disposition: attachment; filename="ccdqc_' . $stage . ($format === 'long' ? '_long' : '')
+           . '_' . date('Y-m-d') . '.csv"');
 }
 $out = fopen('php://output', 'w');
+
+if ($format === 'long') {
+    fputcsv($out, ['id', 'name', 'test_number', 'section', 'temp', 'pos', 'metric', 'value', 'error', 'text', 'old_column'],
+            ',', '"', '');
+    foreach ($tests as $t)
+        foreach ($cells as $c) {
+            $m = $values[$t['id']]["{$c['section']}|{$c['temp']}|{$c['pos']}|{$c['metric']}"] ?? null;
+            if ($m)
+                fputcsv($out, [$t['item_id'], $items[$t['item_id']]['name'], $t['test_number'], $c['section'], $c['temp'],
+                               $c['pos'], $c['metric'], $m['value_num'], $m['value_err'], $m['value_text'], $c['old']],
+                        ',', '"', '');
+        }
+    exit;
+}
 fputcsv($out, $header, ',', '"', '');
 foreach ($tests as $t) {
     $item = $items[$t['item_id']];

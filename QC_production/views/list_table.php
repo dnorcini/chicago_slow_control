@@ -36,7 +36,9 @@ $red = fn(array $r) => match ($L['red'] ?? '') {
       <a href="<?= h("list.php?stage=$stage" . ($v === 'items' ? '&view=items' : '')) ?>"><?= h($text) ?></a><?php endif ?></th>
 <?php endforeach ?>
 <?php if (has_priv('full')): ?>
-  <th><a href="<?= h("export.php?stage=$stage") ?>" title="Download all values as CSV, with the old column names">CSV</a></th>
+  <th>Download CSV:
+      <a href="<?= h("export.php?stage=$stage") ?>" title="One row per test, with the old column names (compatible with the old schema)">wide (old columns)</a>
+      &middot; <a href="<?= h("export.php?stage=$stage&format=long") ?>" title="One row per value: easiest for pandas and similar tools">long (one row per value)</a></th>
 <?php endif ?>
 </tr></table>
 

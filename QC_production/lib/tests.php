@@ -181,3 +181,26 @@ function list_rows(string $stage, array $sections): array {
     }
     return $rows;
 }
+
+// What a test still holds, as a list for the user ([] = completely empty):
+// its test_info columns (by their page labels) and its measured values
+function test_contents(string $stage, array $test): array {
+    $filled = [];
+    foreach (STAGES[$stage]['test_cols'] as $col => $old)
+        if (trim((string)$test[$col]) !== '')
+            $filled[] = FIELDS["test.$col"]['label'] ?? $old;
+    $n = (int)one('SELECT COUNT(*) n FROM measurement WHERE test_id = ?', [$test['id']])['n'];
+    if ($n > 0)
+        $filled[] = "$n measured value" . ($n === 1 ? '' : 's');
+    return $filled;
+}
+
+// Deletes a test (its measurements go with it: ON DELETE CASCADE). Only an
+// empty test: returns a message otherwise.
+function delete_test(string $stage, array $test): string {
+    $filled = test_contents($stage, $test);
+    if ($filled)
+        return 'This test is not empty, so it was not deleted. Still filled in: ' . implode(', ', $filled) . '.';
+    q('DELETE FROM test_info WHERE id = ?', [$test['id']]);
+    return '';
+}
