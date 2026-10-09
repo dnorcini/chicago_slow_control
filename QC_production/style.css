@@ -1,0 +1,40 @@
+/* style.css
+   The look of every page (linked by page_start() in lib/html.php). Layout and
+   tables are the same as on the old pages; this only changes fonts and colours. */
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    margin: 0 10px 10px;
+}
+a { color: #1a5fb4; }
+input, select, textarea, button { font: inherit; font-size: 13px; }
+
+/* Title bar and nav (views/header.php) */
+.titlebar {
+    background: #1f4e79;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 6px 10px;
+    margin: 0 -10px 4px;
+}
+table.nav { border-bottom: 2px solid #1f4e79; margin-bottom: 8px; font-size: 13px; }
+table.nav a { text-decoration: none; }
+table.nav .current { color: #1f4e79; border-bottom: 3px solid #1f4e79; padding: 2px 4px; }
+
+/* Data tables: thin borders, shaded headings, every other row shaded.
+   Colours set on a cell itself (tallies) still win. */
+table[border="1"] { border-collapse: collapse; }
+table[border="1"] td, table[border="1"] th { border: 1px solid #b8c4d0; }
+table[border="1"] th { background: #e8eef5; }
+table[border="1"] tr:nth-child(even) > td { background-color: #f6f8fa; }
+
+/* Footer (page_end()) */
+.footer {
+    margin-top: 24px;
+    padding-top: 6px;
+    border-top: 1px solid #ccc;
+    color: #666;
+    font-size: 12px;
+}

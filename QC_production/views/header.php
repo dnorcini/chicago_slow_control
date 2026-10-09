@@ -5,23 +5,19 @@
 // Cinyu Zhu (JHU, 2025).
 
 $here = $_SERVER['REQUEST_URI'] ?? '';
-$nav = [                                      // label => [page, privilege needed]
-    'CCD Quality Control' => ['summary.php', 'basic'],
-    'MATERIAL ASSAYS'     => ['list_material_assays.php', 'basic'],
-    'Users'               => ['users.php', 'full'],
+$nav = [                                      // label => [page, privilege needed, pages that belong to it]
+    'CCD Quality Control' => ['summary.php', 'basic', ['summary.php', 'list.php', 'details.php']],
+    'MATERIAL ASSAYS'     => ['list_material_assays.php', 'basic', ['list_material_assays.php', 'edit_materials.php']],
+    'Users'               => ['users.php', 'full', ['users.php', 'edit_user.php']],
 ];
 ?>
-<font size="-1">
-<table border="0" cellpadding="2" width="100%">
+<div class="titlebar"><?= h(SITE_TITLE) ?> QC system</div>
+<table class="nav" border="0" cellpadding="2" width="100%">
 <tr valign="center">
   <th align="left" width="25"><a href="<?= h($here) ?>"><img src="pixmaps/reload.png" alt="Refresh" title="Refresh page" border="0"></a></th>
-<?php foreach ($nav as $label => [$page, $priv]):
+<?php foreach ($nav as $label => [$page, $priv, $pages]):
     if (!has_priv($priv)) continue; ?>
-  <th><?php if (basename($_SERVER['PHP_SELF']) === $page): ?>
-    <span style="font-weight:bold; color:black; border:1px solid black; padding:2px;"><?= h($label) ?></span>
-  <?php else: ?>
-    <a href="<?= h($page) ?>"><?= h($label) ?></a>
-  <?php endif ?></th>
+  <th><a href="<?= h($page) ?>"<?= in_array(basename($_SERVER['PHP_SELF']), $pages, true) ? ' class="current"' : '' ?>><?= h($label) ?></a></th>
 <?php endforeach ?>
   <th align="right">
     You are logged in as <?= h(current_user()) ?> from <?= h($_SERVER['REMOTE_ADDR'] ?? '') ?>.
@@ -46,4 +42,3 @@ $nav = [                                      // label => [page, privilege neede
 <?php endif ?>
 </tr>
 </table>
-</font>
