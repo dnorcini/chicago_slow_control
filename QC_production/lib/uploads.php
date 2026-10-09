@@ -1,6 +1,6 @@
 <?php
 // lib/uploads.php
-// Uploaded files stay on disk where the old pages put them:
+// Uploaded files keep the old pages' layout, under UPLOAD_DIR (config.php):
 //   UPLOAD_DIR/<stage 'upload_dir', e.g. edit_die/die_5>/<slot>.<ext>
 // A slot "has a file" when such a file exists. There is no DB table for files.
 
@@ -69,7 +69,7 @@ function save_uploads(string $stage, int $id, array $slots, array $files): array
             continue;
         }
         $dir = upload_folder($stage, $id);
-        if (!is_dir($dir) && !mkdir($dir, 0750, true))
+        if (!is_dir($dir) && !mkdir($dir, 0755, true))
             throw new RuntimeException("Could not create $dir");
         while ($old = find_upload($stage, $id, $slot))   // the slot keeps one file, whatever its extension
             unlink($old);

@@ -105,7 +105,7 @@ LIMIT 1
 
     // Upload any attached files submitted with this form
     if (!empty($_FILES['assay_files']['name'][0])) {
-        $upload_dir = "/var/www/html/QC_production/uploads/edit_assay/";
+        $upload_dir = UPLOAD_DIR . '/edit_assay/';
         $max_bytes = 30 * 1024 * 1024;
         $names = $_FILES['assay_files']['name'];
         $tmps  = $_FILES['assay_files']['tmp_name'];
@@ -144,7 +144,7 @@ LIMIT 1
 if (!empty($_POST['assay_action']) && $_POST['assay_action'] === "delete_assay" && isset($_POST['assay_id'])) {
 
     $id = (int)$_POST['assay_id'];
-    $upload_dir = "/var/www/html/QC_production/uploads/edit_assay/";
+    $upload_dir = UPLOAD_DIR . '/edit_assay/';
 
     // Delete uploaded files from disk and assay_files table
     $qf = "SELECT `Stored_Name` FROM `assay_files` WHERE `Assay_ID` = $id";
@@ -293,7 +293,7 @@ if (
         echo '<div style="border:1px solid #ccc; padding:6px; margin:6px 0;">File not found for this assay.</div>';
     } else {
         $f = mysql_fetch_assoc($r);
-        $upload_dir = "/var/www/html/QC_production/uploads/edit_assay/";
+        $upload_dir = UPLOAD_DIR . '/edit_assay/';
         $stored = (string)$f['Stored_Name'];
 
         if (!preg_match('/^assay_\d+_\d+_\d+\.[A-Za-z0-9]{1,20}$/', $stored)) {

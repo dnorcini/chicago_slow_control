@@ -34,7 +34,7 @@ if (mysql_num_rows($r) !== 1) {
 }
 $f = mysql_fetch_assoc($r);
 
-$upload_dir = "/var/www/html/QC_production/uploads/edit_assay/";
+$upload_dir = UPLOAD_DIR . '/edit_assay/';
 $stored = (string)$f['Stored_Name'];
 
 if ($stored === '' || $stored !== basename($stored) || str_contains($stored, "\0")) {
