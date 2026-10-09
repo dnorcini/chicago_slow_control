@@ -15,6 +15,7 @@ require_once __DIR__ . '/lib/protocol.php';
 require_once __DIR__ . '/lib/tests.php';
 require_once __DIR__ . '/lib/uploads.php';
 require_once __DIR__ . '/lib/history.php';
+require_once __DIR__ . '/lib/users.php';
 
 date_default_timezone_set(TIMEZONE);
 ini_set('precision', '-1');                 // floats print with all their digits (6.51817876617341E-5, not ...734E-5)

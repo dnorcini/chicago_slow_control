@@ -31,21 +31,23 @@ function require_priv(string $priv): void {
     exit;
 }
 
+// Whether $password matches a stored hash: password_hash(), or an old MD5 hash
+function password_ok(?string $hash, string $password): bool {
+    $hash = (string)$hash;
+    if (preg_match('/^[0-9a-f]{32}$/', $hash))                // old MD5 hash
+        return hash_equals($hash, md5($password));
+    return $hash !== '' && password_verify($password, $hash);
+}
+
 // Checks the password and logs the user in. Old MD5 hashes are replaced by
 // password_hash() the first time the user logs in with them.
 function login(string $user_name, string $password): bool {
     $u = one('SELECT user_name, password, privileges FROM users WHERE user_name = ?', [$user_name]);
-    if (!$u)
+    if (!$u || !password_ok($u['password'], $password))
         return false;
-    $hash = (string)$u['password'];
-    if (preg_match('/^[0-9a-f]{32}$/', $hash)) {             // old MD5 hash
-        if (!hash_equals($hash, md5($password)))
-            return false;
+    if (preg_match('/^[0-9a-f]{32}$/', (string)$u['password']))
         q('UPDATE users SET password = ? WHERE user_name = ?',
           [password_hash($password, PASSWORD_DEFAULT), $u['user_name']]);
-    } elseif (!password_verify($password, $hash)) {
-        return false;
-    }
     session_regenerate_id(true);
     $_SESSION['user_name']  = $u['user_name'];
     $_SESSION['privileges'] = (string)$u['privileges'];
