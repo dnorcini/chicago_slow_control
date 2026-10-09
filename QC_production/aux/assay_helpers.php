@@ -1,8 +1,5 @@
 <?php
-function h($s)
-{
-    return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
-}
+// h() is in lib/html.php (loaded by bootstrap.php)
 function post_esc($key)
 {
     return mysql_real_escape_string($_POST[$key] ?? "");

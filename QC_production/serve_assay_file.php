@@ -1,10 +1,11 @@
 <?php
 // serve_assay_file.php
 // Serve uploaded assay attachments (any type). One URL: preview (inline); browser decides display vs download.
-// Requires: db_login.php. Do NOT include page_setup.php or anything that echoes HTML.
+// Do NOT call page_start() or anything that echoes HTML.
 
-session_start();
-include("db_login.php");
+require __DIR__ . '/bootstrap.php';
+require_priv('basic');
+include("db_login.php");          // the old mysql_* connection the assay code runs on
 mysql_select_db('assay_qc');
 
 if (!isset($_GET['id'])) {

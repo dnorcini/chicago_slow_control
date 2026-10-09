@@ -25,7 +25,7 @@ page_start();
 <tr>
   <td><strong><?= h($label) ?></strong></td>
   <td><a href="list.php?stage=<?= h($stage) ?>"><?= h($list_label) ?></a>
-      &nbsp;&middot;&nbsp;<a href="export.php?stage=<?= h($stage) ?>" title="Download all values as CSV, with the old column names">CSV</a></td>
+      <?php if (has_priv('full')): ?>&nbsp;&middot;&nbsp;<a href="export.php?stage=<?= h($stage) ?>" title="Download all values as CSV, with the old column names">CSV</a><?php endif ?></td>
   <td><?= has_priv('full') ? '<a href="details.php?stage=' . h($stage) . '">' . h($details_label) . '</a>' : '&mdash;' ?></td>
 </tr>
 <?php endforeach ?>

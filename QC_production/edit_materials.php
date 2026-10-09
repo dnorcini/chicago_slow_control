@@ -6,12 +6,11 @@
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 
-session_start();
-
-$req_priv = "full";
-include("db_login.php");   // legacy mysql_connect() etc.
-include("page_setup.php"); // your header/menu
-include("aux/assay_helpers.php"); // your header/menu
+require __DIR__ . '/bootstrap.php';
+require_priv('full');
+include("db_login.php");          // the old mysql_* connection the assay code runs on
+page_start();
+include("aux/assay_helpers.php");
 include("aux/table_navigation.php");
 
 // Uncertainty: submitted value is in hidden input detail_uncertainty_ROWID; cell is display only
@@ -117,7 +116,7 @@ while ($row = mysql_fetch_assoc($rm)) {
     echo '<label style="margin-right:12px;">Finished <input type="checkbox" name="assay_finished" value="1" form="update-form-' . $assay_id . '"' . $finished_checked . '></label>';
     echo '<button type="submit" form="update-form-' . $assay_id . '">Save</button>';
     echo '&nbsp;&nbsp;';
-    echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post" style="display:inline;">';
+    echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post" style="display:inline;">' . csrf_field();
     echo '<input type="hidden" name="assay_action" value="delete_assay">';
     echo '<input type="hidden" name="assay_id" value="' . h($assay_id) . '">';
     echo '<button type="submit" onclick="return confirm(\'Delete assay row and its detail table (assay_results_ID)? This cannot be undone.\');">Delete</button>';
@@ -131,7 +130,7 @@ while ($row = mysql_fetch_assoc($rm)) {
     /***********************
      * 1) UPDATE ASSAY FORM
      ***********************/
-    echo '<form id="update-form-' . $assay_id . '" action="' . h($_SERVER['PHP_SELF']) . '" method="post" enctype="multipart/form-data">';
+    echo '<form id="update-form-' . $assay_id . '" action="' . h($_SERVER['PHP_SELF']) . '" method="post" enctype="multipart/form-data">' . csrf_field();
     echo '<input type="hidden" name="assay_action" value="update_assay">';
     echo '<input type="hidden" name="assay_id" value="' . h($assay_id) . '">';
 
@@ -201,7 +200,7 @@ while ($row = mysql_fetch_assoc($rm)) {
             echo '<li>';
             echo h($label) . ' ';
             echo '[<a href="' . h($preview_url) . '" target="_blank">preview</a>] ';
-            echo '[<form action="' . h($_SERVER['PHP_SELF']) . '" method="post" style="display:inline;">';
+            echo '[<form action="' . h($_SERVER['PHP_SELF']) . '" method="post" style="display:inline;">' . csrf_field();
             echo '<input type="hidden" name="assay_action" value="delete_file">';
             echo '<input type="hidden" name="assay_id" value="' . h($assay_id) . '">';
             echo '<input type="hidden" name="file_id" value="' . h($file_id) . '">';
@@ -243,7 +242,7 @@ while ($row = mysql_fetch_assoc($rm)) {
     $detail_row_ids = [];
     while ($d = mysql_fetch_assoc($rd)) {
         echo '<tr>';
-        echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">';
+        echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">' . csrf_field();
         echo '<input type="hidden" name="detail_table_name" value="' . h($detail_table) . '">';
         echo '<input type="hidden" name="detail_id" value="' . h($d['ID']) . '">';
 
@@ -322,7 +321,7 @@ while ($row = mysql_fetch_assoc($rm)) {
     // add-new row
     $new_row_id = 'a' . $assay_id; // unique per assay, avoids collision with numeric row IDs
     echo '<tr>';
-    echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">';
+    echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">' . csrf_field();
     echo '<input type="hidden" name="detail_table_name" value="' . h($detail_table) . '">';
     $cell_td = ' style="text-align:center; vertical-align:middle;"';
     $cell_in = ' style="width:100%; text-align:center; box-sizing:border-box; padding:2px 6px;"';
@@ -361,7 +360,7 @@ echo '<table border="1" cellpadding="4" width="100%">';
 echo '<tr style="background:#eee;"><th align="left">Add new assay</th></tr>';
 echo '<tr><td>';
 
-echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">';
+echo '<form action="' . h($_SERVER['PHP_SELF']) . '" method="post">' . csrf_field();
 echo '<input type="hidden" name="assay_action" value="add_assay">';   // <-- change to your handler name if different
 
 echo '<table border="0" cellpadding="3" width="100%">';
@@ -382,3 +381,5 @@ echo '</form>';
 echo '</td></tr>';
 echo '</table>';
 echo '<br><br>';
+
+page_end();

@@ -9,7 +9,7 @@ require __DIR__ . '/bootstrap.php';
 if (PHP_SAPI === 'cli') {
     $stage = stage_or_404(getopt('', ['stage:'])['stage'] ?? '');
 } else {
-    require_priv('basic');
+    require_priv('full');                     // same as the details pages
     $stage = stage_or_404($_GET['stage'] ?? '');
 }
 $P = STAGES[$stage];
