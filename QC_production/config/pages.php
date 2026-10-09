@@ -26,6 +26,17 @@
 //                   %3$d index from 1), or position => label. Default: the stage's.
 //   'divisor'       for 'dc_day' (Dark Current [e-/pix/day])
 //   'special'       'history' (history box) or 'layout' (which die sits at each position)
+//
+// Each stage's 'list' is its page in list.php:
+//   'tab'      label of the table tab (the other tab is the summary)
+//   'columns'  heading => what it shows: 'id' (link to the details page), 'item.name',
+//              'test.acm', a value 'section/temp/pos/metric' (e.g. 'amp//L1/grade'),
+//              'tally' (grade_tally() of the amp grades, coloured), 'location' (history)
+//   'red'      rows shown in red: 'unchecked' (an amp's check not ticked) or
+//              'no_channel' (a position without a channel in the module layout)
+//   'summary'  parts of the summary tab, in order: 'tally', 'grades:U1' (counts per
+//              grade at one position), 'totals' (count and yield), 'ccd' (CCD counts)
+//   'unit'     what the grades are of, in the summary: 'amp' or 'CCD'
 
 // Single fields (item and test_info columns). label; options (config/options.php);
 // size; rows (text area); input (date/time); check (checkbox); num (must be a number)
@@ -73,6 +84,10 @@ const FIELDS = [
 ];
 
 // Blocks the module stages share
+const MODULE_LIST  = ['columns' => ['ID' => 'id', 'ACM' => 'test.acm', 'Test Date' => 'test.test_date', 'Module Name' => 'item.name',
+                      'A' => 'amp//A/grade', 'B' => 'amp//B/grade', 'C' => 'amp//C/grade', 'D' => 'amp//D/grade',
+                      'Grade' => 'tally', 'Current Location' => 'location'],
+                      'red' => 'no_channel', 'summary' => ['tally', 'totals'], 'unit' => 'CCD'];
 const MODULE_GRADE = ['key' => 'grade', 'label' => 'Grade', 'title' => 'Preliminary Grade Assessment',
                       'grid' => 'amp/', 'pos_label' => '%1$s', 'fields_after' => [['test.reviewer', 'test.notes']]];
 const M_CTI_FRONT  = ['cti_front_right_fraction', 'ctix_comments', 'cti_front_above_fraction', 'ctiy_comments'];
@@ -84,6 +99,10 @@ const SHOW_RES_DAY = ['res', 'res_e', 'gain', 'dark_current', 'dc_day', 'comment
 const PAGES = [
     'ccd' => [
         'item_label' => 'CCD',
+        'list' => ['tab' => 'CCDs', 'summary' => ['ccd'], 'columns' => [
+            'CCD ID' => 'id', 'Name' => 'item.name', 'Type' => 'item.ccd_type', 'Size' => 'item.size',
+            'Wafer ID' => 'item.wafer_id', 'Wafer position' => 'item.wafer_position', 'Status' => 'item.status',
+            'Current location' => 'item.location']],
         'pos_label'  => ['U1' => 'U1 (CCD C)', 'L1' => 'L1 (CCD A)', 'U2' => 'U2 (CCD D)', 'L2' => 'L2 (CCD B)'],
         'blocks' => [
             ['key' => 'origin', 'label' => 'Origin', 'title' => 'Origin', 'fields' => [
@@ -112,6 +131,11 @@ const PAGES = [
     ],
     'die' => [
         'item_label' => 'DIE',
+        'list' => ['tab' => 'DIEs', 'red' => 'unchecked', 'summary' => ['tally', 'grades:U1', 'totals'], 'unit' => 'amp',
+                   'columns' => ['DIE ID' => 'id', 'Wafer ID' => 'item.wafer_id', 'Wafer Position' => 'item.wafer_position',
+                                 'ACM' => 'test.acm', 'Test Date' => 'test.test_date', 'CCD Name' => 'item.name',
+                                 'L1' => 'amp//L1/grade', 'L2' => 'amp//L2/grade', 'U1' => 'amp//U1/grade', 'U2' => 'amp//U2/grade',
+                                 'Grade' => 'tally', 'Current Location' => 'location']],
         'pos_label'  => '%1$s (ch%3$d)',
         'blocks' => [
             ['key' => 'preliminary', 'label' => 'Preliminary', 'fields' => [
@@ -150,6 +174,7 @@ const PAGES = [
     ],
     'surface' => [
         'item_label' => 'MODULE',
+        'list' => ['tab' => 'MODULE_SURFACEs'] + MODULE_LIST,
         'pos_label'  => 'ch%2$d (ext%3$d)',
         'blocks' => [
             ['key' => 'preliminary', 'label' => 'Preliminary', 'fields' => [
@@ -188,6 +213,7 @@ const PAGES = [
     ],
     'underground' => [
         'item_label' => 'MODULE',
+        'list' => ['tab' => 'MODULE_UNDERGROUNDs'] + MODULE_LIST,
         'pos_label'  => 'ch%2$d (ext%3$d)',
         'blocks' => [
             ['key' => 'preliminary', 'label' => 'Preliminary', 'fields' => [

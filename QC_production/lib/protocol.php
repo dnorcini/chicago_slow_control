@@ -190,3 +190,22 @@ function block_cells(string $stage, array $block): array {
     }
     return $cells;
 }
+
+// The tally of a die or module from its 4 amp/CCD grades (rule confirmed
+// 2026-10-04): 4 Science = Charizard, 3 = Charmeleon, 1-2 = Charmander,
+// 0 = Geodude; '' until all four grades are filled in.
+function grade_tally(array $grades): string {
+    if (count(array_filter($grades, fn($g) => $g !== null && $g !== '')) < 4)
+        return '';
+    $n = count(array_filter($grades, fn($g) => $g === 'Science'));
+    return match (true) { $n === 4 => 'Charizard', $n === 3 => 'Charmeleon',
+                          $n >= 1 => 'Charmander', default => 'Geodude' };
+}
+
+// Colour and summary note of each tally, as on the old list pages
+const TALLIES = [
+    'Charizard'  => ['color' => 'red',    'note' => '4 Science grade'],
+    'Charmeleon' => ['color' => 'orange', 'note' => '3 Science grade'],
+    'Charmander' => ['color' => 'yellow', 'note' => '1 or 2 Science grade'],
+    'Geodude'    => ['color' => 'gray',   'note' => '0 Science grade'],
+];

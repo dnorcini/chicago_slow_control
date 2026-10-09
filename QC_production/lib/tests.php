@@ -142,3 +142,42 @@ function save_layout(int $module_id, array $positions, array $post): array {
     db()->commit();
     return [];
 }
+
+// Everything list.php shows for one stage, in a few queries: one row per item
+// that has a test of this stage or no test yet (a new item), by id:
+// ['item' => row, 'test' => row|null, 'values' => "section|temp|pos|metric" => row,
+//  'location' => current location, 'dies' => pos => die row (modules)]
+function list_rows(string $stage, array $sections): array {
+    $type = item_table($stage);
+    $tests = [];                              // the latest test of this stage per item
+    foreach (all('SELECT * FROM test_info WHERE item_type = ? AND stage = ? ORDER BY test_number', [$type, $stage]) as $t)
+        $tests[$t['item_id']] = $t;
+    $tested = array_flip(array_column(all('SELECT DISTINCT item_id FROM test_info WHERE item_type = ?', [$type]), 'item_id'));
+
+    $values = [];
+    if ($sections) {
+        $in = implode(',', array_fill(0, count($sections), '?'));
+        foreach (all("SELECT m.* FROM measurement m JOIN test_info t ON t.id = m.test_id
+                      WHERE t.item_type = ? AND t.stage = ? AND m.section IN ($in)", [$type, $stage, ...$sections]) as $m)
+            $values[$m['test_id']]["{$m['section']}|{$m['temp']}|{$m['pos']}|{$m['metric']}"] = $m;
+    }
+    $locations = [];                          // same order as current_location(): the first row per item wins
+    foreach (all("SELECT sub_id, location FROM history WHERE type = ?
+                  ORDER BY sub_id, (date IS NULL OR date = '') DESC, date DESC, entry DESC", [$type]) as $h)
+        $locations[$h['sub_id']] ??= (string)$h['location'];
+    $dies = [];
+    if ($type === 'module')
+        foreach (all('SELECT * FROM die WHERE module_id IS NOT NULL') as $d)
+            $dies[$d['module_id']][$d['module_pos']] = $d;
+
+    $rows = [];
+    foreach (all("SELECT * FROM `$type` ORDER BY id") as $item) {
+        $id = $item['id'];
+        $test = $tests[$id] ?? null;
+        if (!$test && isset($tested[$id]))   // tested, but only at other stages
+            continue;
+        $rows[] = ['item' => $item, 'test' => $test, 'values' => $test ? ($values[$test['id']] ?? []) : [],
+                   'location' => $locations[$id] ?? '', 'dies' => $dies[$id] ?? []];
+    }
+    return $rows;
+}
