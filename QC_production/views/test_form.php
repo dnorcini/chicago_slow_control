@@ -39,9 +39,11 @@ $files = function (array $slots) use ($stage, $id): string {
 ?>
 <table border="1" cellpadding="2" width="100%">
 <tr>
+<?php if ($P['new'] ?? true): ?>
   <th><form action="<?= h($url($id)) ?>" method="post"><?= csrf_field() ?>
       <input type="submit" name="new" value="New <?= h($label) ?>" title="Generate a new <?= h($label) ?> entry" style="font-size: 10pt">
   </form></th>
+<?php endif ?>
   <th><form action="details.php" method="get"><input type="hidden" name="stage" value="<?= h($stage) ?>">
       &nbsp;&nbsp;&nbsp;&nbsp;Choose <?= h($label) ?> ID: <input type="text" name="id" size="6">
   </form></th>
@@ -63,6 +65,9 @@ $files = function (array $slots) use ($stage, $id): string {
 
 <p><b><?= h($label) ?> ID: <?= (int)$id ?> &nbsp; <?= h($item['name']) ?></b>
 <?php if ($test): ?> &nbsp; <small>(test <?= (int)$test['test_number'] ?> of this <?= h(STAGES[$stage]['item']) ?>)</small><?php endif ?></p>
+<?php if (!$test && ($P['list']['rows'] ?? '') === 'tested'): ?>
+<p style="color:red">Not in the <?= h($label) ?> list yet. Fill in Testing below and press its Submit to add it.</p>
+<?php endif ?>
 
 <?php foreach ($P['blocks'] as $b):
     $key = $b['key']; ?>

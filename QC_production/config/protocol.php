@@ -100,7 +100,7 @@ const MODULE_COLS = ['id' => 'id', 'name' => 'Name', 'status' => 'Status'];
 //
 // Each stage:
 //   'item'       which item table it tests (ccd, die, module)
-//   'old_table'  the die_qc table it came from
+//   'old_table'  the die_qc table it came from (none for stages started in ccdqc)
 //   'item_cols'  item columns in the CSV export (new => old name)
 //   'test_cols'  test_info columns in the CSV export (new => old name)
 //   'positions'  amps/CCDs, in form order
@@ -138,6 +138,36 @@ const STAGES = [
             'test' => ['old' => '', 'once' => ['test_date' => 'Test_date', 'temp' => 'Test_temp', 'vref' => 'Test_vref',
                                                'eff_resistivity' => 'Eff_resistivity', 'ccd_defect_notes' => 'Defects']],
             'amp'  => ['old' => '', 'per_pos' => ['charge', 'noise', 'resolution', 'gain', 'dark_current']],
+        ],
+    ],
+    // CCDs tested at Hopkins: packaged CCDs and modules, so positions are
+    // channels (A..D, shown as ch0..ch3 as on the module pages). Images as in the
+    // module underground test, with its Images 5, 6, 7 renamed Image 8, 8 SB, 8 PB.
+    'hopkins_ccd' => [
+        'item'      => 'ccd',
+        'item_cols' => ['id' => 'ID', 'name' => 'Name', 'ccd_type' => 'CCD_Type', 'size' => 'Size',
+                        'status' => 'Status', 'location' => 'Location'],
+        'test_cols' => TEST_COLS,
+        'positions' => ['A', 'B', 'C', 'D'],
+        'upload_dir' => 'edit_hopkins_ccd/ccd_%d',
+        'sections'  => [
+            'test'  => ['old' => '', 'temps' => [
+                            'low'  => ['once' => ['temp_b' => 'Temp_Low_B', 'temp_c' => 'Temp_Low_C', 'image_dir' => 'Image_Low_Dir']],
+                            'high' => ['once' => ['temp_b' => 'Temp_High_B', 'temp_c' => 'Temp_High_C', 'image_dir' => 'Image_High_Dir']]]],
+            'amp'   => ['old' => '', 'per_pos' => ['grade', 'defects', 'notes']],
+            'trace' => ['old' => 'Trace',  'temps' => ['high'], 'per_pos' => ['saturation', 'comments', 'reference']],
+            'img1'  => ['old' => 'Image1', 'temps' => ['high'], 'per_pos' => ['tracks', 'defects', 'noise', 'comments'], 'once' => ['reference']],
+            'img2'  => ['old' => 'Image2', 'temps' => ['high'], 'per_pos' => ['column_defects', 'noise', 'comments'], 'once' => ['reference']],
+            'img31' => ['old' => 'Image31', 'temps' => ['low', 'high'], 'per_pos' => M_RES_GAIN],
+            'img32' => ['old' => 'Image32', 'temps' => ['low', 'high'], 'per_pos' => M_RES_GAIN],
+            'img4'  => ['old' => 'Image4', 'temps' => [
+                            'low'  => ['per_pos' => ['defects', 'cti_visual', ...M_PEAKS_CTI], 'once' => ['reference']],
+                            'high' => ['per_pos' => [...M_DEFECT_MAP, 'comments'], 'once' => ['reference']]]],
+            'img8'  => ['old' => 'Image8', 'temps' => ['low'], 'per_pos' => M_PEAKS_CTI,
+                        'once' => ['reference', 'crosstalk_comments' => 'Image8_Low_Crosstalk_comments'],
+                        'pairs' => ['crosstalk']],
+            'image_8_SB' => ['old' => 'Image_8_SB', 'temps' => ['low'], 'per_pos' => ['peak1', 'peak2', 'comments'], 'once' => ['reference']],
+            'image_8_PB' => ['old' => 'Image_8_PB', 'temps' => ['low'], 'per_pos' => ['peak1', 'peak2', 'comments'], 'once' => ['reference']],
         ],
     ],
     'die' => [

@@ -37,6 +37,11 @@
 //   'summary'  parts of the summary tab, in order: 'tally', 'grades:U1' (counts per
 //              grade at one position), 'totals' (count and yield), 'ccd' (CCD counts)
 //   'unit'     what the grades are of, in the summary: 'amp' or 'CCD'
+//   'rows'     which items are listed: 'all', 'tested' (only those with a test of
+//              this stage; the details page then also steps through only those),
+//              or by default those with a test of this stage or no test yet
+//
+// 'new' => false hides the "New <item>" button (items are created on another stage's page).
 
 // Single fields (item and test_info columns). label; options (config/options.php);
 // size; rows (text area); input (date/time); check (checkbox); num (must be a number)
@@ -99,7 +104,7 @@ const SHOW_RES_DAY = ['res', 'res_e', 'gain', 'dark_current', 'dc_day', 'comment
 const PAGES = [
     'ccd' => [
         'item_label' => 'CCD',
-        'list' => ['tab' => 'CCDs', 'summary' => ['ccd'], 'columns' => [
+        'list' => ['tab' => 'CCDs', 'rows' => 'all', 'summary' => ['ccd'], 'columns' => [
             'CCD ID' => 'id', 'Name' => 'item.name', 'Type' => 'item.ccd_type', 'Size' => 'item.size',
             'Wafer ID' => 'item.wafer_id', 'Wafer position' => 'item.wafer_position', 'Status' => 'item.status',
             'Current location' => 'item.location']],
@@ -127,6 +132,86 @@ const PAGES = [
                 [['test.notes', 'label' => 'Testing details (Elog)', 'rows' => 0, 'size' => 120]],
                 [['test.tester', 'label' => 'Tested at', 'options' => 'location', 'size' => null], 'test//test_date']]],
             ['key' => 'notes', 'label' => 'Notes', 'title' => 'Notes', 'fields' => [['item.note']]],
+        ],
+    ],
+    'hopkins_ccd' => [
+        'item_label' => 'Hopkins CCD',
+        'new'  => false,
+        'list' => ['tab' => 'CCDs', 'rows' => 'tested', 'summary' => ['ccd', 'tally', 'totals'], 'unit' => 'channel',
+                   'columns' => ['CCD ID' => 'id', 'Name' => 'item.name', 'Type' => 'item.ccd_type', 'Size' => 'item.size',
+                                 'Test Date' => 'test.test_date', 'Tester' => 'test.tester', 'Chamber' => 'test.chamber',
+                                 'ACM' => 'test.acm', 'ch0' => 'amp//A/grade', 'ch1' => 'amp//B/grade',
+                                 'ch2' => 'amp//C/grade', 'ch3' => 'amp//D/grade', 'Grade' => 'tally',
+                                 'Status' => 'item.status', 'Current location' => 'item.location']],
+        'pos_label'  => 'ch%2$d (ext%3$d)',
+        'blocks' => [
+            ['key' => 'ccd', 'label' => 'CCD', 'title' => 'CCD', 'fields' => [
+                ['item.name', 'item.status', 'updated'],
+                ['item.ccd_type', 'item.size', 'item.location']]],
+            ['key' => 'history', 'label' => 'History', 'special' => 'history'],
+            ['key' => 'grade', 'label' => 'Grade', 'title' => 'Preliminary Grade Assessment', 'grid' => 'amp/',
+             'fields_after' => [['test.reviewer', 'test.notes']]],
+            ['key' => 'testing', 'label' => 'Testing', 'title' => 'Testing', 'fields' => [
+                [['test.tester', 'size' => 30], 'test.test_date', ['test.test_time', 'label' => 'Test Time [ET]'], 'test.chamber'],
+                ['test/low/temp_b', 'test/high/temp_b', 'test/low/temp_c', 'test/high/temp_c'],
+                ['test.feedthru_position', 'test.acm'],
+                [['test.script', 'size' => 80]],
+                [['test/high/image_dir', 'size' => 60], ['test/low/image_dir', 'size' => 60]]],
+             'files' => ['seq_high_file' => 'sequencer file', 'bcf_high_file' => 'bcf file']],
+            // Image titles: those of the module underground test (its Images 5, 6, 7 are
+            // Image 8, Image 8 SB and Image 8 PB here)
+            ['key' => 'trace', 'label' => 'Trace', 'title' => 'Trace and PSD, High Temp', 'grid' => 'trace/high',
+             'pos_files' => ['psd_high_file' => 'PSD'], 'files' => ['trace_high_file' => 'Image File']],
+            ['key' => 'image1high', 'label' => 'Image1', 'grid' => 'img1/high',
+             'title' => 'Image 1, High Temp - [1 skip, 20x20 binning, 80rx320c, Active Region, 3s Exposure] - Aim: To see tracks',
+             'files' => ['image1_high_file' => 'Image File']],
+            ['key' => 'image2high', 'label' => 'Image2', 'grid' => 'img2/high',
+             'title' => 'Image 2, High Temp - [1 skip, 1x1 binning, 30rx6400c, Serial Register, 10s Exposure] - Aim: Serial Register Defects',
+             'files' => ['image2_high_file' => 'Image File', 'image2_high_log' => 'Log File']],
+            ['key' => 'image31high', 'label' => 'Image3-1 High', 'grid' => 'img31/high', 'show' => SHOW_RES_DAY, 'divisor' => 341,
+             'title' => 'Image 3-1, High Temp - [500 skip, 1x1 binning, 30rx640c, Serial Register, 0s Exposure] - Aim: Single Electron Resolution',
+             'files' => ['image31_high_file' => 'Image File']],
+            ['key' => 'image32high', 'label' => 'Image3-2 High', 'grid' => 'img32/high', 'show' => SHOW_RES_DAY, 'divisor' => 654,
+             'title' => 'Image 3-2, High Temp - [1000 skip, 1x1 binning, 30rx640c, Serial register, 0s Exposure] - Aim: Single Electron Resolution',
+             'files' => ['image32_high_file' => 'Image File']],
+            ['key' => 'image4high', 'label' => 'Image4 High', 'grid' => 'img4/high',
+             'title' => 'Image 4, High Temp - [1 skip, 1x1 binning, 1600rx6400c, Active region, 500s Exposure] - Aim: Defect Map, Sharpness of tracks, CTI, Noise, CCD channel mapping',
+             'files' => ['image4_high_file' => 'Image File', 'image4_high_log' => 'Log File']],
+            ['key' => 'image31low', 'label' => 'Image3-1 Low', 'grid' => 'img31/low', 'show' => SHOW_RES_DAY, 'divisor' => 371 * 10,
+             'title' => 'Image 3-1, Low Temp - [500 skip, 1x10 binning, 30rx640c, Serial Register, 0s Exposure] - Aim: Single Electron Resolution',
+             'files' => ['image31_low_file' => 'Image File']],
+            ['key' => 'image32low', 'label' => 'Image3-2 Low', 'grid' => 'img32/low', 'show' => SHOW_RES_DAY, 'divisor' => 684 * 10,
+             'title' => 'Image 3-2, Low Temp - [1000 skip, 1x10 binning, 30rx640c, Serial Register, 0s Exposure] - Aim: Single Electron Resolution',
+             'files' => ['image32_low_file' => 'Image File']],
+            ['key' => 'image4low', 'label' => 'Image4 Low', 'grid' => 'img4/low',
+             'title' => 'Image 4, Low Temp - [1 skip, 1x1 binning, 1600rx6400c, Active region, 500s Exposure] - Aim: Defect Map, Sharpness of tracks, CTI, Noise, CCD channel mapping',
+             'tables' => [
+                ['metrics' => ['defects', 'cti_visual', 'peak1', 'peak2', 'comments'], 'once' => ['reference'],
+                 'files' => ['image41_low_file' => 'Composite Images', 'image42_low_file' => 'Energy_Peaks',
+                             'image42_low_log' => 'Defect Log']],
+                ['title' => 'Image 4, Low Temp - Frontside CTI', 'metrics' => M_CTI_FRONT,
+                 'files' => ['image43_low_file' => 'Frontside Images']],
+                ['title' => 'Image 4, Low Temp - Backside CTI', 'metrics' => M_CTI_BACK,
+                 'files' => ['image44_low_file' => 'Backside Images', 'image4_low_log' => 'CTI Log']]]],
+            ['key' => 'image8low', 'label' => 'Image8', 'grid' => 'img8/low',
+             'title' => 'Image 8, Low Temp - [500 skip, 1x1 binning, 320rx640c, Active region, 500s Exposure] - Aim: High Resolution Fe55 Cluster Analysis, CTI, noise',
+             'tables' => [
+                ['metrics' => ['peak1', 'peak2', 'comments'], 'once' => ['reference'],
+                 'files' => ['image82_low_file' => 'Energy_Peaks', 'image8_low_log' => 'Log File']],
+                ['title' => 'Image 8, Low Temp - Frontside CTI', 'metrics' => M_CTI_FRONT,
+                 'files' => ['image83_low_file' => 'Frontside Images']],
+                ['title' => 'Image 8, Low Temp - Backside CTI', 'metrics' => M_CTI_BACK,
+                 'files' => ['image84_low_file' => 'Backside Images']],
+                ['title' => 'Image 8, Low Temp - Crosstalk', 'pairs' => ['crosstalk'], 'once' => ['crosstalk_comments'],
+                 'files' => ['image85_low_file' => 'Crosstalk Images', 'image85_low_log' => 'Crosstalk Log']]]],
+            ['key' => 'image8sb', 'label' => 'Image8 SB', 'grid' => 'image_8_SB/low',
+             'title' => 'Image 8 SB, Low Temp - [500 skip, 10x1 binning, 320rx640c, Active region, 500s Exposure] - Aim: High Resolution Fe55 Cluster Analysis, CTI, noise',
+             'files' => ['image8sb2_low_file' => 'Energy_Peaks', 'image8sb_low_log' => 'Log File',
+                         'image8sb3_low_file' => 'Frontside Images', 'image8sb4_low_file' => 'Backside Images']],
+            ['key' => 'image8pb', 'label' => 'Image8 PB', 'grid' => 'image_8_PB/low',
+             'title' => 'Image 8 PB, Low Temp - [500 skip, 1x10 binning, 320rx640c, Active region, 500s Exposure] - Aim: High Resolution Fe55 Cluster Analysis, CTI, Noise',
+             'files' => ['image8pb2_low_file' => 'Energy_Peaks', 'image8pb_low_log' => 'Log File',
+                         'image8pb3_low_file' => 'Frontside Images', 'image8pb4_low_file' => 'Backside Images']],
         ],
     ],
     'die' => [

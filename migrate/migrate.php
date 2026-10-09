@@ -158,6 +158,7 @@ foreach ($old['die'] as $id => $r) {
 $tests = [];
 $read = [];             // old table => [column => true] read by the migration
 foreach (STAGES as $stage => $S) {
+    if (!isset($S['old_table'])) continue;    // stage started in ccdqc, nothing to move
     $table = $S['old_table'];
     $cells = protocol_cells($stage);
     $test_cols = $S['test_cols'];

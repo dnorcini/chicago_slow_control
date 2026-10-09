@@ -16,7 +16,7 @@ if ($id === 0)
 $self = "details.php?stage=$stage&id=$id";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['new']))
+    if (isset($_POST['new']) && ($P['new'] ?? true))
         redirect("details.php?stage=$stage&id=" . new_item($stage));
     $item = find_item($stage, $id);
     $test = $item ? find_test($stage, $id) : null;

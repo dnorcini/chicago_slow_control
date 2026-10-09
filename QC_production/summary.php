@@ -6,6 +6,7 @@ require_priv('basic');
 
 $rows = [                                     // stage => [table label, list label, details label]
     'ccd'         => ['Pre-Production CCD', 'Pre-Production List',     'Pre-Production Details'],
+    'hopkins_ccd' => ['Hopkins CCD',        'Hopkins CCD List',        'Hopkins CCD Details'],
     'die'         => ['DAMIC-M Die',        'Die List',                'Die Details'],
     'surface'     => ['Module Surface',     'Module Surface List',     'Module Surface Details'],
     'underground' => ['Module Underground', 'Module Underground List', 'Module Underground Details'],

@@ -40,6 +40,7 @@ function keyed(PDO $db, string $sql, string $key): array {
 $num = '[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?';
 $checked = 0;
 foreach (STAGES as $stage => $S) {
+    if (!isset($S['old_table'])) continue;    // stage started in ccdqc, nothing to move
     $rows = keyed($old, "SELECT * FROM `{$S['old_table']}`", $S['old_table'] === 'CCD' ? 'ID' : 'id');
     $tests = keyed($new, "SELECT id, item_id FROM test_info WHERE stage = " . $new->quote($stage), 'item_id');
     $values = [];

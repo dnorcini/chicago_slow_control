@@ -12,11 +12,18 @@ function find_item(string $stage, int $id): ?array {
     return one('SELECT * FROM `' . item_table($stage) . '` WHERE id = ?', [$id]);
 }
 
-// [first, previous, next, last] item ids around $id (null where there is none)
+// [first, previous, next, last] item ids around $id (null where there is none).
+// A stage that lists only its tested items (config/pages.php 'rows' => 'tested') steps through only those.
 function neighbours(string $stage, int $id): array {
     $t = '`' . item_table($stage) . '`';
+    $p = [];
+    if ((PAGES[$stage]['list']['rows'] ?? '') === 'tested') {
+        $t = "(SELECT * FROM $t WHERE id IN (SELECT item_id FROM test_info WHERE item_type = ? AND stage = ?)) x";
+        $p = [item_table($stage), $stage];
+    }
     $r = one("SELECT (SELECT MIN(id) FROM $t) first, (SELECT MAX(id) FROM $t WHERE id < ?) prev,
-                     (SELECT MIN(id) FROM $t WHERE id > ?) next, (SELECT MAX(id) FROM $t) last", [$id, $id]);
+                     (SELECT MIN(id) FROM $t WHERE id > ?) next, (SELECT MAX(id) FROM $t) last",
+             [...$p, ...$p, $id, ...$p, $id, ...$p]);
     return [$r['first'], $r['prev'], $r['next'], $r['last']];
 }
 
@@ -144,7 +151,8 @@ function save_layout(int $module_id, array $positions, array $post): array {
 }
 
 // Everything list.php shows for one stage, in a few queries: one row per item
-// that has a test of this stage or no test yet (a new item), by id:
+// that has a test of this stage or no test yet (a new item), by id (or every
+// item / only the tested ones: config/pages.php 'rows'):
 // ['item' => row, 'test' => row|null, 'values' => "section|temp|pos|metric" => row,
 //  'location' => current location, 'dies' => pos => die row (modules)]
 function list_rows(string $stage, array $sections): array {
@@ -170,11 +178,12 @@ function list_rows(string $stage, array $sections): array {
         foreach (all('SELECT * FROM die WHERE module_id IS NOT NULL') as $d)
             $dies[$d['module_id']][$d['module_pos']] = $d;
 
+    $which = PAGES[$stage]['list']['rows'] ?? '';
     $rows = [];
     foreach (all("SELECT * FROM `$type` ORDER BY id") as $item) {
         $id = $item['id'];
         $test = $tests[$id] ?? null;
-        if (!$test && isset($tested[$id]))   // tested, but only at other stages
+        if (!$test && ($which === 'tested' || ($which !== 'all' && isset($tested[$id]))))   // not tested at this stage
             continue;
         $rows[] = ['item' => $item, 'test' => $test, 'values' => $test ? ($values[$test['id']] ?? []) : [],
                    'location' => $locations[$id] ?? '', 'dies' => $dies[$id] ?? []];

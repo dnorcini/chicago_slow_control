@@ -66,6 +66,7 @@ function compare(?string $old, string $new, string $type): string {
 
 $total_diffs = 0;
 foreach (STAGES as $stage => $S) {
+    if (!isset($S['old_table'])) continue;    // stage started in ccdqc, nothing to move
     $table = $S['old_table'];
     $key = $S['item_cols']['id'];
     [$header, $rows] = export_csv($stage, $dst_host);
