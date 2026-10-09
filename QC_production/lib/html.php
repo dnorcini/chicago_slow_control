@@ -12,12 +12,31 @@ function csrf_field(): string {
     return '<input type="hidden" name="csrf" value="' . h(csrf_token()) . '">';
 }
 
-// <select> with one option per value; $options = ['', 'Science', 'Engineering', ...]
+// <select> with one option per value; $options = ['', 'Science', 'Engineering', ...].
+// A stored value that isn't in the list is added, so saving doesn't lose it.
 function dropdown(string $name, array $options, $selected): string {
+    if (trim((string)$selected) !== '' && !in_array((string)$selected, array_map('strval', $options), true))
+        $options[] = $selected;
     $html = '<select name="' . h($name) . '">';
     foreach ($options as $v)
         $html .= '<option value="' . h($v) . '"' . ((string)$v === (string)$selected ? ' selected' : '') . '>' . h($v) . '</option>';
     return $html . '</select>';
+}
+
+// The input for one field or metric, from its definition in config/pages.php
+// FIELDS or config/protocol.php METRICS: check box, dropdown, text area or text box
+function input_for(string $name, array $def, ?string $value): string {
+    $type = $def['type'] ?? '';
+    if ($type === 'check' || !empty($def['check']))      // item check boxes post 0 when unticked
+        return ($type === 'check' ? '' : '<input type="hidden" name="' . h($name) . '" value="0">')
+             . '<input type="checkbox" name="' . h($name) . '" value="1"' . ($value ? ' checked' : '') . '>';
+    $options = $def['options'] ?? ($type === 'yes_no' ? 'yes_no' : null);
+    if ($options)
+        return dropdown($name, OPTIONS[$options], $value);
+    if (!empty($def['rows']))
+        return '<textarea name="' . h($name) . '" rows="' . (int)$def['rows'] . '" style="width:100%">' . h($value) . '</textarea>';
+    $size = empty($def['size']) ? '' : ' size="' . (int)$def['size'] . '"';
+    return '<input type="' . ($def['input'] ?? 'text') . '" name="' . h($name) . '" value="' . h($value) . '"' . $size . '>';
 }
 
 function redirect(string $url): never {
