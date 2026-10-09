@@ -3,7 +3,7 @@
 // The test protocol, written down once: which sections (images), temperatures,
 // positions and metrics each stage has, and the old die_qc column each value
 // came from. Read by migrate/migrate.php, export.php, details.php and the lists.
-// See REFACTOR_DB_REDESIGN.md §6. How each stage's page is laid out (blocks,
+// How each stage's page is laid out (blocks,
 // headings, upload slots) is in config/pages.php.
 //
 // Old column name = section 'old' prefix + '_' + temperature 'col' + '_' +

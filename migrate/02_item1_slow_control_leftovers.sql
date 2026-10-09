@@ -1,4 +1,4 @@
--- Item 1 (REFACTOR_ISSUES.md §2.5): leftovers from the slow-control system.
+-- Item 1: leftovers from the slow-control system.
 -- Nothing in legacyAPP or targetAPP reads these.
 -- Applied to the Docker DB on 2026-10-04; run again on production at cut-over.
 

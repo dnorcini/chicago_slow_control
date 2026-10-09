@@ -1,6 +1,6 @@
 <?php
 // migrate/migrate.php
-// Item 2: copy die_qc into the new ccdqc schema (REFACTOR_DB_REDESIGN.md).
+// Item 2: copy die_qc into the new ccdqc schema.
 // die_qc is only read. ccdqc's tables are dropped and recreated from schema.sql,
 // so the script can be run again at any time.
 //
@@ -16,17 +16,17 @@
 if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
 require __DIR__ . '/../QC_production/lib/protocol.php';
 
-// Old columns that are not carried over but hold a value (REFACTOR_ISSUES.md §2.3).
+// Old columns that are not carried over but hold a value (8 stray surface values).
 // Any other unread column with data stops the migration.
 const KNOWN_STRAY = [
     'MODULE_SURFACE' => ['Image1_Low_Tracks_A', 'Image1_Low_Noise_C', 'Image3_Low_Sharpness_Tracks_A',
                          'Image3_Low_CTI_Visual_B', 'Image5_Low_Reference_A', 'Image5_Low_Reference_D',
                          'Image5_Low_Column_Defects_B', 'Image5_Low_Noise_B'],
 ];
-// CCD test values where 0.00 means "not entered" (§7 rule 3)
+// CCD test values where 0.00 means "not entered"
 const CCD_ZERO_IS_EMPTY = ['noise', 'resolution', 'gain', 'dark_current', 'temp', 'vref', 'eff_resistivity'];
 
-// Old item and test columns, copied as they are (§4, §5): 'item_cols' and
+// Old item and test columns, copied as they are: 'item_cols' and
 // 'test_cols' of each stage in config/protocol.php.
 const CCD_COLS = STAGES['ccd']['item_cols'];
 const DIE_COLS = STAGES['die']['item_cols'];
@@ -44,7 +44,7 @@ function connect(string $host, ?string $db): PDO {
 }
 
 // All rows of an old table, keyed by id, as raw bytes. The latin1 columns
-// hold UTF-8 bytes (§7 rule 6), so reading the bytes unconverted and checking
+// hold UTF-8 bytes, so reading the bytes unconverted and checking
 // they are valid UTF-8 gives the real text.
 function old_rows(PDO $src, string $table, string $key): array {
     $out = [];
@@ -59,7 +59,7 @@ function old_rows(PDO $src, string $table, string $key): array {
 
 function is_blank(?string $v): bool { return $v === null || trim($v) === ''; }
 
-// One old cell -> [value_num, value_err, value_text], or null for "no row" (§7).
+// One old cell -> [value_num, value_err, value_text], or null for "no row".
 // $why collects what happened, for the report.
 function convert(?string $raw, string $type, bool $zero_is_empty, array &$why, string $where): ?array {
     if (is_blank($raw)) return null;                                   // rule 1
@@ -126,7 +126,7 @@ foreach ($old['underground'] + $old['surface'] as $id => $_) {
 }
 ksort($modules);
 
-// die -> module wiring from both module tables; they must agree (§4)
+// die -> module wiring from both module tables; they must agree
 $wiring = [];
 foreach (['surface', 'underground'] as $stage)
     foreach ($old[$stage] as $id => $r)
@@ -189,7 +189,7 @@ foreach (['MODULE_SURFACE', 'MODULE_UNDERGROUND2'] as $table) {
 }
 foreach (['Activation', 'Humidity', 'Radon'] as $o) $read['MODULE_SURFACE'][$o] = true;
 
-// 3. Columns not carried over must be empty (NULL, '' or 0), apart from the known strays (§8)
+// 3. Columns not carried over must be empty (NULL, '' or 0), apart from the known strays
 $tables = ['ccd' => 'CCD', 'die' => 'DIE', 'surface' => 'MODULE_SURFACE', 'underground' => 'MODULE_UNDERGROUND2'];
 echo "\nOld columns not carried over:\n";
 foreach ($tables as $stage => $table) {
@@ -249,7 +249,7 @@ echo "\nRows written to ccdqc:\n";
 foreach (['ccd', 'die', 'module', 'test_info', 'measurement', 'history', 'users', 'user_privileges'] as $table)
     printf("  %-16s %6d\n", $table, $dst->query("SELECT COUNT(*) FROM ccdqc.`$table`")->fetchColumn());
 echo "  measurement per stage: " . json_encode($n_values) . "\n";
-echo "\nConversion rules applied (§7):\n";
+echo "\nConversion rules applied:\n";
 printf("  CCD test values 0.00 -> no row (rule 3): %d\n", $why['ccd_zero'] ?? 0);
 printf("  peak \"0.0\" -> no row (rule 2):          %d\n", $why['peak_zero'] ?? 0);
 foreach (['text_in_number' => 'text in a numeric metric, kept as text (rule 5)',

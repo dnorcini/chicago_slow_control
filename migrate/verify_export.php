@@ -1,6 +1,6 @@
 <?php
 // migrate/verify_export.php
-// Second migration check (REFACTOR_ISSUES.md §3): export each stage from ccdqc
+// Second migration check: export each stage from ccdqc
 // with QC_production/export.php and compare the CSV with the old die_qc table,
 // column by column and id by id. Read-only.
 //
@@ -8,9 +8,9 @@
 //
 // die_qc is read on DB_HOST, ccdqc on TARGET_DB_HOST (default: the same host).
 // Differences the redesign makes on purpose are counted, not listed:
-//   - CCD test values 0.00 and peak "0.0" placeholders export as blank (§7 rules 2-3)
-//   - whitespace-only text exports as blank (§7 rule 1)
-//   - an unticked check that was NULL exports as 0 (§7 rule 4)
+//   - CCD test values 0.00 and peak "0.0" placeholders export as blank
+//   - whitespace-only text exports as blank
+//   - an unticked check that was NULL exports as 0
 //   - module item columns (Status) come from the one module row, so the
 //     underground export shows them where the old underground table had NULL
 //   - the same number written differently ("6.518E-05" vs "6.518E-5", "5.590" vs "5.59");
@@ -84,7 +84,7 @@ foreach (STAGES as $stage => $S) {
     $only_new = array_diff($header, $old_cols);
     $only_old = array_diff($old_cols, $header);
     echo '  columns only in export: ' . (implode(' ', $only_new) ?: '-') . "\n";
-    printf("  columns only in old table: %d (not carried over, REFACTOR_DB_REDESIGN.md §8)\n", count($only_old));
+    printf("  columns only in old table: %d (not carried over)\n", count($only_old));
     // Those must be empty, apart from bookkeeping and the known surface strays
     $with_data = [];
     foreach ($only_old as $col)

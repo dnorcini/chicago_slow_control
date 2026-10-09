@@ -7,7 +7,7 @@
 //   docker exec -e DB_HOST=db -e TARGET_DB_HOST=targetDB ccdqc-target php /var/www/html/migrate/verify.php
 //
 // Prints every difference; exits 1 if there is any that the conversion rules
-// (REFACTOR_DB_REDESIGN.md §7) don't explain.
+// don't explain.
 if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
 require __DIR__ . '/../QC_production/lib/protocol.php';
 

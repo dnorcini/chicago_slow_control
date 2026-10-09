@@ -73,3 +73,6 @@ QC_production/tmp/
 
 # real DB credentials (template: QC_production/db_config.example.php)
 QC_production/db_config.php
+
+# internal refactor notes: kept locally, never committed
+/REFACTOR*

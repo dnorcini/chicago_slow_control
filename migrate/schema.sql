@@ -1,4 +1,4 @@
--- Item 2: the new ccdqc schema (REFACTOR_DB_REDESIGN.md §3).
+-- Item 2: the new ccdqc schema.
 -- Loaded by migrate/migrate.php, which drops and recreates these tables.
 -- Items in time order: ccd, die, module.
 
