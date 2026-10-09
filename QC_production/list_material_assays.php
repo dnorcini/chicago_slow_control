@@ -3,7 +3,7 @@ require __DIR__ . '/bootstrap.php';
 require_priv('basic');
 include("db_login.php");          // the old mysql_* connection the assay code runs on
 page_start();
-include("aux/assay_helpers.php");
+include("lib/assay_helpers.php");
 
 mysql_select_db('assay_qc');
 

@@ -1,4 +1,6 @@
 <?php
+// lib/assay_helpers.php
+// Helpers of the assay pages (list_material_assays.php, edit_materials.php).
 // h() is in lib/html.php (loaded by bootstrap.php)
 function post_esc($key)
 {

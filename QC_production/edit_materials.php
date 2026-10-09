@@ -10,7 +10,7 @@ require __DIR__ . '/bootstrap.php';
 require_priv('full');
 include("db_login.php");          // the old mysql_* connection the assay code runs on
 page_start();
-include("aux/assay_helpers.php");
+include("lib/assay_helpers.php");
 include("views/table_navigation.php");
 
 // Uncertainty: submitted value is in hidden input detail_uncertainty_ROWID; cell is display only
