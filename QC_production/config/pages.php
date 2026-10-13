@@ -38,10 +38,9 @@
 //              grade at one position), 'totals' (count and yield), 'ccd' (CCD counts)
 //   'unit'     what the grades are of, in the summary: 'amp' or 'CCD'
 //   'rows'     which items are listed: 'all', 'tested' (only those with a test of
-//              this stage; the details page then also steps through only those),
+//              this stage; the details page then also steps through only those, and
+//              its New button creates the item with an empty test of this stage),
 //              or by default those with a test of this stage or no test yet
-//
-// 'new' => false hides the "New <item>" button (items are created on another stage's page).
 
 // Single fields (item and test_info columns). label; options (config/options.php);
 // size; rows (text area); input (date/time); check (checkbox); num (must be a number)
@@ -136,7 +135,6 @@ const PAGES = [
     ],
     'hopkins_ccd' => [
         'item_label' => 'Hopkins CCD',
-        'new'  => false,
         'list' => ['tab' => 'CCDs', 'rows' => 'tested', 'summary' => ['ccd', 'tally', 'totals'], 'unit' => 'channel',
                    'columns' => ['CCD ID' => 'id', 'Name' => 'item.name', 'Type' => 'item.ccd_type', 'Size' => 'item.size',
                                  'Test Date' => 'test.test_date', 'Tester' => 'test.tester', 'Chamber' => 'test.chamber',

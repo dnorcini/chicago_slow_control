@@ -3,7 +3,8 @@
 // The details (edit) page of one item at one stage, laid out by config/pages.php:
 //   details.php?stage=ccd|die|surface|underground&id=N    (no id: the last item)
 // Each block of the page is its own form; saving one block changes only what
-// that block shows, then comes back to it (#block). At the bottom, an empty test
+// that block shows, then comes back to the same scroll position (to the top
+// of the block, #block, when there are messages to read). At the bottom, an empty test
 // of this stage can be deleted (after a confirmation).
 require __DIR__ . '/bootstrap.php';
 require_priv('full');
@@ -16,8 +17,12 @@ if ($id === 0)
 $self = "details.php?stage=$stage&id=$id";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['new']) && ($P['new'] ?? true))
-        redirect("details.php?stage=$stage&id=" . new_item($stage));
+    if (isset($_POST['new'])) {
+        $new = new_item($stage);
+        if (($P['list']['rows'] ?? '') === 'tested')    // so it is in this stage's list at once
+            create_test($stage, $new);
+        redirect("details.php?stage=$stage&id=$new");
+    }
     $item = find_item($stage, $id);
     $test = $item ? find_test($stage, $id) : null;
     if (isset($_POST['delete_test']) && $test) {      // step 1: check it is empty, then ask
@@ -46,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $msgs = array_merge($msgs, save_uploads($stage, $id, block_slots($stage, $block), $_FILES['f'] ?? []));
     if ($msgs)
         $_SESSION['block_msgs'] = [$key => $msgs];
-    redirect("$self#$key");
+    redirect($msgs ? "$self#$key" : $self);       // no messages: back at the same scroll position
 }
 
 $item   = find_item($stage, $id);

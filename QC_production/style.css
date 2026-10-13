@@ -22,6 +22,9 @@ table[border="1"] { border-collapse: collapse; width: 100%; }
 table[border="1"] td, table[border="1"] th { border: 1px solid #b8c4d0; padding: 3px 6px; }
 table[border="1"] th { background: #e8eef5; }
 table[border="1"] tr:nth-child(even) > td { background-color: #f6f8fa; }
+/* Text boxes in the details grids fill their column and shrink with it, so a
+   grid is never wider than the page (columns still get space by box size) */
+table.grid input[type="text"] { width: 100%; min-width: 4em; box-sizing: border-box; }
 
 /* Footer (page_end()) */
 .footer {

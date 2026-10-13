@@ -26,6 +26,11 @@
         /* push checkboxes to the right side */
     }
 
+    /* a block jumped to by #anchor starts below this sticky panel, not under it */
+    .section-block, #delete_test {
+        scroll-margin-top: 6em;
+    }
+
     .hidden-section {
         display: none !important;
     }

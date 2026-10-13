@@ -50,12 +50,20 @@ function page_start(string $title = ''): void {
     echo '<html><head><meta charset="utf-8">';
     echo '<title>' . h(SITE_TITLE . ' QC system' . ($title === '' ? '' : " - $title")) . '</title>';
     echo '<link rel="stylesheet" href="style.css?v=' . filemtime(__DIR__ . '/../style.css') . '">';   // reloaded when it changes
-    // Keep the scroll position when a form posts back to the same page (skipped if the URL has an #anchor)
+    // Back at the same scroll position when a form brings you back to the page
+    // you sent it from (or to its action page). Not when the URL has an #anchor
+    // (details.php adds one only to show a message).
     echo '<script>
-    window.addEventListener("beforeunload", () => localStorage.setItem("scrollY", window.scrollY));
+    document.addEventListener("submit", e => {
+        try { sessionStorage.setItem("scrollBack", JSON.stringify({from: location.href.split("#")[0],
+                                                                   to: e.target.action, y: window.scrollY})); } catch (err) {}
+    });
     window.addEventListener("load", () => {
-        const y = localStorage.getItem("scrollY");
-        if (!window.location.hash && y !== null) window.scrollTo(0, parseInt(y, 10));
+        try {
+            const s = JSON.parse(sessionStorage.getItem("scrollBack") || "null");
+            sessionStorage.removeItem("scrollBack");
+            if (s && !location.hash && (location.href === s.from || location.href === s.to)) window.scrollTo(0, s.y);
+        } catch (err) {}
     });
     </script>';
     echo '</head>', "\n";

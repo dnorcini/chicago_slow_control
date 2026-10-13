@@ -26,24 +26,23 @@ $field = function (array $d) use ($stage, $item, $test, $val, $id): string {
 $files = function (array $slots) use ($stage, $id): string {
     $html = '';
     foreach ($slots as $slot => $text) {
+        $html .= '<span style="white-space: nowrap;">';         // a long row of files wraps between files
         if (find_upload($stage, $id, $slot)) {
             $icon = slot_exts($slot) === ['png', 'jpg', 'jpeg', 'pdf'] ? 'icon.png' : 'icon2.png';
             $html .= '<a href="' . h("file.php?stage=$stage&id=$id&slot=$slot") . '" target="_blank">'
                    . '<img src="pixmaps/' . $icon . '" alt="' . h($text) . '" title="' . h($text) . '" style="height:20px"></a> ';
         }
         $accept = implode(',', array_map(fn($e) => ".$e", slot_exts($slot)));
-        $html .= h($text) . ': <input type="file" name="f[' . h($slot) . ']" accept="' . $accept . '"> &nbsp; &nbsp; ';
+        $html .= h($text) . ': <input type="file" name="f[' . h($slot) . ']" accept="' . $accept . '"></span> &nbsp; &nbsp; ';
     }
     return $html;
 };
 ?>
 <table border="1" cellpadding="2" width="100%">
 <tr>
-<?php if ($P['new'] ?? true): ?>
   <th><form action="<?= h($url($id)) ?>" method="post"><?= csrf_field() ?>
       <input type="submit" name="new" value="New <?= h($label) ?>" title="Generate a new <?= h($label) ?> entry" style="font-size: 10pt">
   </form></th>
-<?php endif ?>
   <th><form action="details.php" method="get"><input type="hidden" name="stage" value="<?= h($stage) ?>">
       &nbsp;&nbsp;&nbsp;&nbsp;Choose <?= h($label) ?> ID: <input type="text" name="id" size="6">
   </form></th>
@@ -122,10 +121,11 @@ $files = function (array $slots) use ($stage, $id): string {
 </tr></table>
 <?php endif ?>
 
-<?php if (!empty($b['fields'])): ?>
+<?php if (!empty($b['fields'])):
+    $ncols = max(array_map('count', $b['fields'])); ?>
 <table border="1" cellpadding="2" width="100%">
 <?php foreach ($b['fields'] as $row): ?>
-  <tr><?php foreach ($row as $f): ?><td style="white-space: nowrap;"><?= $field(field_def($stage, $f)) ?></td><?php endforeach ?></tr>
+  <tr><?php foreach ($row as $i => $f): ?><td<?= $i === count($row) - 1 && count($row) < $ncols ? ' colspan="' . ($ncols - $i) . '"' : '' ?>><?= $field(field_def($stage, $f)) ?></td><?php endforeach ?></tr>
 <?php endforeach ?>
 </table>
 <?php endif ?>
@@ -135,10 +135,10 @@ $files = function (array $slots) use ($stage, $id): string {
     $pos_label = $b['pos_label'] ?? $P['pos_label'];
     foreach (block_tables($stage, $b) as $t): ?>
 <?php if ($t['title'] !== ''): ?><br><b><?= h($t['title']) ?></b><?php endif ?>
-<table border="1" cellpadding="2">
+<table border="1" cellpadding="2" class="grid">
 <?php if ($t['metrics']): ?>
   <tr><td align="left" style="white-space: nowrap;">Amplifier</td>
-<?php foreach ($t['metrics'] as $m): ?>      <td align="left" style="white-space: nowrap;"><?= h(metric_label($stage, $m)) ?></td>
+<?php foreach ($t['metrics'] as $m): ?>      <td align="left"><?= h(metric_label($stage, $m)) ?></td>
 <?php endforeach; foreach ($b['pos_files'] ?? [] as $text): ?>      <td align="left"><?= h($text) ?></td>
 <?php endforeach ?>  </tr>
 <?php foreach ($positions as $i => $p):
@@ -165,16 +165,17 @@ $files = function (array $slots) use ($stage, $id): string {
       <?= input_for("v[$section/$temp//$m]", ['size' => 100] + METRICS[$m], $val([$section, $temp, '', $m])) ?></td></tr>
 <?php endforeach ?>
 <?php if ($t['files']): ?>
-  <tr><td colspan="<?= max(count($t['metrics']), count($positions)) + 1 ?>" style="border: none; white-space: nowrap;">
+  <tr><td colspan="<?= max(count($t['metrics']), count($positions)) + 1 ?>" style="border: none;">
       <input type="submit" value="Submit"> &nbsp; &nbsp; <?= $files($t['files']) ?></td></tr>
 <?php endif ?>
 </table>
 <?php endforeach; endif ?>
 
-<?php if (!empty($b['fields_after'])): ?>
+<?php if (!empty($b['fields_after'])):
+    $ncols = max(array_map('count', $b['fields_after'])); ?>
 <table border="1" cellpadding="2" width="100%">
 <?php foreach ($b['fields_after'] as $row): ?>
-  <tr><?php foreach ($row as $f): ?><td><?= $field(field_def($stage, $f)) ?></td><?php endforeach ?></tr>
+  <tr><?php foreach ($row as $i => $f): ?><td<?= $i === count($row) - 1 && count($row) < $ncols ? ' colspan="' . ($ncols - $i) . '"' : '' ?>><?= $field(field_def($stage, $f)) ?></td><?php endforeach ?></tr>
 <?php endforeach ?>
 </table>
 <?php endif ?>
